@@ -28,7 +28,8 @@ router.post('/create-new',
   controller.createNewProductMethodPost
 );
 
-router.get('/modify-product/:id', controller.modifyProduct);
+router.get('/modify-product/:id', 
+  controller.modifyProduct);
 
 router.patch('/modify-product/:id', 
   validate.createPost,

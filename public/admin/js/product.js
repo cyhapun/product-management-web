@@ -136,14 +136,15 @@ if (productDeleteButtonList.length > 0) {
 
 // ModifyProduct
 // Có thể sử dụng thẻ a thì k cần bắt sự kiện
-const buttonModify = document.querySelector("[button-modify]");
+const buttonModify = document.querySelectorAll("[button-modify]");
 if (buttonModify) {
-  buttonModify.addEventListener('click', () => {
-    const productId = buttonModify.getAttribute("product-id");
-    const defaultPath = buttonModify.getAttribute("default-path");
-    const directPath = defaultPath + '/' + productId;
-
-    window.location.href = directPath;
-  })
+  buttonModify.forEach(button => {
+    button.addEventListener('click', () => {
+      const productId = button.getAttribute("product-id");
+      const defaultPath = button.getAttribute("default-path");
+      const directPath = defaultPath + '/' + productId;
+      window.location.href = directPath;
+    })
+  });   
 }
 // End ModifyProduct
