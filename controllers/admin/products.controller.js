@@ -213,22 +213,29 @@ module.exports.modifyProduct = async (req, res) => {
 
 // [PATCH] /admin/product/modify-product/:id
 module.exports.modifyProductMethodPatch = async (req, res) => {
-  console.log(req.body)
-  // const productId = req.params.id;
-  // req.body.price = parseInt(req.body.price);
-  // req.body.discountPercentage = parseInt(req.body.discountPercentage);
-  // req.body.stock = parseInt(req.body.stock);
-  // req.body.position = req.body.position === '' ? parseInt(await Products.countDocuments()) + 1 : parseInt(req.body.position);
-  // // req.file là một obj của ảnh tải từ user.
-  // // Nếu k có ảnh -> undefined -> error if not check
-  // req.body.thumbnail = req.file ? `/uploads/${req.file.filename}` : '';
-  // console.log(req.body)
-  // // await Products.updateOne({_id:productId}, req.body);
+  console.log(req.file);
+  const productId = req.params.id;
+  req.body.price = parseInt(req.body.price);
+  req.body.discountPercentage = parseInt(req.body.discountPercentage);
+  req.body.stock = parseInt(req.body.stock);
+  req.body.position = req.body.position === '' ? parseInt(await Products.countDocuments()) + 1 : parseInt(req.body.position);
+  // req.file là một obj của ảnh tải từ user.
+  // Nếu k có ảnh -> undefined -> error if not check
+  if (req.file) {
+    req.body.thumbnail = `/uploads/${req.file.filename}`;
+  }
+
+  try {
+    await Products.updateOne({_id:productId}, req.body);
+  }
+  catch (error) {
+    req.flash("error", "Product is undefined!")
+    return res.redirect(req.get("Referrer") || "/");
+  }
 
   // // Thông báo thành công:
-  // req.flash('success', `Cập nhật sản phẩm thành công!`);
-  res.send("asK");
+  req.flash('success', `Update product successf!`);
   // Dùng để chuyển hướng (redirect) người dùng về trang trước đó hoặc chuyển hướng về trang chủ ("/") nếu không có trang trước.
   // Ngoài ra ta có thể fix cứng 1 trang web cụ thể
-  // res.redirect(req.get("Referrer") || "/");
+  res.redirect(req.get("Referrer") || "/");
 }

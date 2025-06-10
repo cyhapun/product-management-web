@@ -32,6 +32,7 @@ router.get('/modify-product/:id',
   controller.modifyProduct);
 
 router.patch('/modify-product/:id', 
+  upload.single('thumbnail'),
   validate.createPost,
   controller.modifyProductMethodPatch);
 
