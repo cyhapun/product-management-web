@@ -1,0 +1,7 @@
+//- Đặt giá trị cho thuộc tính ta tự định nghĩa (button-status):
+mixin filter-status(buttonStatusFilter)
+  each button in buttonStatusFilter 
+    .button(
+      class=`btn btn-sm ml-1 btn-outline-success ${button.class}`
+      button-status=button.status
+    ) #{button.name}

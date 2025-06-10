@@ -1,0 +1,27 @@
+mixin alert-success (time) 
+  //- Hiển thị thông báo cập nhật thành công
+  if (message.success) 
+    .message.success
+      div(
+        class="alert alert-success"
+        show-alert
+        display-time=time
+      )
+        span=message.success
+        span(
+          close-alert
+        ) X
+        
+mixin alert-error (time) 
+  //- Hiển thị thông báo cập nhật thành công
+  if (message.error) 
+    .message.error
+      div(
+        class="alert alert-danger"
+        show-alert
+        display-time=time
+      )
+        span=message.error
+        span(
+          close-alert
+        ) X

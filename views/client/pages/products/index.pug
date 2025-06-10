@@ -1,0 +1,20 @@
+extends ../../layouts/default.pug
+include ../../mixins/box-head
+
+block main
+  .container.my-3 
+    .row 
+      .col-12 
+        +box-head("List product")
+
+    .row 
+      each product in products  
+        .col-4.mb-3   
+          .product-item 
+            .inner-image 
+              img(src=product.thumbnail, alt=product.title)
+            .inner-content 
+              h3.inner-title #{product.title}
+              .inner-price-new #{product.newPrice.toFixed(2)}$
+              .inner-price-old #{product.price}$
+              .inner-discount -#{product.discountPercentage}%

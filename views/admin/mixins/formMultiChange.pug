@@ -1,0 +1,31 @@
+mixin form-multi-change(path)
+  //- Thêm thuộc tính form-change-multi để dễ dàng querySelector được form
+  form(
+    action=path
+    method='POST'
+    form-change-multi
+    class="mb-3"
+  )
+    .d-flex.align-items-start
+      .form-group 
+        select(
+          name="type"
+          class="form-control"
+        ) 
+          option(disable selected) --Choose action--
+          option(value="active") Active
+          option(value="inactive") Inactive
+          option(value="delete-product") Delete
+          option(value="change-position") Change position
+      //- Sử dụng ô input để lưu các id cần thay đổi status thay vì truyền lên paramaters như chỉnh sửa 1 product sẽ rất dài.
+      .form-group 
+        input(
+          type="text"
+          name="ids"
+          value=""
+          class="form-control d-none"
+        )
+      button(
+        type="submit"
+        class="btn btn-primary"
+      ) Apply
