@@ -234,8 +234,28 @@ module.exports.modifyProductMethodPatch = async (req, res) => {
   }
 
   // // Thông báo thành công:
-  req.flash('success', `Update product successf!`);
+  req.flash('success', `Update product successfully!`);
   // Dùng để chuyển hướng (redirect) người dùng về trang trước đó hoặc chuyển hướng về trang chủ ("/") nếu không có trang trước.
   // Ngoài ra ta có thể fix cứng 1 trang web cụ thể
   res.redirect(req.get("Referrer") || "/");
+}
+
+module.exports.detailProduct = async (req, res) => {
+  const productId = req.params.id;
+
+  try {
+    const find = {
+      deleted: false,
+      _id: productId,
+    }
+    const product = await Products.findOne(find);
+    res.render('admin/pages/products/detailProduct', {
+      pageTitle: product.title || "Product Detail",
+      product: product,
+    });
+  }
+  catch (error) {
+    req.flash("error", "Product is undefined!")
+    return res.redirect(req.get("Referrer") || "/");
+  }
 }

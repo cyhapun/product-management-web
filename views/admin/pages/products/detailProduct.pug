@@ -1,0 +1,42 @@
+extends ../../layouts/default.pug
+
+block main
+  a(href="/admin/products" class="back-button") Back
+
+  div.product-detail-container
+    if (product.thumbnail)
+      div.product-image
+        img(src=product.thumbnail)
+
+    div.product-info
+      if (product.title)
+        h1 #{product.title}
+
+      if (product.price)
+        div.info-item Price: <b>#{product.price}$</b>
+
+      if (product.discountPercentage)
+        div.info-item Sale: <b>#{product.discountPercentage}%</b>
+
+      if (product.stock)
+        div.info-item Remain: <b>#{product.stock}</b>
+
+      if (product.status)
+        div.info-item
+          | Status:
+          if (product.status === "active")
+            span.badge.badge-success Active
+          else
+            span.badge.badge-danger Inactive
+
+      if (product.position)
+        div.info-item Position: <b>#{product.position}</b>
+
+      if (product.description)
+        div.info-item #{product.description}
+
+  div.edit-wrapper
+    a(href=`${prefixAdmin}/products/modify-product/${product.id}` class="edit-button") Edit Product
+
+  link(rel="stylesheet", href="/admin/css/detailProduct.css")
+  script(src="/admin/js/product.js")

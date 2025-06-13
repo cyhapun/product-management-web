@@ -1,0 +1,185 @@
+body {
+  font-family: 'Inter', 'Segoe UI', sans-serif;
+  background-color: #eef1f6;
+  margin: 0;
+  padding: 0;
+  color: #1a1a1a;
+}
+
+/* Wrapper chính */
+.product-detail-container {
+  max-width: 1200px;
+  margin: 50px auto;
+  background: #fff;
+  border-radius: 16px;
+  box-shadow: 0 12px 32px rgba(0, 0, 0, 0.08);
+  padding: 40px;
+  display: flex;
+  gap: 40px;
+  transition: all 0.3s ease;
+}
+
+/* Ảnh sản phẩm */
+.product-image {
+  flex: 1;
+  max-width: 350px;
+}
+
+.product-image img {
+  width: 100%;
+  border-radius: 16px;
+  object-fit: cover;
+  box-shadow: 0 6px 18px rgba(0, 0, 0, 0.2);
+  transition: transform 0.3s ease;
+}
+
+.product-image img:hover {
+  transform: scale(1.01);
+}
+
+/* Thông tin */
+.product-info {
+  flex: 2;
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+  font-size: 17px;
+}
+
+.product-info h1 {
+  font-size: 38px;
+  font-weight: 800;
+  margin: 0;
+  color: #222;
+  margin-bottom: 16px;
+  line-height: 1.2;
+}
+
+.product-info .info-item {
+  font-size: 17px;
+  line-height: 1.8;
+  color: #444;
+}
+
+.product-info .info-item b {
+  color: #111;
+  font-weight: 600;
+}
+
+/* Badge với hiệu ứng gradient */
+.badge {
+  padding: 6px 16px;
+  border-radius: 999px;
+  font-size: 14px;
+  font-weight: 600;
+  color: #fff;
+  display: inline-block;
+  letter-spacing: 0.5px;
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.15);
+  margin-left: 5px;
+}
+
+.badge-success {
+  background: linear-gradient(to right, #00b09b, #96c93d);
+}
+
+.badge-danger {
+  background: linear-gradient(to right, #e52d27, #b31217);
+}
+
+/* Mô tả cuối */
+.product-info .info-item:last-child {
+  font-style: italic;
+  color: #666;
+  padding-top: 10px;
+}
+
+/* Responsive Mobile */
+@media (max-width: 768px) {
+  .product-detail-container {
+    flex-direction: column;
+    padding: 20px;
+    gap: 20px;
+  }
+
+  .product-image {
+    max-width: 100%;
+  }
+
+  .product-info h1 {
+    font-size: 28px;
+  }
+}
+
+.back-button {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  margin: 30px 0 20px 40px;
+  padding: 10px 20px;
+  font-size: 15px;
+  font-weight: 500;
+  color: #333;
+  background-color: #fff;
+  border: 1.5px solid #ccc;
+  border-radius: 8px;
+  text-decoration: none;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.04);
+  transition: all 0.25s ease;
+}
+
+.back-button:hover {
+  background-color: #f5f5f5;
+  border-color: #999;
+  color: #111;
+  box-shadow: 0 3px 10px rgba(0, 0, 0, 0.1);
+  transform: translateY(-1px);
+}
+
+.back-button svg {
+  width: 16px;
+  height: 16px;
+  fill: currentColor;
+}
+
+.edit-button {
+  display: inline-block;
+  margin-top: 30px;
+  padding: 10px 18px;
+  font-size: 15px;
+  font-weight: 600;
+  color: #fff;
+  background-color: #007bff;
+  border-radius: 8px;
+  text-decoration: none;
+  transition: background 0.25s ease;
+  box-shadow: 0 2px 10px rgba(0, 123, 255, 0.2);
+}
+
+.edit-wrapper {
+  display: flex;
+  justify-content: center;
+  margin-top: 40px;
+}
+
+.edit-button {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  background-color: #007bff;
+  color: #fff;
+  padding: 12px 28px;
+  font-size: 16px;
+  font-weight: 600;
+  border: none;
+  border-radius: 999px;
+  text-decoration: none;
+  box-shadow: 0 6px 18px rgba(0, 123, 255, 0.3);
+  transition: all 0.25s ease;
+}
+
+.edit-button:hover {
+  background-color: #0056b3;
+  transform: translateY(-1px);
+  box-shadow: 0 8px 22px rgba(0, 123, 255, 0.4);
+}

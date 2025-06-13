@@ -148,3 +148,16 @@ if (buttonModify) {
   });   
 }
 // End ModifyProduct
+
+// DetailProduct
+const buttonDetail = document.querySelectorAll("[button-detail]");
+if (buttonDetail) {
+  buttonDetail.forEach(button => {
+    button.addEventListener('click', () => {
+      const productId = button.getAttribute("product-id");
+      const defaultPath = button.getAttribute("default-path");
+      const directPath = defaultPath + '/' + productId;
+      window.location.href = directPath;
+    })
+  });
+}

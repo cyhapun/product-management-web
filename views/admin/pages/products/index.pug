@@ -114,6 +114,12 @@ block main
                 td 
                   //- Có thể sử dụng thẻ a thì k cần bắt sự kiện
                   button(
+                    class="btn btn-secondary btn-sm mr-1"
+                    button-detail
+                    default-path=`${prefixAdmin}/products/detail-product`
+                    product-id = product.id
+                  ) Detail
+                  button(
                     class="btn btn-warning btn-sm"
                     button-modify
                     default-path=`${prefixAdmin}/products/modify-product`
