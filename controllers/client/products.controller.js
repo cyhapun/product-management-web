@@ -1,4 +1,5 @@
 const Product = require("../../models/product.model");
+const mongoose = require('mongoose');
 
 // Comment ghi chú [Method] path để quản lí dễ
 
@@ -36,4 +37,35 @@ module.exports.index = async (req, res) => {
         products: newProducts
         // products: products
     })
+};
+
+// [GET] /products/:id
+module.exports.detail = async (req, res) => {
+    const productId = req.params.id;
+
+    // Tìm kiếm theo ID nếu hợp lệ, ngược lại dùng slug
+    const query = mongoose.Types.ObjectId.isValid(productId)
+        ? { _id: productId, deleted: false, status: "active" }
+        : { slug: productId, deleted: false, status: "active" };
+
+    try {
+        const product = await Product.findOne(query);
+
+        if (!product) {
+            return res.status(404).render('client/pages/404NotFound', {
+                pageTitle: "Not Found",
+            });
+        }
+        product.newPrice = product.price * (100 - product.discountPercentage) / 100;
+        res.render('client/pages/products/detailProduct', {
+            pageTitle: product.title,
+            product: product,
+        });
+
+    } catch (error) {
+        console.error(error);
+        return res.status(500).render('client/pages/500', {
+            pageTitle: "Server Error"
+        });
+    }
 };
