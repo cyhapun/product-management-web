@@ -55,8 +55,8 @@ app.use((req, res, next) => {
 });
 // End Flash
 
-app.use(express.static('public'));
-app.set('views', './views');
+app.use(express.static(`${__dirname}/public`));
+app.set('views', `${__dirname}/views`);
 app.set('view engine', 'pug');
 
 // Routes
