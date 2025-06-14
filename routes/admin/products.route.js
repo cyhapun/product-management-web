@@ -3,9 +3,8 @@ const validate = require('../../validates/admin/product.validate');
 const router = require('express').Router();
 // Package dùng để upload ảnh
 const multer  = require('multer');
-// Dùng để định dạng tên ảnh
-const storageMulter = require('../../helpers/storageMulter');
-const upload = multer({ storage: storageMulter() });
+const uploadCloud = require('../../middlewares/admin/uploadCloud.middleware');
+const upload = multer();
 
 router.get('/', controller.products);
 
@@ -23,21 +22,19 @@ router.get('/create-new', controller.createNewProduct);
 
 router.post('/create-new', 
   upload.single('thumbnail'),
-  // Có thể thêm nhiều hàm(Middleware) và các hàm trừ hàm cuối cùng(controller) thì tham số có dạng (req, res, next).
+  uploadCloud.upload,
   validate.createPost,
-  controller.createNewProductMethodPost
-);
+  controller.createNewProductMethodPost);
 
 router.get('/modify-product/:id', 
   controller.modifyProduct);
 
 router.patch('/modify-product/:id', 
   upload.single('thumbnail'),
+  uploadCloud.upload,
   validate.createPost,
   controller.modifyProductMethodPatch);
 
-router.get('/detail-product/:id',
-  controller.detailProduct
-);
+router.get('/detail-product/:id',controller.detailProduct);
 
 module.exports = router;

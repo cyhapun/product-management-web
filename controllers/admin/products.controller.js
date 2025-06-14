@@ -6,6 +6,7 @@ const searchObjectHelper = require('../../helpers/search.js');
 const paginationHelper = require('../../helpers/pagination.js');
 
 // Comment ghi chú [Method] path để quản lí dễ
+
 // [GET] /admin/products
 module.exports.products = async (req, res) => {
   // req sẽ chứa mọi thông tin yêu cầu từ client
@@ -177,7 +178,7 @@ module.exports.createNewProductMethodPost = async (req, res) => {
   req.body.position = req.body.position === '' ? parseInt(await Products.countDocuments()) + 1 : parseInt(req.body.position);
   // req.file là một obj của ảnh tải từ user.
   // Nếu k có ảnh -> undefined -> error if not check
-  req.body.thumbnail = req.file ? `/uploads/${req.file.filename}` : '';
+  // req.body.thumbnail = req.file ? `/uploads/${req.file.filename}` : ''; comment do ta đã dùng middleware upload để xử lý ảnh trước khi đến controller này.
   // // Trả về 1 object:
   // console.log(req.body);
 
@@ -199,7 +200,7 @@ module.exports.modifyProduct = async (req, res) => {
   try {
     const productId = req.params.id;
     const product = await Products.findOne({_id:productId, deleted:false});
-    // console.log(product);
+
     res.render('admin/pages/products/modifyProduct', {
       pageTitle: 'Modify product',
       product: product,
@@ -213,7 +214,6 @@ module.exports.modifyProduct = async (req, res) => {
 
 // [PATCH] /admin/product/modify-product/:id
 module.exports.modifyProductMethodPatch = async (req, res) => {
-  console.log(req.file);
   const productId = req.params.id;
   req.body.price = parseInt(req.body.price);
   req.body.discountPercentage = parseInt(req.body.discountPercentage);
@@ -221,9 +221,9 @@ module.exports.modifyProductMethodPatch = async (req, res) => {
   req.body.position = req.body.position === '' ? parseInt(await Products.countDocuments()) + 1 : parseInt(req.body.position);
   // req.file là một obj của ảnh tải từ user.
   // Nếu k có ảnh -> undefined -> error if not check
-  if (req.file) {
-    req.body.thumbnail = `/uploads/${req.file.filename}`;
-  }
+  // if (req.file) { 
+  //   req.body.thumbnail = `/uploads/${req.file.filename}`;
+  // } không sử dụng nữa do ta đã dùng middleware upload để xử lý ảnh trước khi đến controller này.
 
   try {
     await Products.updateOne({_id:productId}, req.body);
@@ -240,6 +240,7 @@ module.exports.modifyProductMethodPatch = async (req, res) => {
   res.redirect(req.get("Referrer") || "/");
 }
 
+// [GET] /admin/products/detail-product/:id
 module.exports.detailProduct = async (req, res) => {
   const productId = req.params.id;
 
