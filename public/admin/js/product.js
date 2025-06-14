@@ -133,7 +133,6 @@ if (productDeleteButtonList.length > 0) {
 }
 // End delete product
 
-
 // ModifyProduct
 // Có thể sử dụng thẻ a thì k cần bắt sự kiện
 const buttonModify = document.querySelectorAll("[button-modify]");
@@ -161,3 +160,38 @@ if (buttonDetail) {
     })
   });
 }
+
+// Sort products
+const buttonSort = document.querySelector("[sort-select]");
+const buttonClearSort = document.querySelector("[sort-clear]");
+if (buttonSort && buttonClearSort) {
+  const url = new URL(window.location.href);
+  buttonSort.addEventListener('change', () => {
+    const conditionSort = buttonSort.value;
+    const sortBy = conditionSort.split('-')[0];
+    const sortValue = conditionSort.split('-')[1];
+    
+    url.searchParams.set('sortBy', sortBy);
+    url.searchParams.set('sortValue', sortValue);
+
+    window.location.href = url.href;
+  });
+
+  buttonClearSort.addEventListener('click', () => {
+    url.searchParams.delete('sortBy');
+    url.searchParams.delete('sortValue');
+
+    window.location.href = url.href;
+  });
+
+  const sortBy = url.searchParams.get('sortBy');
+  const sortValue = url.searchParams.get('sortValue');
+  if (sortBy && sortValue) {
+    const stringSort = `${sortBy}-${sortValue}`
+    const optionSelected = buttonSort.querySelector(`option[value='${stringSort}']`)
+    // Because selected is the attribute default so we can use '.'
+    optionSelected.selected = true
+  }
+}
+
+// End Sort products

@@ -10,7 +10,7 @@ const paginationHelper = require('../../helpers/pagination.js');
 // [GET] /admin/products
 module.exports.products = async (req, res) => {
   // req sẽ chứa mọi thông tin yêu cầu từ client
-  // Ở đây ta sẽ lấy ra yêu cầu từ url bằngbằng req.query
+  // Ở đây ta sẽ lấy ra yêu cầu từ url bằng req.query (sau dấu ?)
   // console.log(req);
   // console.log(req.query);
   // console.log(req.query.status);  
@@ -22,6 +22,17 @@ module.exports.products = async (req, res) => {
   // Filter by status
   const buttonStatusFilter = buttonStatusFilterHelper(req.query);
   // End filter by status
+
+  // Sort
+  const sortCondition = {};
+  if (req.query.sortBy && req.query.sortValue) {
+    // Use '[]' or '.' is okay but use '[]' when the key is dynamic(we dont know the key in advance)
+    sortCondition[req.query.sortBy] = req.query.sortValue;
+  }
+  else {
+    sortCondition.position = 'desc'; // Default sort by position ascending
+  }
+  // End sort
 
   // Tìm kiếm sản phẩm (Filter product):
   //Trả về một object gồm regex(để tìm kiếm) và keyword để làm giá trị cho ô input:
@@ -43,9 +54,8 @@ module.exports.products = async (req, res) => {
   // End Pagination
   
   // Query data from database
-  // sort theo position
   let products = await Products.find(condition)
-  .sort({position:"desc"})
+  .sort(sortCondition)
   .skip(objectPagination.skip)
   .limit(objectPagination.limit);
 

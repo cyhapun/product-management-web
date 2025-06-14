@@ -6,6 +6,7 @@ include ../../mixins/searchBar.pug
 include ../../mixins/pagination.pug
 include ../../mixins/formMultiChange.pug
 include ../../mixins/showAlert.pug
+include ../../mixins/sort.pug
 
 block main 
   +alert-success(3000)
@@ -24,6 +25,14 @@ block main
         //- Thanh tìm kiếm:
         .col-6
           +search-bar(keyword)
+
+  .card.mb-3
+    .card-header Sort by
+    .card-body
+      .row.align-items-end
+        .col-md-6
+          +sort()
+          
   .card.mb-3 
     .card-header List 
     .card-body 
