@@ -6,6 +6,8 @@ const bodyParser = require('body-parser');
 // Package để hiển thị thông báo cập nhật thành công
 const flash = require('express-flash');
 const session = require('express-session');
+// For Tinymce
+const path = require('path')
 
 // Use env
 require('dotenv').config()
@@ -54,6 +56,10 @@ app.use((req, res, next) => {
     next();
 });
 // End Flash
+
+// TinyMCE
+app.use('/tinymce', express.static(path.join(__dirname, 'node_modules', 'tinymce')));
+// End TinyMCE
 
 app.use(express.static(`${__dirname}/public`));
 app.set('views', `${__dirname}/views`);

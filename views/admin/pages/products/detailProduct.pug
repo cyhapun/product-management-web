@@ -33,7 +33,7 @@ block main
         div.info-item Position: <b>#{product.position}</b>
 
       if (product.description)
-        div.info-item #{product.description}
+        div.info-item !{product.description}
 
   div.edit-wrapper
     a(href=`${prefixAdmin}/products/modify-product/${product.id}` class="edit-button") Edit Product
