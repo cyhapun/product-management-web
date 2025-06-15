@@ -7,7 +7,7 @@ const paginationHelper = require('../../helpers/pagination.js');
 
 // Comment ghi chú [Method] path để quản lí dễ
 
-// [GET] /admin/products
+// [GET] /admin/product-list
 module.exports.products = async (req, res) => {
   // req sẽ chứa mọi thông tin yêu cầu từ client
   // Ở đây ta sẽ lấy ra yêu cầu từ url bằng req.query (sau dấu ?)
@@ -77,7 +77,7 @@ module.exports.products = async (req, res) => {
   })
 }
 
-// [PATCH] /admin/products/change-status/:status/:id
+// [PATCH] /admin/product-list/change-status/:status/:id
 module.exports.changeStatus = async (req, res) => {
   // req.params dùng để lấy tham số từ URL khi sử dụng route parameters(trả về 1 object chứa các tham số).
   // console.log(req.params);
@@ -97,7 +97,7 @@ module.exports.changeStatus = async (req, res) => {
   res.redirect(req.get("Referrer") || "/");
 }
 
-// [PATCH] /admin/products/multi-change
+// [PATCH] /admin/product-list/multi-change
 module.exports.multiChange = async (req, res) => {
   // Mở phần network sẽ thấy có dữ liệu nhưng nodejs k nhận được
   // Nên ta cần tải thư viện body-parser để có thể lấy được dữ liệu từ req.body
@@ -149,7 +149,7 @@ module.exports.multiChange = async (req, res) => {
   res.redirect(req.get("Referrer") || "/");
 }
 
-// [DELETE] /admin/products/delete-product/:id
+// [DELETE] /admin/product-list/delete-product/:id
 // Phương thức chỉ có tác dụng ngữ nghĩa k ảnh hưởng gì nên ta có thể dùng bất kì phương thức gì cũng được.
 module.exports.deleteProduct = async (req, res) => {
   const productId = req.params.id;
@@ -173,14 +173,14 @@ module.exports.deleteProduct = async (req, res) => {
   res.redirect(req.get("Referrer") || "/");
 }
 
-// [GET] /admin/products/create-new
+// [GET] /admin/product-list/create-new
 module.exports.createNewProduct = (req, res) => {
   res.render('admin/pages/products/createNew', {
     pageTitle: 'Create new product'
   });
 }
 
-// [POST] /admin/products/create-new
+// [POST] /admin/product-list/create-new
 module.exports.createNewProductMethodPost = async (req, res) => {
   req.body.price = parseInt(req.body.price);
   req.body.discountPercentage = parseInt(req.body.discountPercentage);
@@ -204,7 +204,7 @@ module.exports.createNewProductMethodPost = async (req, res) => {
   res.redirect(req.get("Referrer") || "/");
 } 
 
-// [GET] /admin/products/modify-product/:id
+// [GET] /admin/product-list/modify-product/:id
 module.exports.modifyProduct = async (req, res) => {
   // Sử dụng try/catch đề phòng trường hợp id ko hợp lệ -> sập server
   try {
@@ -222,7 +222,7 @@ module.exports.modifyProduct = async (req, res) => {
   }
 }
 
-// [PATCH] /admin/product/modify-product/:id
+// [PATCH] /admin/product-list/modify-product/:id
 module.exports.modifyProductMethodPatch = async (req, res) => {
   const productId = req.params.id;
   req.body.price = parseInt(req.body.price);
@@ -250,7 +250,7 @@ module.exports.modifyProductMethodPatch = async (req, res) => {
   res.redirect(req.get("Referrer") || "/");
 }
 
-// [GET] /admin/products/detail-product/:id
+// [GET] /admin/product-list/detail-product/:id
 module.exports.detailProduct = async (req, res) => {
   const productId = req.params.id;
 
