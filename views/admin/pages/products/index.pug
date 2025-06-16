@@ -38,10 +38,10 @@ block main
     .card-body 
       .row
         .col-8
-          +form-multi-change(`${prefixAdmin}/products/multi-change?_method=PATCH`)
+          +form-multi-change(`${prefixAdmin}/product-list/multi-change?_method=PATCH`)
         .col-4.text-right
           a(
-            href=`${prefixAdmin}/products/create-new`
+            href=`${prefixAdmin}/product-list/create-new`
             class="btn btn-outline-success"
             create-new-product
           ) + Create new
@@ -94,7 +94,7 @@ block main
                   //- Khi có nhiều dòng mà muốn hiển thị văn bản cần dùng |
                   if (product.status === "active")
                     //- Cách 1: 
-                    //- href=`/admin/products/change-status/active/${product.id}` 
+                    //- href=`/admin/product-list/change-status/active/${product.id}` 
                     //- Cách dùng đường dẫn như này vẫn được nhưng khi điều hướng tới 1 trang khác mặc định nó sẽ dùng
                     //- phương thức GET nhưng đây là ta cập nhật sản phẩm thì phải dùng phương thức PATCH
 
@@ -125,13 +125,13 @@ block main
                   button(
                     class="btn btn-secondary btn-sm mr-1"
                     button-detail
-                    default-path=`${prefixAdmin}/products/detail-product`
+                    default-path=`${prefixAdmin}/product-list/detail-product`
                     product-id = product.id
                   ) Detail
                   button(
                     class="btn btn-warning btn-sm"
                     button-modify
-                    default-path=`${prefixAdmin}/products/modify-product`
+                    default-path=`${prefixAdmin}/product-list/modify-product`
                     product-id = product.id
                   ) Modify 
                   button(
@@ -169,13 +169,13 @@ block main
     action=""
     method="POST"
     id="form-change-status"
-    data-path=`${prefixAdmin}/products/change-status`
+    data-path=`${prefixAdmin}/product-list/change-status`
   )
   form(
     action=""
     method="POST"
     id="form-delete-product"
-    data-path=`${prefixAdmin}/products/delete-product`
+    data-path=`${prefixAdmin}/product-list/delete-product`
   )
 
   script(src="/admin/js/product.js")

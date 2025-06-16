@@ -9,7 +9,7 @@ block main
   h1(class="mb-4 text-center") Modify Product
 
   form(
-    action=`${prefixAdmin}/products/modify-product/${product.id}?_method=PATCH`
+    action=`${prefixAdmin}/product-list/modify-product/${product.id}?_method=PATCH`
     method="POST"
     enctype="multipart/form-data"
   )

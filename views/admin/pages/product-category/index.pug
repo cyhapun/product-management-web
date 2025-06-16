@@ -1,6 +1,167 @@
 extends ../../layouts/default.pug
 
-block main 
-  h1 Product category
+//- Tách thành các module để reuse and easy to management
+include ../../mixins/filterStatus.pug
+include ../../mixins/searchBar.pug
+include ../../mixins/pagination.pug
+include ../../mixins/formMultiChange.pug
+include ../../mixins/showAlert.pug
+include ../../mixins/sort.pug
 
-  script(src="/admin/js/product.js")
+block main 
+  +alert-success(3000)
+  +alert-error(3000)
+
+  h1 Product categories
+
+  .card.mb-3
+    .card-header Filler and search
+    .card-body
+      .row.align-items-center
+        //- Filter status button:
+        .col-6 
+          +filter-status(buttonStatusFilter)
+        
+        //- Thanh tìm kiếm:
+        .col-6
+          +search-bar(keyword)
+
+  .card.mb-3
+    .card-header Sort by
+    .card-body
+      .row.align-items-end
+        .col-md-6
+          +sort(false)
+          
+  .card.mb-3 
+    .card-header List 
+    .card-body 
+      .row
+        .col-8
+          +form-multi-change(`${prefixAdmin}/product-category/multi-change?_method=PATCH`)
+        .col-4.text-right
+          a(
+            href=`${prefixAdmin}/product-category/create-new`
+            class="btn btn-outline-success"
+            create-new-product
+          ) + Create new
+
+      table(
+          class="table table-hover table-sm"
+          checkbox-multi
+        )
+        thead 
+          tr 
+            th 
+              input(type="checkbox" name="checkall")
+            th Order 
+            th Image
+            th Title
+            th Position
+            th Status 
+            th Actions
+        tbody
+          if (productCategories.length > 0) 
+            each productCategory, index in productCategories 
+              tr 
+                td 
+                  input(
+                    type="checkbox"
+                    name="id"
+                    value=productCategory.id
+                  )
+                td #{index + 1 + (pagination.currentPage - 1) * pagination.limit} 
+                td 
+                  img(
+                    src=productCategory.thumbnail
+                    alt=productCategory.title
+                    width="100px"
+                    height="auto"    
+                  )
+                td #{productCategory.title}
+                td 
+                  input(
+                    type="number"
+                    value=productCategory.position 
+                    style="width:60px"
+                    min=1
+                    name="productCategory-position"
+                  )
+                td 
+                  //- if-else không có {}, có sẽ báo lỗi
+                  //- Khi có nhiều dòng mà muốn hiển thị văn bản cần dùng |
+                  if (productCategory.status === "active")
+                    a(
+                      href="javascript:;"
+                      button-change-status
+                      productCategory-id=productCategory.id
+                      current-status=productCategory.status
+                      class="badge badge-success"
+                    ) Active
+                  else 
+                    a(
+                      href="javascript:;"
+                      button-change-status
+                      productCategory-id = productCategory.id
+                      current-status = productCategory.status
+                      class="badge badge-danger"
+                    ) Inactive
+                td 
+                  //- Có thể sử dụng thẻ a thì k cần bắt sự kiện
+                  button(
+                    class="btn btn-secondary btn-sm mr-1"
+                    button-detail
+                    default-path=`${prefixAdmin}/product-category/detail-product`
+                    productCategory-id = productCategory.id
+                  ) Detail
+                  button(
+                    class="btn btn-warning btn-sm"
+                    button-modify
+                    default-path=`${prefixAdmin}/product-category/modify-product`
+                    productCategory-id = productCategory.id
+                  ) Modify 
+                  button(
+                      class="btn btn-danger btn-sm ml-1"
+                      data-toggle="modal" 
+                      data-target="#confirmDeleteModal"
+                    ) Delete
+                  //- Modal confirm delete
+                  #confirmDeleteModal.modal.fade(tabindex='-1' aria-labelledby='confirmDeleteModal' aria-hidden='true')
+                    .modal-dialog.modal-dialog-centered
+                      .modal-content
+                        .modal-header
+                          h5#confirmDeleteModal.modal-title CONFIRM DELETE
+                          button.close(type='button' data-dismiss='modal' aria-label='Close')
+                            span(aria-hidden='true') &times;
+                        .modal-body
+                          | Are you sure you want to delete this category?
+                        .modal-footer
+                          button.btn.btn-secondary(type='button' data-dismiss='modal') Close
+                          button.btn.btn-primary(type='button' button-delete-product productCategory-id = productCategory.id) Delete
+
+          else 
+            tr 
+              td Not found
+            
+  +pagination(pagination)
+
+  //- Dùng 1 form giả để điều hướng theo path trong action(Để thay đổi product status):
+  //- Lưu ý: method trong form chỉ có 2 phương thức GET và POST mà ở đây ta cập nhật sản phẩm -> PATCH do đó cần cài thư viện để có thể đổi thành PATCHATCH
+  //- Ở đây ta để method = "POST" do override cần dùng method POST.
+  //- Tại sao ta dùng phương thức PATCH trong khi GET ta vẫn cập nhật được?
+  //- Do trình duyệt mặc định sử dụng GET mà khi người dùng truy cập vào đường dẫn ấy thì sẽ làm thay đổi dữ liệu của ta.
+  //- Do đó sử dụng PATCH để tránh bị việc này.
+  form(
+    action=""
+    method="POST"
+    id="form-change-status"
+    data-path=`${prefixAdmin}/product-category/change-status`
+  )
+  form(
+    action=""
+    method="POST"
+    id="form-delete-product"
+    data-path=`${prefixAdmin}/product-category/delete-product`
+  )
+
+  script(src="/admin/js/productCategory.js")

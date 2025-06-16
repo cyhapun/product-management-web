@@ -1,4 +1,4 @@
-mixin sort()
+mixin sort(isProduct = true)
     div(sort)
         .input-group
             select(
@@ -8,8 +8,9 @@ mixin sort()
             )
                 option(value="position-desc" default) Position descending (Default)
                 option(value="position-asc") Position ascending
-                option(value="price-desc") Price descending
-                option(value="price-asc") Price ascending
+                if (isProduct == true)
+                    option(value="price-desc") Price descending
+                    option(value="price-asc") Price ascending
                 option(value="title-asc") Title A -> Z
                 option(value="title-desc") Tile Z -> A
             .input-group-append

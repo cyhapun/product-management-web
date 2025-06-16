@@ -37,11 +37,10 @@ module.exports.products = async (req, res) => {
   // Tìm kiếm sản phẩm (Filter product):
   //Trả về một object gồm regex(để tìm kiếm) và keyword để làm giá trị cho ô input:
   const searchObj = searchObjectHelper(req.query);
-  // console.log(searchObj);
   // Cách 1 tìm kiếm sản phẩm: Dùng regex
   if (searchObj.regex) {
     condition.title = searchObj.regex;
-  }
+  }  
   // Gán điều kiện tìm products cho model:
   if (req.query.status) {
     condition.status = req.query.status;

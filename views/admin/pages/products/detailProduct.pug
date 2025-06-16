@@ -1,7 +1,7 @@
 extends ../../layouts/default.pug
 
 block main
-  a(href="/admin/products" class="back-button") Back
+  a(href="/admin/product-list" class="back-button") Back
 
   div.product-detail-container
     if (product.thumbnail)
@@ -36,7 +36,7 @@ block main
         div.info-item !{product.description}
 
   div.edit-wrapper
-    a(href=`${prefixAdmin}/products/modify-product/${product.id}` class="edit-button") Edit Product
+    a(href=`${prefixAdmin}/product-list/modify-product/${product.id}` class="edit-button") Edit Product
 
   link(rel="stylesheet", href="/admin/css/detailProduct.css")
   script(src="/admin/js/product.js")

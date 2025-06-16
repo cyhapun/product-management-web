@@ -5,12 +5,13 @@ include ../../mixins/showAlert.pug
 block main  
   +alert-success(3000)
   +alert-error(3000)
+  
+  a(href="/admin/product-category" class="back-button") Back
 
-  h1(class="mb-4 text-center") Add New Product
+  h1(class="mb-4 text-center") Add New Category
 
   form(
-    action=`${prefixAdmin}/product-list/create-new`
-    id="form-create-product"
+    action=`${prefixAdmin}/product-category/create-new`
     method="POST"
     enctype="multipart/form-data"
   )
@@ -26,6 +27,16 @@ block main
       )
 
     .form-group
+      label(for="parrent_id" class="font-weight-bold") Category parent
+      input(
+        type="text"
+        class="form-control"
+        id="parrent_id"
+        name="parrent_id"
+        placeholder="Enter category parent"
+      )
+
+    .form-group
       label(for="desc" class="font-weight-bold") Description
       textarea(
         class="form-control textarea-mce"
@@ -35,66 +46,32 @@ block main
         placeholder="Enter product description"
       )
 
-    .form-row
-      .form-group.col-md-6
-        label(for="price" class="font-weight-bold") Price
-        input(
-          type="number"
-          class="form-control"
-          id="price"
-          name="price"
-          value="0"
-          min="0"
-        )
+    .form-group
+    label(for="thumbnail" class="font-weight-bold") Image
+    //- By url
+    //- input(
+    //-   type="text"
+    //-   class="form-control"
+    //-   id="thumbnail"
+    //-   name="thumbnail"
+    //-   placeholder="Enter image URL"
+    //- )
+    //- By upload using multer
+    input(
+        type="file"
+        class="form-control-file mb-2"
+        id="thumbnail"
+        upload-image-input
+        name="thumbnail"
+        accept="image/*"
+    )
+    img(
+        upload-image-preview
+        src=""
+        alt="Your image"
+        class="upload-image-preview"
+    )
 
-      .form-group.col-md-6
-        label(for="discount" class="font-weight-bold") Discount (%)
-        input(
-          type="number"
-          class="form-control"
-          id="discount"
-          name="discountPercentage"
-          value="0"
-          min="0"
-        )
-
-    .form-row
-      .form-group.col-md-6
-        label(for="stock" class="font-weight-bold") Stock
-        input(
-          type="number"
-          class="form-control"
-          id="stock"
-          name="stock"
-          value="0"
-          min="0"
-        )
-
-      .form-group.col-md-6
-        label(for="thumbnail" class="font-weight-bold") Image
-        //- By url
-        //- input(
-        //-   type="text"
-        //-   class="form-control"
-        //-   id="thumbnail"
-        //-   name="thumbnail"
-        //-   placeholder="Enter image URL"
-        //- )
-        //- By upload using multer
-        input(
-          type="file"
-          class="form-control-file"
-          id="thumbnail"
-          upload-image-input
-          name="thumbnail"
-          accept="image/*"
-        )
-        img(
-          upload-image-preview
-          src=""
-          alt="Your image"
-          class="upload-image-preview"
-        )
     .form-group
       label(for="position" class="font-weight-bold") Position
       input(
@@ -137,3 +114,4 @@ block main
 
 
   script(src="/admin/js/product.js")
+  link(rel="stylesheet", href="/admin/css/detailProduct.css")

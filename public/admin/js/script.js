@@ -1,14 +1,13 @@
 // buttonStatusFilter
 const buttonStatusFilter = document.querySelectorAll("[button-status]");
-// console.log(buttonStatusFilter);
 // Trả về một nodelist giống như mảng nhưng k phải là mảng thật sự
 if (buttonStatusFilter.length > 0) {
+  console.log('a')
   const url = new URL(window.location.href);
 
   buttonStatusFilter.forEach((button, index) => {
     button.addEventListener("click", () => {
       const status = button.getAttribute("button-status");
-      // console.log(status);
       status ? url.searchParams.set("status", status) : url.searchParams.delete("status"); 
       
       // Nếu i === index, bật class "active". Nếu không, gỡ class "active".
