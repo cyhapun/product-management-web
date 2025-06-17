@@ -1,6 +1,7 @@
 extends ../../layouts/default.pug
 
 include ../../mixins/showAlert.pug
+include ../../mixins/selectCategoryByTree.pug
 
 block main  
   +alert-success(3000)
@@ -27,14 +28,15 @@ block main
       )
 
     .form-group
-      label(for="parrent_id" class="font-weight-bold") Category parent
-      input(
-        type="text"
+      label(for="parent_id" class="font-weight-bold") Category parent
+      select(
+        name="parent_id"
+        id="parent_id"
         class="form-control"
-        id="parrent_id"
-        name="parrent_id"
-        placeholder="Enter category parent"
       )
+        option(value="") -- Choose parent category --
+        if (categories)
+          +select-category-by-tree(categories, '--')
 
     .form-group
       label(for="desc" class="font-weight-bold") Description
@@ -112,6 +114,5 @@ block main
         class="btn btn-primary"
       ) Create
 
-
-  script(src="/admin/js/product.js")
+  script(src="/admin/js/productCategory.js")
   link(rel="stylesheet", href="/admin/css/detailProduct.css")
