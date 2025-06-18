@@ -9,10 +9,10 @@ block main
   
   a(href="/admin/product-category" class="back-button") Back
 
-  h1(class="mb-4 text-center") Add New Category
+  h1(class="mb-4 text-center") Modify product category
 
   form(
-    action=`${prefixAdmin}/product-category/create-new`
+    action=`${prefixAdmin}/product-category/modify-product-category/${category._id}?_method=PATCH`
     method="POST"
     enctype="multipart/form-data"
   )
@@ -24,6 +24,7 @@ block main
         id="title"
         name="title"
         required
+        value=category.title
         placeholder="Enter product title"
       )
 
@@ -35,8 +36,8 @@ block main
         class="form-control"
       )
         option(value="") -- Choose parent category --
-        if (categories)
-          +select-category-by-tree(categories)
+        if (categoryTree)
+          +select-category-by-tree(categoryTree, '--', category.parent_id)
 
     .form-group
       label(for="desc" class="font-weight-bold") Description
@@ -46,19 +47,11 @@ block main
         name="description"
         rows="5"
         placeholder="Enter product description"
-      )
+      )=category.description
 
     .form-group
     label(for="thumbnail" class="font-weight-bold") Image
-    //- By url
-    //- input(
-    //-   type="text"
-    //-   class="form-control"
-    //-   id="thumbnail"
-    //-   name="thumbnail"
-    //-   placeholder="Enter image URL"
-    //- )
-    //- By upload using multer
+    //- Upload using multer
     input(
         type="file"
         class="form-control-file mb-2"
@@ -69,7 +62,7 @@ block main
     )
     img(
         upload-image-preview
-        src=""
+        src=category.thumbnail
         alt="Your image"
         class="upload-image-preview"
     )
@@ -81,6 +74,7 @@ block main
         class="form-control"
         id="position"
         name="position"
+        value=category.position
         placeholder="Auto increase"
         min="1"
       )
@@ -94,7 +88,7 @@ block main
           id="statusActive"
           name="status"
           value="active"
-          checked
+          checked=(category.status=='active')
         )
         label(for="statusActive" class="form-check-label") Active
 
@@ -104,6 +98,7 @@ block main
           class="form-check-input"
           id="statusInactive"
           name="status"
+          checked=(category.status=='inactive')
           value="inactive"
         )
         label(for="statusInactive" class="form-check-label") Inactive
@@ -112,7 +107,7 @@ block main
       button(
         type="submit"
         class="btn btn-primary"
-      ) Create
+      ) Modify
 
   script(src="/admin/js/productCategory.js")
   link(rel="stylesheet", href="/admin/css/detailProduct.css")

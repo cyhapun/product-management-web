@@ -96,3 +96,40 @@ module.exports.createNewCategoryMethodPost = async (req, res) => {
   // Ngoài ra ta có thể fix cứng 1 trang web cụ thể
   res.redirect(req.get("Referrer") || "/");
 }
+
+// [GET] /admin/product-category/modify-product/:id
+module.exports.modifyCategory = async (req, res) => {
+  try {
+    const category = await ProductCategories.findOne({_id: req.params.id, deleted:false})
+    const categories = await ProductCategories.find({deleted:false});
+    const categoryTree = createTreeHelper(categories)
+
+    res.render("admin/pages/productCategory/modifyProductCategory", {
+      category: category,
+      categoryTree: categoryTree
+    });
+  }
+  catch (error){
+    req.flash("error", "Product category is undefined!")
+    return res.redirect(req.get("Referrer") || "/admin/product-category");
+  }
+}
+
+// [PACTH] /admin/product-category/modify-product/:id
+module.exports.modifyProductCategoryMethodPost = async (req, res) => {
+  const categoryId = req.params.id;
+  req.body.position = req.body.position === '' ? parseInt(await Products.countDocuments()) + 1 : parseInt(req.body.position);
+
+  try {
+    await CategoriesProduct.updateOne({_id:categoryId}, req.body);
+  }
+  catch (error) {
+    req.flash("error", "Product category is undefined, update fail!")
+    return res.redirect(req.get("Referrer") || "/");
+  }
+  // // Thông báo thành công:
+  req.flash('success', `Update product category successfully!`);
+  // Dùng để chuyển hướng (redirect) người dùng về trang trước đó hoặc chuyển hướng về trang chủ ("/") nếu không có trang trước.
+  // Ngoài ra ta có thể fix cứng 1 trang web cụ thể
+  res.redirect(req.get("Referrer") || "/admin/product-category");
+}

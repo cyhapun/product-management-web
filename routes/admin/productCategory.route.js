@@ -16,4 +16,12 @@ router.post('/create-new',
   validate.createNewCategoryMethodPost,
   controller.createNewCategoryMethodPost);
 
+router.get('/modify-product-category/:id', controller.modifyCategory)
+
+router.patch('/modify-product-category/:id',
+  upload.single('thumbnail'),
+  uploadCloud.upload,
+  validate.createNewCategoryMethodPost,
+  controller.modifyProductCategoryMethodPost);
+
 module.exports = router

@@ -1,5 +1,5 @@
-mixin select-category-by-tree(categories, level='')
+mixin select-category-by-tree(categories, level='--', parentId='')
     if (categories)
         each item in categories
-            option(value=item._id) #{level + ' ' + item.title}
-            +select-category-by-tree(item.children, level + '--')
+            option(value=item._id selected=(parentId == item._id)) #{level + ' ' + item.title}
+            +select-category-by-tree(item.children, level + '--', parentId)
