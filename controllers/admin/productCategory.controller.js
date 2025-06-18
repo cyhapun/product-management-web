@@ -56,7 +56,7 @@ module.exports.index = async (req, res) => {
   .skip(objectPagination.skip)
   .limit(objectPagination.limit);
 
-  res.render('admin/pages/product-category/index', {
+  res.render('admin/pages/productCategory/index', {
     pageTitle: "Product categories",
     productCategories: categories,
     buttonStatusFilter: buttonStatusFilter,
@@ -70,7 +70,7 @@ module.exports.createNewCategory = async (req, res) => {
   const categories = await ProductCategories.find({deleted:false});
   const categoriesTree = createTreeHelper(categories)
 
-  res.render('admin/pages/product-category/createNewCategory', {
+  res.render('admin/pages/productCategory/createNewCategory', {
       pageTitle: 'Create new category',
       categories: categoriesTree,
     }
