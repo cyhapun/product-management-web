@@ -30,14 +30,14 @@ block main
                   td #{item.title}
                   td #{item.description}
                   td.text-end
-                    a.mr-2.btn.btn-secondary.btn-sm(href=`/${prefixAdmin}/roles/detail/${item.id}`)
+                    a.mr-2.btn.btn-secondary.btn-sm(href=`${prefixAdmin}/roles/detail/${item._id}`)
                       i.fas.fa-eye.mr-1
                       | Details
-                    a.mr-2.btn.btn-warning.btn-sm.ms-1(href=`/${prefixAdmin}/roles/edit/${item.id}`)
+                    a.mr-2.btn.btn-warning.btn-sm.ms-1(href=`${prefixAdmin}/roles/edit/${item._id}`)
                       i.fas.fa-edit.mr-1
                       | Edit
                     form(
-                      action=`/${prefixAdmin}/roles/delete/${item.id}`
+                      action=`${prefixAdmin}/roles/delete/${item._id}`
                       method="POST"
                       style="display:inline-block"
                       onsubmit="return confirm('Are you sure you want to delete this role group?');"
