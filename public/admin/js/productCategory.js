@@ -193,5 +193,4 @@ if (buttonSort && buttonClearSort) {
     optionSelected.selected = true
   }
 }
-
 // End Sort products

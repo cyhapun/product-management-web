@@ -1,6 +1,7 @@
 extends ../../layouts/default.pug
 
 include ../../mixins/showAlert.pug
+include ../../mixins/selectCategoryByTree.pug
 
 block main  
   +alert-success(3000)
@@ -26,6 +27,17 @@ block main
         required
         placeholder="Enter product title"
       )
+
+      .form-group
+        label(for="category" class="font-weight-bold") Category
+        select(
+          name="category"
+          id="category"
+          class="form-control"
+        )
+          option(value="") -- Choose category --
+          if (categoryTree)
+            +select-category-by-tree(categoryTree)
 
     .form-group
       label(for="desc" class="font-weight-bold") Description

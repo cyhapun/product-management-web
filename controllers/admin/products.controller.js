@@ -1,9 +1,11 @@
 const Products = require('../../models/product.model');
+const ProductCategories = require('../../models/productCategory.model.js');
 
 // Tách từng chức năng theo module để reuse and easy to management
 const buttonStatusFilterHelper = require('../../helpers/filterStatus');
 const searchObjectHelper = require('../../helpers/search.js');
 const paginationHelper = require('../../helpers/pagination.js');
+const createTreeHelper = require('../../helpers/createTree.js');
 
 // Comment ghi chú [Method] path để quản lí dễ
 
@@ -173,9 +175,13 @@ module.exports.deleteProduct = async (req, res) => {
 }
 
 // [GET] /admin/product-list/create-new
-module.exports.createNewProduct = (req, res) => {
+module.exports.createNewProduct = async (req, res) => {
+  const categories = await ProductCategories.find({deleted:false});
+  const categoryTree = createTreeHelper(categories);
+
   res.render('admin/pages/products/createNew', {
-    pageTitle: 'Create new product'
+    pageTitle: 'Create new product',
+    categoryTree: categoryTree,
   });
 }
 
@@ -205,6 +211,9 @@ module.exports.createNewProductMethodPost = async (req, res) => {
 
 // [GET] /admin/product-list/modify-product/:id
 module.exports.modifyProduct = async (req, res) => {
+  const categories = await ProductCategories.find({deleted:false});
+  const categoryTree = createTreeHelper(categories);
+
   // Sử dụng try/catch đề phòng trường hợp id ko hợp lệ -> sập server
   try {
     const productId = req.params.id;
@@ -213,6 +222,7 @@ module.exports.modifyProduct = async (req, res) => {
     res.render('admin/pages/products/modifyProduct', {
       pageTitle: 'Modify product',
       product: product,
+      categoryTree: categoryTree,
     });
   }
   catch(error) {

@@ -6,6 +6,10 @@ mongoose.plugin(slugUpdater); // Kích hoạt plugin
 // Create model mongoose
 const productSchema = new mongoose.Schema({
   title: String, 
+  category: {
+    type:String,
+    default:""
+  },
   description: String,
   price: Number,
   discountPercentage: Number,
