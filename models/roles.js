@@ -1,3 +1,5 @@
+const mongoose = require('mongoose');
+
 // Create model mongoose
 const roleSchema = new mongoose.Schema({
   title: String, 
@@ -16,7 +18,7 @@ const roleSchema = new mongoose.Schema({
 });
 // Trường timestamps sẽ tự động thêm 2 thuộc tính updatedAt và createdAt cho từng document.
 
-const ProductCategory = mongoose.model('ProductCategory', productCategorySchema, "product-categories");
+const Role = mongoose.model('Role', roleSchema, "roles");
 // End create model mongoose
 
-module.exports = ProductCategory;
+module.exports = Role;
