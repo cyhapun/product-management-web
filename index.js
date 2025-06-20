@@ -29,8 +29,9 @@ const app = express();
 // Package để có thể sử dụng có method Delete, Patch, ... trong form
 app.use(methodOverride('_method'));
 
-// Package để có thể lấy được dữ liệu từ req.body (Middleware)
-app.use(bodyParser.urlencoded({extended :false}));
+// Package để có thể lấy được dữ liệu từ req.body (Middleware) - If not have req.body will return undefine
+app.use(bodyParser.urlencoded({extended :false})); // For using form to the backend
+app.use(express.json()); // For using fetch to the backend
 
 // App Locals Variable  
 // Các biến lưu trong app.locals có phạm vi toàn cục và tồn tại suốt vòng đời của ứng dụng.

@@ -71,3 +71,37 @@ module.exports.editRoleMethodPatch = async (req, res) => {
   // Ngoài ra ta có thể fix cứng 1 trang web cụ thể
   res.redirect(req.get("Referrer") || "/admin/roles");
 }
+
+// [GET] /admin/roles/permissions
+module.exports.permissions = async (req, res) => {
+  const condition = {
+    deleted: false,
+  };
+  const roles = await Roles.find(condition);
+  
+  res.render('./admin/pages/roles/permissions', {
+    pageTitle: 'Edit permission',
+    roles: roles
+  })
+}
+
+// [PATCH] /admin/roles/permissions
+module.exports.permissionsPatch = async (req, res) => {
+  const rolePermission = req.body.rolePermission;
+
+  for (const role of rolePermission) {
+    try {
+      await Roles.updateOne({_id: role.id}, {permissions: role.permissions});
+    } 
+    catch (err) {
+      console.log("Error when updating role: ", err);
+      req.flash('success', `Update role successfully!`);  
+      res.status(500).json({ message: 'Update role failed!' });
+    }
+  }
+
+  // Thông báo thành công:
+  req.flash('success', `Update role successfully!`);
+  // Do dùng fetch ở phía frontend để gữi yêu cầu nên ta cần phải gữi phản hồi lại dạng này để phía frontend biết đã thành công
+  res.json({ message: 'Update role successfully!' });
+}

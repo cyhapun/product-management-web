@@ -15,4 +15,8 @@ router.patch('/edit/:id',
   validate.createNewRole,
   controller.editRoleMethodPatch);
 
+router.get('/permissions', controller.permissions);
+
+router.patch('/permissions', controller.permissionsPatch);
+
 module.exports = router;

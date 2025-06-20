@@ -10,9 +10,15 @@ block main
           .col-4.text-right
             a(
               href=`${prefixAdmin}/roles/create`
-              class="btn btn-outline-success"
+              class="btn btn-outline-success mr-2"
               create-new-product
             ) + Create new
+            
+            a(
+              href=`${prefixAdmin}/roles/permissions`
+              class="btn btn-outline-success"
+              create-new-product
+            ) ✏️ Edit permission
 
       .card-body.p-0
         table.table.table-hover.mb-0
