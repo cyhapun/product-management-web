@@ -8,7 +8,13 @@ module.exports.index = async (req, res) => {
     const conditions = {
       deleted: false,
     }
-    const accounts = await Accounts.find(conditions);
+    const accounts = await Accounts.find(conditions).select("-password -token");
+    
+    for (let account of accounts) {
+      console.log(account);
+      const role = await Roles.findOne({_id: account.roleId, deleted:false});
+      account.role = role ? role.title : 'No Role Assigned';
+    }
 
     res.render('./admin/pages/accounts/index.pug', { 
       pageTitle: 'Accounts Management',
@@ -31,23 +37,18 @@ module.exports.create = async (req, res) => {
 }
 
 // [POST] '/admin/accounts/create'
-module.exports.postCreate = async (req, res) => {
+module.exports.createPost = async (req, res) => {
   try {
-    console.log('Creating new account with data:', req.body);
-    const { fullName, email, password, phone, role_id, status } = req.body;
-
+    const emailExists = await Accounts.findOne({ email: req.body.email, deleted: false });
+    if (emailExists) {
+      req.flash('error', `Email ${req.body.email} already exists!`);
+      return res.redirect(req.get("Referrer") || "/admin/accounts/create");
+    }
     // Create a new account instance
-    const newAccount = new Accounts({
-      fullName,
-      email,
-      password,
-      phone,
-      role_id,
-      status,
-    });
-
+    const newAccount = new Accounts(req.body);
+    
     // Save the account to the database
-    // await newAccount.save();
+    await newAccount.save();
     req.flash('success', `Create new account successfully!`);
   } catch (error) {
     console.error('Error creating account:', error);

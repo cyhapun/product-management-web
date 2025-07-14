@@ -64,7 +64,7 @@ if (pagePagination.length > 0) {
   });
   
 }
-// End paginationt
+// End pagination
 
 // Show alert
 const showAlert = document.querySelector("[show-alert]");

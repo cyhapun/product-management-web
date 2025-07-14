@@ -22,8 +22,8 @@ router.get('/create-new', controller.createNewProduct);
 
 router.post('/create-new', 
   upload.single('thumbnail'),
-  uploadCloud.upload,
   validate.createPost,
+  uploadCloud.upload,
   controller.createNewProductMethodPost);
 
 router.get('/modify-product/:id', controller.modifyProduct);
