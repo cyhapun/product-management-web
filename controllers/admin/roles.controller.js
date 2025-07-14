@@ -1,4 +1,4 @@
-const Roles = require('../../models/roles')
+const Roles = require('../../models/role.model')
 
 // [GET] '/admin/roles/'
 module.exports.index = async (req, res) => {

@@ -83,21 +83,22 @@ if (showAlert) {
 // End show alert
 
 // Preview Image Upload
-const uploadImage = document.querySelector('[upload-image-input]');
-if (uploadImage) {
-  const previewUploadImage = document.querySelector('[upload-image-preview]');
+const previewUploadImages = document.querySelectorAll('[upload-image-input]');
+previewUploadImages.forEach(uploadImage => {
   uploadImage.addEventListener('change', e => {
+    const uploadImageInput = uploadImage.nextElementSibling;
+    console.log(uploadImageInput);
     // Bản chất của uploadImagelà e.target và uploadImage.files nó chứa 1 mảng gồm nhiều file.
     const [file] = uploadImage.files;
   
     // URL.createObjectURL() tạo 1 đường dẫn tạm thời sao đó gán cho attribute src trong tag img.
     if (file) {
-      previewUploadImage.src = URL.createObjectURL(file);
+      uploadImageInput.src = URL.createObjectURL(file);
     }
     else {
-      previewUploadImage.src = '#';
+      uploadImageInput.src = '#';
     }
   })
-}
+})
 // Thêm chức năng xóa ảnh đang chọn.
 // End preview image upload

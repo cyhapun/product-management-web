@@ -3,6 +3,7 @@ const dashboardRoutes = require('./dashboard.route');
 const productListRoutes = require('./productList.route');
 const productCategoryRoutes = require('./productCategory.route')
 const roleRoutes = require('./roles.route')
+const accountListRoutes = require('./accounts.route');
 
 module.exports = (app) => {
   // Sử dụng biến trong systemConfig
@@ -13,5 +14,5 @@ module.exports = (app) => {
   app.use(app.locals.prefixAdmin + '/product-list', productListRoutes);
   app.use(app.locals.prefixAdmin + '/product-category', productCategoryRoutes);
   app.use(app.locals.prefixAdmin + '/roles', roleRoutes);
-
+  app.use(app.locals.prefixAdmin + '/accounts', accountListRoutes);
 }
