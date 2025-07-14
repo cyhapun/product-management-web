@@ -18,7 +18,7 @@ module.exports.loginPost  = async (req, res) => {
   };
 
   const user = await Accounts.findOne(conditions);
-
+  
   if (!user) {
     req.flash('error', 'Invalid email or password!');
     return res.redirect('/admin/auth/login');
@@ -31,5 +31,13 @@ module.exports.loginPost  = async (req, res) => {
     maxAge: 1000 * 60 * 60 * 24, // 1 day
     httpOnly: true,
   });
+  req.flash('success', 'You have successfully logged in!');
   return res.redirect(`${systemConfig.prefixAdmin}/dashboard`);
+}
+
+// [GET] /admin/auth/logout
+module.exports.logout = (req, res) => {
+  res.clearCookie('token');
+  req.flash('success', 'You have successfully logged out.');
+  return res.redirect(`${systemConfig.prefixAdmin}/auth/login`);
 }
