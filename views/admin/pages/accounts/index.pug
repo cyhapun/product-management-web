@@ -33,7 +33,7 @@ block main
               img(
                 src=item.avatar
                 alt=item.fullName
-                width="100px"
+                w_idth="100px"
                 height="auto"
               )
             td #{item.fullName}                   
@@ -55,12 +55,12 @@ block main
             td
               a(
                 class="btn btn-secondary btn-sm"
-                href=`${prefixAdmin}/accounts/detail/${item.id}`
+                href=`${prefixAdmin}/accounts/detail/${item._id}`
               ) Detail
 
               a(
                 class="btn btn-warning btn-sm ml-1"
-                href=`${prefixAdmin}/accounts/edit/${item.id}`
+                href=`${prefixAdmin}/accounts/edit/${item._id}`
               ) Edit
 
               button(

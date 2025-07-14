@@ -58,3 +58,50 @@ module.exports.createPost = async (req, res) => {
   // Ngoài ra ta có thể fix cứng 1 trang web cụ thể
   res.redirect(req.get("Referrer") || "/admin/accounts");
 }
+
+// [GET] '/admin/accounts/edit/:id'
+module.exports.edit = async (req, res) => {
+  try {
+    const accountId = req.params.id;
+    const account = await Accounts.findOne({_id:accountId, deleted: false });
+    const roles = await Roles.find({deleted: false }); 
+
+    res.render('./admin/pages/accounts/edit.pug', { 
+      pageTitle: 'Edit Account',
+      account: account,
+      roles: roles,
+    });
+  }
+  catch (error) {
+    console.error('Error fetching account for edit:', error);
+    req.flash('error', `Error fetching account for edit!`);
+    return res.redirect(req.get("Referrer") || "/admin/accounts");
+  }
+}
+
+// [PATCH] '/admin/accounts/edit/:id'
+module.exports.editPatch = async (req, res) => {
+  try {
+    const emailExists = await Accounts.findOne({_id: { $ne: req.params.id }, email: req.body.email, deleted: false });
+    if (emailExists) {
+      req.flash('error', `Email ${req.body.email} already exists!`);
+      return res.redirect(req.get("Referrer") || "/admin/accounts/edit/" + req.params.id);
+    }
+    if (req.body.password === '') {
+      delete req.body.password; // If password is empty, do not update it
+    }
+    
+    await Accounts.updateOne(
+      { _id: req.params.id, deleted: false },
+      req.body
+    );
+
+    req.flash('success', `Update account successfully!`);
+  } catch (error) {
+    console.error('Error creating account:', error);
+    req.flash('error', `Update account failed!`);
+  }
+  // Dùng để chuyển hướng (redirect) người dùng về trang trước đó hoặc chuyển hướng về trang chủ ("/") nếu không có trang trước.
+  // Ngoài ra ta có thể fix cứng 1 trang web cụ thể
+  res.redirect(req.get("Referrer") || "/admin/accounts/edit/" + req.params.id);
+}

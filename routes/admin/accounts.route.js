@@ -16,4 +16,12 @@ router.post('/create',
   uploadCloud.upload,
   controller.createPost);
 
+router.get('/edit/:id', controller.edit);
+
+router.patch('/edit/:id',
+  upload.single('avatar'), // Sử dụng multer để upload file ảnh
+  validate.editPatch,
+  uploadCloud.upload,
+  controller.editPatch);
+
 module.exports = router;
