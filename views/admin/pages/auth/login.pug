@@ -1,0 +1,61 @@
+extends ../../../admin/layouts/auth.pug
+include ../../../admin/mixins/showAlert.pug
+
+block main
+  +alert-error(5000)
+  +alert-success(5000)
+
+  .min-vh-100.d-flex.align-items-center.justify-content-center(
+    style="background: linear-gradient(135deg, #667eea, #764ba2);"
+  )
+    .container
+      .row.justify-content-center
+        .col-md-6.col-lg-5
+          .card.shadow-lg.border-0(style="border-radius: 1rem;")
+            .card-body.p-5.bg-white
+              h2.text-center.text-gradient.mb-4(style="font-weight: bold; color: #764ba2;")
+                i.fas.fa-lock.mr-2
+                | Admin Login
+
+              form(
+                action=`${prefixAdmin}/auth/login`
+                method="POST"
+              )
+                .form-group
+                  label.text-dark.font-weight-bold(for="email")
+                    i.fas.fa-envelope.text-secondary.mr-2
+                    | Email
+                  input.form-control(
+                    type="email"
+                    id="email"
+                    name="email"
+                    placeholder="Enter your email"
+                    required
+                    style="border: 2px solid #764ba2; border-radius: 0.5rem;"
+                  )
+
+                .form-group.mt-3
+                  label.text-dark.font-weight-bold(for="password")
+                    i.fas.fa-key.text-secondary.mr-2
+                    | Password
+                  input.form-control(
+                    type="password"
+                    id="password"
+                    name="password"
+                    placeholder="Enter your password"
+                    required
+                    style="border: 2px solid #764ba2; border-radius: 0.5rem;"
+                  )
+
+                button.btn.btn-block.mt-4(
+                  type="submit"
+                  style="background: linear-gradient(135deg, #667eea, #764ba2); color: white; border-radius: 0.5rem; font-weight: bold;"
+                )
+                  i.fas.fa-sign-in-alt.mr-2
+                  | Login
+
+              hr.my-4
+
+              p.text-center.text-muted.mt-3
+                | Don't have access? 
+                a(href="#", style="color: #764ba2; font-weight: bold;") Contact Admin
