@@ -8,6 +8,8 @@ const flash = require('express-flash');
 const session = require('express-session');
 // For Tinymce
 const path = require('path')
+// For parser cookies
+const cookieParser = require('cookie-parser');
 
 // Use env
 require('dotenv').config()
@@ -25,6 +27,11 @@ mongoose.connect(MONGODB_URL);
 const routeClient = require('./routes/client/index.route');
 const routeAdmin = require('./routes/admin/index.route');
 const app = express();
+
+// Use package cookie-parser
+const cookieParserMiddleware = cookieParser();
+app.use(cookieParserMiddleware);
+// End use package cookie-parser
 
 // Package để có thể sử dụng có method Delete, Patch, ... trong form
 app.use(methodOverride('_method'));

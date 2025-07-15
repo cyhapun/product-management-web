@@ -1,5 +1,6 @@
 const Accounts = require('../../models/account.model.js'); 
 const Roles = require('../../models/role.model.js');
+const systemConfig = require('../../config/system');
 
 // [GET] '/admin/accounts'
 module.exports.index = async (req, res) => {
@@ -11,7 +12,6 @@ module.exports.index = async (req, res) => {
     const accounts = await Accounts.find(conditions).select("-password -token");
     
     for (let account of accounts) {
-      console.log(account);
       const role = await Roles.findOne({_id: account.roleId, deleted:false});
       account.role = role ? role.title : 'No Role Assigned';
     }
