@@ -124,7 +124,6 @@ if (productDeleteButtonList.length > 0) {
   productDeleteButtonList.forEach(btn => {
     btn.addEventListener('click', () => {
       const productId = btn.getAttribute('product-id');
-
       const pathDefault = formDeleteProduct.getAttribute('data-path');
       formDeleteProduct.action = pathDefault + `/${productId}?_method=DELETE`;
       formDeleteProduct.submit();

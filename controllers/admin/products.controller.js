@@ -170,6 +170,7 @@ module.exports.deleteProduct = async (req, res) => {
   // Có 2 kiểu delete product: Một là xóa hẳn khỏi db, hai là xóa 'mềm' gán thuộc tính deleted=true để k hiển thị ra giao diện.
   // Xóa hẳn khỏi DB:
   // await Products.deleteOne({_id: productId});
+  
   // Xóa 'mềm':
   await Products.updateOne({_id:productId}, {
     deleted:true, 

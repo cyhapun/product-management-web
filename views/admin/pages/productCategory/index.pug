@@ -147,14 +147,14 @@ block main
                       button(
                           class="btn btn-danger btn-sm ml-1"
                           data-toggle="modal" 
-                          data-target="#confirmDeleteModal"
+                          data-target=`#confirmDeleteModal-${productCategory.id}`
                         ) Delete
                       //- Modal confirm delete
-                      #confirmDeleteModal.modal.fade(tabindex='-1' aria-labelledby='confirmDeleteModal' aria-hidden='true')
+                      .modal.fade(tabindex='-1' aria-labelledby='confirmDeleteModal' aria-hidden='true' id=`confirmDeleteModal-${productCategory.id}`)
                         .modal-dialog.modal-dialog-centered
                           .modal-content
                             .modal-header
-                              h5#confirmDeleteModal.modal-title CONFIRM DELETE
+                              h5.modal-title(id=`confirmDeleteModal-${productCategory.id}`) CONFIRM DELETE
                               button.close(type='button' data-dismiss='modal' aria-label='Close')
                                 span(aria-hidden='true') &times;
                             .modal-body

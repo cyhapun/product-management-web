@@ -2,7 +2,6 @@
 const buttonStatusFilter = document.querySelectorAll("[button-status]");
 // Trả về một nodelist giống như mảng nhưng k phải là mảng thật sự
 if (buttonStatusFilter.length > 0) {
-  console.log('a')
   const url = new URL(window.location.href);
 
   buttonStatusFilter.forEach((button, index) => {
