@@ -1,5 +1,6 @@
 const Products = require('../../models/product.model');
 const ProductCategories = require('../../models/productCategory.model.js');
+const Accounts = require('../../models/account.model.js');
 
 // Tách từng chức năng theo module để reuse and easy to management
 const buttonStatusFilterHelper = require('../../helpers/filterStatus');
@@ -67,7 +68,15 @@ module.exports.products = async (req, res) => {
   //   products = filterProducts;
   // }
 
-  // console.log(products);
+  // Lấy thông tin người tạo sản phẩm từ accountId  
+  for (let i = 0; i < products.length; i++) {
+    const account = await Accounts.findOne({_id: products[i].createdBy.accountId, deleted: false});
+    if (account) {
+      products[i].creator = account.fullName;
+    } else {
+      products[i].creator = null;
+    }
+  }
 
   res.render('admin/pages/products/index', {
     pageTitle: "Products",
@@ -119,7 +128,10 @@ module.exports.multiChange = async (req, res) => {
       // Xóa mềm
       await Products.updateMany({_id: {$in:ids}}, {
         deleted:true,
-        deletedDate: new Date()
+        deletedBy: {
+          accountId: res.locals.user._id || null,
+          deletedAt: new Date()
+        }
       });    
       req.flash('success', `Đã xóa ${ids.length} sản phẩm thành công!`);
       break;
@@ -161,7 +173,10 @@ module.exports.deleteProduct = async (req, res) => {
   // Xóa 'mềm':
   await Products.updateOne({_id:productId}, {
     deleted:true, 
-    deletedDate: new Date()
+    deletedBy: {
+      accountId: res.locals.user._id || null, 
+      deletedAt: new Date()
+    }
   });
 
   // --> Ta có thể làm 1 trang 'Thùng rác'(xóa mềm) và trong trang đó có chức năng khôi phục và xóa vĩnh viễn(xóa khỏi DB).
@@ -197,6 +212,10 @@ module.exports.createNewProductMethodPost = async (req, res) => {
   // // Trả về 1 object:
   // console.log(req.body);
 
+  req.body.createdBy = {
+    accountId: res.locals.user._id || null, 
+  };
+  
   // Tạo mới 1 sản phẩm:
   const newProduct = new Products(req.body);
   await newProduct.save();

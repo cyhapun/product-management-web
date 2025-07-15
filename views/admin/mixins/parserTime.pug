@@ -1,0 +1,17 @@
+mixin formatDate(time)
+    if time
+        span #{moment(time).format('MMMM Do YYYY')}
+    else    
+        span Invalid date
+
+mixin formatTime(time)
+    if time
+        span #{moment(time).format('HH:mm:ss')}
+    else    
+        span Invalid time
+
+mixin formatDateTime(time)
+    if time 
+        span #{moment(time).format('MMMM Do YYYY, HH:mm:ss')}
+    else    
+        span Invalid date time

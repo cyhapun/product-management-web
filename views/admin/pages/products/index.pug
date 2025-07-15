@@ -8,6 +8,7 @@ include ../../mixins/formMultiChange.pug
 include ../../mixins/showAlert.pug
 include ../../mixins/sort.pug
 include ../../mixins/403.pug
+include ../../mixins/parserTime.pug
 
 block main 
   +alert-success(3000)
@@ -74,6 +75,7 @@ block main
               th Price
               th Position
               th Status 
+              th Creator
               th Actions
           tbody
             if (products.length > 0) 
@@ -139,14 +141,24 @@ block main
                         span(class="badge badge-success") Active
                       else 
                         span(class="badge badge-danger") Inactive
+
+                  td 
+                    if (product.createdBy && product.createdBy.accountId) 
+                      span
+                        | #{product.creator || "Not found"} 
+                      p 
+                        +formatDate(product.createdBy.createdAt)
+                    else 
+                      span Not found
                   td 
                     //- Có thể sử dụng thẻ a thì k cần bắt sự kiện
-                    button(
-                      class="btn btn-secondary btn-sm mr-1"
-                      button-detail
-                      default-path=`${prefixAdmin}/product-list/detail-product`
-                      product-id = product.id
-                    ) Detail
+                    if (role.permissions.includes("products-list_view"))
+                      button(
+                        class="btn btn-secondary btn-sm mr-1"
+                        button-detail
+                        default-path=`${prefixAdmin}/product-list/detail-product`
+                        product-id = product.id
+                      ) Detail
                     
                     if (role.permissions.includes("products-list_edit"))
                       button(

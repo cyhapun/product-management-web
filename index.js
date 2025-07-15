@@ -10,17 +10,17 @@ const session = require('express-session');
 const path = require('path')
 // For parser cookies
 const cookieParser = require('cookie-parser');
+// For parser times
+const moment = require('moment');
 
 // Use env
 require('dotenv').config()
-
 const port = process.env.PORT;
 const MONGODB_URL = process.env.MONGODB_URL;
 // End use env
 
 // Connect database by mongoose
 const mongoose = require('./config/database');
-
 mongoose.connect(MONGODB_URL);
 // End connect database by mongoose
 
@@ -32,6 +32,10 @@ const app = express();
 const cookieParserMiddleware = cookieParser();
 app.use(cookieParserMiddleware);
 // End use package cookie-parser
+
+// Use package moment
+app.locals.moment = moment;
+// End use package moment
 
 // Package để có thể sử dụng có method Delete, Patch, ... trong form
 app.use(methodOverride('_method'));
