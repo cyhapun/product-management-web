@@ -15,7 +15,8 @@ mixin form-multi-change(path)
           option(disable selected) --Choose action--
           option(value="active") Active
           option(value="inactive") Inactive
-          option(value="delete-product") Delete
+          if (role.permissions.includes("products-list_delete"))
+            option(value="delete-product") Delete
           option(value="change-position") Change position
       //- Sử dụng ô input để lưu các id cần thay đổi status thay vì truyền lên paramaters như chỉnh sửa 1 product sẽ rất dài.
       .form-group 

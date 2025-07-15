@@ -2,46 +2,50 @@ extends ../../layouts/default.pug
 
 include ../../mixins/showAlert.pug
 include ../../mixins/selectCategoryByTree.pug   
+include ../../mixins/403.pug
 
 block main
-  +alert-success(3000)
-  +alert-error(3000)
-  
-  a(href="/admin/roles" class="back-button") Back
+  if (role.permissions.includes('role-permission_create'))
+    +alert-success(3000)
+    +alert-error(3000)
+    
+    a(href="/admin/roles" class="back-button") Back
 
-  .container
-    .card.mt-4.shadow-sm
-      .card-header.text-black
-        h1.mb-0 Add New Role Group
+    .container
+      .card.mt-4.shadow-sm
+        .card-header.text-black
+          h1.mb-0 Add New Role Group
 
-      form(
-        action=`${prefixAdmin}/roles/create`
-        method="POST"
-        class="p-4"
-      )
-        .mb-3
-          label(for="title" class="form-label fw-bold") Title
-          input(
-            type="text"
-            class="form-control"
-            id="title"
-            name="title"
-            placeholder="Enter role group name"
-            required
-          )
+        form(
+          action=`${prefixAdmin}/roles/create`
+          method="POST"
+          class="p-4"
+        )
+          .mb-3
+            label(for="title" class="form-label fw-bold") Title
+            input(
+              type="text"
+              class="form-control"
+              id="title"
+              name="title"
+              placeholder="Enter role group name"
+              required
+            )
 
-        .mb-3
-          label(for="desc" class="form-label fw-bold") Description
-          input(
-            type="text"
-            class="form-control"
-            id="desc"
-            name="description"
-            placeholder="Enter a short description"
-          )
+          .mb-3
+            label(for="desc" class="form-label fw-bold") Description
+            input(
+              type="text"
+              class="form-control"
+              id="desc"
+              name="description"
+              placeholder="Enter a short description"
+            )
 
-        .text-end
-          button(
-            type="submit"
-            class="btn btn-success"
-          ) Create
+          .text-end
+            button(
+              type="submit"
+              class="btn btn-success"
+            ) Create
+  else 
+    +403()

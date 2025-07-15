@@ -28,7 +28,9 @@ module.exports = (app) => {
     authMiddleware.requireAdmin,
     roleRoutes);
     
-  app.use(app.locals.prefixAdmin + '/accounts', accountListRoutes);
+  app.use(app.locals.prefixAdmin + '/accounts', 
+    authMiddleware.requireAdmin,
+    accountListRoutes);
   
   app.use(app.locals.prefixAdmin + '/auth', authRoutes);
 }

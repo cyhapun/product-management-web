@@ -1,129 +1,182 @@
 extends ../../layouts/default.pug
 
+include ../../mixins/403.pug
 include ../../mixins/showAlert.pug
 include ../../mixins/selectCategoryByTree.pug   
+include ../../mixins/403.pug
 
 block main
-    +alert-success(3000)
-    +alert-error(3000)
-    
-    a(href="/admin/roles", class="btn btn-outline-secondary mb-3") ← Back
+    if (role.permissions.includes('role-permission_edit'))
+        +alert-success(3000)
+        +alert-error(3000)
+        
+        a(href="/admin/roles", class="btn btn-outline-secondary mb-3") ← Back
 
-    .mt-4.mb-2
-        .row
-            .col-md-8
-                h1.text-primary.mb-3 Edit Permissions
-            .col-md-4.text-right
-                button.button-submit.btn.btn-success(type="submit") 💾 Update
+        .mt-4.mb-2
+            .row
+                .col-md-8
+                    h1.text-primary.mb-3 Edit Permissions
+                .col-md-4.text-right
+                    button.button-submit.btn.btn-success(type="submit") 💾 Update
 
-    table.table.table-bordered.table-hover.table-sm.table-permission
-        thead.table-dark
-            tr
-                th(style="width: 250px") Feature
-                each role in roles
-                    th.text-center(role_id=role._id) #{role.title}
+        table.table.table-bordered.table-hover.table-sm.table-permission
+            thead.table-dark
+                tr
+                    th(style="width: 250px") Feature
+                    each role in roles
+                        th.text-center(role_id=role._id) #{role.title}
 
-        tbody
-            // Group: Product List
-            tr.bg-light
-                td.font-weight-bold(colspan=roles.length + 1) 🛍️ Product List
+            tbody
+                // Group: Product List
+                tr.bg-light
+                    td.font-weight-bold(colspan=roles.length + 1) 🛍️ Product List
 
-            // Watch detail
-            tr
-                td Watch detail
-                each role in roles
-                    td.text-center
-                        input.form-check-input(type="checkbox" permission-name="products-list_view" checked=role.permissions.includes("products-list_view"))
+                // Watch
+                tr
+                    td Watch
+                    each role in roles
+                        td.text-center
+                            input.form-check-input(type="checkbox" permission-name="products-list_view" checked=role.permissions.includes("products-list_view"))
 
-            // Create new
-            tr
-                td Create new
-                each role in roles
-                    td.text-center
-                        input.form-check-input(type="checkbox" permission-name="products-list_create" checked=role.permissions.includes("products-list_create"))
+                // Create new
+                tr
+                    td Create new
+                    each role in roles
+                        td.text-center
+                            input.form-check-input(type="checkbox" permission-name="products-list_create" checked=role.permissions.includes("products-list_create"))
 
-            // Edit
-            tr
-                td Edit
-                each role in roles
-                    td.text-center
-                        input.form-check-input(type="checkbox" permission-name="products-list_edit" checked=role.permissions.includes("products-list_edit"))
+                // Edit
+                tr
+                    td Edit
+                    each role in roles
+                        td.text-center
+                            input.form-check-input(type="checkbox" permission-name="products-list_edit" checked=role.permissions.includes("products-list_edit"))
 
-            // Delete
-            tr
-                td Delete
-                each role in roles
-                    td.text-center
-                        input.form-check-input(type="checkbox" permission-name="products-list_delete" checked=role.permissions.includes("products-list_delete"))
+                // Delete
+                tr
+                    td Delete
+                    each role in roles
+                        td.text-center
+                            input.form-check-input(type="checkbox" permission-name="products-list_delete" checked=role.permissions.includes("products-list_delete"))
 
-            // Group: Product Category
-            tr.bg-light
-                td.font-weight-bold(colspan=roles.length + 1) 📦 Product Category
+                // Group: Product Category
+                tr.bg-light
+                    td.font-weight-bold(colspan=roles.length + 1) 📦 Product Category
 
-            // Watch detail
-            tr
-                td Watch detail
-                each role in roles
-                    td.text-center
-                        input.form-check-input(type="checkbox" permission-name="products-category_view" checked=role.permissions.includes("products-category_view"))
+                // Watch
+                tr
+                    td Watch
+                    each role in roles
+                        td.text-center
+                            input.form-check-input(type="checkbox" permission-name="products-category_view" checked=role.permissions.includes("products-category_view"))
 
-            // Create new
-            tr
-                td Create new
-                each role in roles
-                    td.text-center
-                        input.form-check-input(type="checkbox" permission-name="products-category_create" checked=role.permissions.includes("products-category_create"))
+                // Create new
+                tr
+                    td Create new
+                    each role in roles
+                        td.text-center
+                            input.form-check-input(type="checkbox" permission-name="products-category_create" checked=role.permissions.includes("products-category_create"))
 
-            // Edit
-            tr
-                td Edit
-                each role in roles
-                    td.text-center
-                        input.form-check-input(type="checkbox" permission-name="products-category_edit" checked=role.permissions.includes("products-category_edit"))
+                // Edit
+                tr
+                    td Edit
+                    each role in roles
+                        td.text-center
+                            input.form-check-input(type="checkbox" permission-name="products-category_edit" checked=role.permissions.includes("products-category_edit"))
 
-            // Delete
-            tr
-                td Delete
-                each role in roles
-                    td.text-center
-                        input.form-check-input(type="checkbox" permission-name="products-category_delete" checked=role.permissions.includes("products-category_delete"))
+                // Delete
+                tr
+                    td Delete
+                    each role in roles
+                        td.text-center
+                            input.form-check-input(type="checkbox" permission-name="products-category_delete" checked=role.permissions.includes("products-category_delete"))
 
-            // Group: Role Groups
-            tr.bg-light
-                td.font-weight-bold(colspan=roles.length + 1) 👥 Role Groups
+                // Group: Role Groups
+                tr.bg-light
+                    td.font-weight-bold(colspan=roles.length + 1) 👥 Role Groups
 
-            // Watch detail
-            tr
-                td Watch detail
-                each role in roles
-                    td.text-center
-                        input.form-check-input(type="checkbox" permission-name="role-permission_view" checked=role.permissions.includes("role-permission_view"))
+                // Watch
+                tr
+                    td Watch
+                    each role in roles
+                        td.text-center
+                            input.form-check-input(type="checkbox" permission-name="role-permission_view" checked=role.permissions.includes("role-permission_view"))
 
-            // Create new
-            tr
-                td Create new
-                each role in roles
-                    td.text-center
-                        input.form-check-input(type="checkbox" permission-name="role-permission_create" checked=role.permissions.includes("role-permission_create"))
+                // Create new
+                tr
+                    td Create new
+                    each role in roles
+                        td.text-center
+                            input.form-check-input(type="checkbox" permission-name="role-permission_create" checked=role.permissions.includes("role-permission_create"))
 
-            // Edit
-            tr
-                td Edit
-                each role in roles
-                    td.text-center
-                        input.form-check-input(type="checkbox" permission-name="role-permission_edit" checked=role.permissions.includes("role-permission_edit"))
+                // Edit
+                tr
+                    td Edit
+                    each role in roles
+                        td.text-center
+                            input.form-check-input(type="checkbox" permission-name="role-permission_edit" checked=role.permissions.includes("role-permission_edit"))
 
-            // Delete
-            tr
-                td Delete
-                each role in roles
-                    td.text-center
-                        input.form-check-input(type="checkbox" permission-name="role-permission_delete" checked=role.permissions.includes("role-permission_delete"))
+                // Delete
+                tr
+                    td Delete
+                    each role in roles
+                        td.text-center
+                            input.form-check-input(type="checkbox" permission-name="role-permission_delete" checked=role.permissions.includes("role-permission_delete"))
 
-            tr
-                td Permission Assignment
-                each role in roles
-                    td.text-center
-                        input.form-check-input(type="checkbox" permission-name="role-permission_assignment" checked=role.permissions.includes("role-permission_assignment"))
-            
-    script(src='/admin/js/roles.js')
+                tr
+                    td Permission Assignment
+                    each role in roles
+                        td.text-center
+                            input.form-check-input(type="checkbox" permission-name="role-permission_assignment" checked=role.permissions.includes("role-permission_assignment"))
+                
+                // Group: Accounts Management
+                tr.bg-light
+                    td.font-weight-bold(colspan=roles.length + 1) 👤 Accounts Management
+
+                // Watch
+                tr
+                    td Watch
+                    each role in roles
+                        td.text-center
+                            input.form-check-input(
+                                type="checkbox"
+                                permission-name="accounts_view"
+                                checked=role.permissions.includes("accounts_view")
+                            )
+
+                // Create new
+                tr
+                    td Create new
+                    each role in roles
+                        td.text-center
+                            input.form-check-input(
+                                type="checkbox"
+                                permission-name="accounts_create"
+                                checked=role.permissions.includes("accounts_create")
+                            )
+
+                // Edit
+                tr
+                    td Edit
+                    each role in roles
+                        td.text-center
+                            input.form-check-input(
+                                type="checkbox"
+                                permission-name="accounts_edit"
+                                checked=role.permissions.includes("accounts_edit")
+                            )
+
+                // Delete
+                tr
+                    td Delete
+                    each role in roles
+                        td.text-center
+                            input.form-check-input(
+                                type="checkbox"
+                                permission-name="accounts_delete"
+                                checked=role.permissions.includes("accounts_delete")
+                            )
+
+        script(src='/admin/js/roles.js')
+    else 
+        +403()

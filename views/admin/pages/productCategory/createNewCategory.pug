@@ -2,117 +2,122 @@ extends ../../layouts/default.pug
 
 include ../../mixins/showAlert.pug
 include ../../mixins/selectCategoryByTree.pug
+include ../../mixins/403.pug
 
 block main  
-  +alert-success(3000)
-  +alert-error(3000)
+  if (role.permissions.includes('products-category_create'))
+    +alert-success(3000)
+    +alert-error(3000)
+    
+    a(href="/admin/product-category" class="back-button") Back
+
+    h1(class="mb-4 text-center") Add New Category
+
+    form(
+      action=`${prefixAdmin}/product-category/create-new`
+      method="POST"
+      enctype="multipart/form-data"
+    )
+      .form-group
+        label(for="title" class="font-weight-bold") Title
+        input(
+          type="text"
+          class="form-control"
+          id="title"
+          name="title"
+          required
+          placeholder="Enter product title"
+        )
+
+      .form-group
+        label(for="parent_id" class="font-weight-bold") Category parent
+        select(
+          name="parent_id"
+          id="parent_id"
+          class="form-control"
+        )
+          option(value="") -- Choose parent category --
+          if (categories)
+            +select-category-by-tree(categories)
+
+      .form-group
+        label(for="desc" class="font-weight-bold") Description
+        textarea(
+          class="form-control textarea-mce"
+          id="desc"
+          name="description"
+          rows="5"
+          placeholder="Enter product description"
+        )
+
+      .form-group
+      label(for="thumbnail" class="font-weight-bold") Image
+      //- By url
+      //- input(
+      //-   type="text"
+      //-   class="form-control"
+      //-   id="thumbnail"
+      //-   name="thumbnail"
+      //-   placeholder="Enter image URL"
+      //- )
+      //- By upload using multer
+      input(
+          type="file"
+          class="form-control-file mb-2"
+          id="thumbnail"
+          upload-image-input
+          name="thumbnail"
+          accept="image/*"
+      )
+      img(
+          upload-image-preview
+          src=""
+          alt="Your image"
+          class="upload-image-preview"
+      )
+
+      .form-group
+        label(for="position" class="font-weight-bold") Position
+        input(
+          type="number"
+          class="form-control"
+          id="position"
+          name="position"
+          placeholder="Auto increase"
+          min="1"
+        )
+
+      .form-group
+        label(class="font-weight-bold d-block") Status
+        .form-check.form-check-inline
+          input(
+            type="radio"
+            class="form-check-input"
+            id="statusActive"
+            name="status"
+            value="active"
+            checked
+          )
+          label(for="statusActive" class="form-check-label") Active
+
+        .form-check.form-check-inline
+          input(
+            type="radio"
+            class="form-check-input"
+            id="statusInactive"
+            name="status"
+            value="inactive"
+          )
+          label(for="statusInactive" class="form-check-label") Inactive
+
+      .form-group.text-center.mt-3
+        button(
+          type="submit"
+          class="btn btn-primary"
+        ) Create
+
+    script(src="/admin/js/productCategory.js")
+    link(rel="stylesheet", href="/admin/css/detailProduct.css")
   
-  a(href="/admin/product-category" class="back-button") Back
-
-  h1(class="mb-4 text-center") Add New Category
-
-  form(
-    action=`${prefixAdmin}/product-category/create-new`
-    method="POST"
-    enctype="multipart/form-data"
-  )
-    .form-group
-      label(for="title" class="font-weight-bold") Title
-      input(
-        type="text"
-        class="form-control"
-        id="title"
-        name="title"
-        required
-        placeholder="Enter product title"
-      )
-
-    .form-group
-      label(for="parent_id" class="font-weight-bold") Category parent
-      select(
-        name="parent_id"
-        id="parent_id"
-        class="form-control"
-      )
-        option(value="") -- Choose parent category --
-        if (categories)
-          +select-category-by-tree(categories)
-
-    .form-group
-      label(for="desc" class="font-weight-bold") Description
-      textarea(
-        class="form-control textarea-mce"
-        id="desc"
-        name="description"
-        rows="5"
-        placeholder="Enter product description"
-      )
-
-    .form-group
-    label(for="thumbnail" class="font-weight-bold") Image
-    //- By url
-    //- input(
-    //-   type="text"
-    //-   class="form-control"
-    //-   id="thumbnail"
-    //-   name="thumbnail"
-    //-   placeholder="Enter image URL"
-    //- )
-    //- By upload using multer
-    input(
-        type="file"
-        class="form-control-file mb-2"
-        id="thumbnail"
-        upload-image-input
-        name="thumbnail"
-        accept="image/*"
-    )
-    img(
-        upload-image-preview
-        src=""
-        alt="Your image"
-        class="upload-image-preview"
-    )
-
-    .form-group
-      label(for="position" class="font-weight-bold") Position
-      input(
-        type="number"
-        class="form-control"
-        id="position"
-        name="position"
-        placeholder="Auto increase"
-        min="1"
-      )
-
-    .form-group
-      label(class="font-weight-bold d-block") Status
-      .form-check.form-check-inline
-        input(
-          type="radio"
-          class="form-check-input"
-          id="statusActive"
-          name="status"
-          value="active"
-          checked
-        )
-        label(for="statusActive" class="form-check-label") Active
-
-      .form-check.form-check-inline
-        input(
-          type="radio"
-          class="form-check-input"
-          id="statusInactive"
-          name="status"
-          value="inactive"
-        )
-        label(for="statusInactive" class="form-check-label") Inactive
-
-    .form-group.text-center.mt-3
-      button(
-        type="submit"
-        class="btn btn-primary"
-      ) Create
-
-  script(src="/admin/js/productCategory.js")
-  link(rel="stylesheet", href="/admin/css/detailProduct.css")
+  else 
+    +403()

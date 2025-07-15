@@ -1,0 +1,16 @@
+mixin 403()
+  .container.d-flex.flex-column.justify-content-center.align-items-center(style="min-height:70vh;")
+    // Warning icon
+    i.bi.bi-shield-lock.text-danger(style="font-size:5rem;")
+
+    // Title
+    h1.mt-3.text-danger.text-center Access Denied
+
+    // Description
+    p.text-muted.text-center.mt-2
+      | You do not have permission to access this page. 
+      br
+      | Please contact the administrator if you believe this is a mistake.
+
+    // Back button
+    a.btn.btn-outline-primary.mt-3(href="/admin/dashboard") ← Go back to Home

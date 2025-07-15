@@ -2,152 +2,156 @@ extends ../../layouts/default.pug
 
 include ../../mixins/showAlert.pug
 include ../../mixins/selectCategoryByTree.pug
+include ../../mixins/403.pug
 
 block main  
-  +alert-success(3000)
-  +alert-error(3000)
+  if (role.permissions.includes('products-list_create'))
+    +alert-success(3000)
+    +alert-error(3000)
 
-  a(href="/admin/product-list" class="back-button") Back
+    a(href="/admin/product-list" class="back-button") Back
 
-  h1(class="mb-4 text-center") Add New Product
+    h1(class="mb-4 text-center") Add New Product
 
-  form(
-    action=`${prefixAdmin}/product-list/create-new`
-    id="form-create-product"
-    method="POST"
-    enctype="multipart/form-data"
-  )
-    .form-group
-      label(for="title" class="font-weight-bold") Title
-      input(
-        type="text"
-        class="form-control"
-        id="title"
-        name="title"
-        required
-        placeholder="Enter product title"
-      )
+    form(
+      action=`${prefixAdmin}/product-list/create-new`
+      id="form-create-product"
+      method="POST"
+      enctype="multipart/form-data"
+    )
+      .form-group
+        label(for="title" class="font-weight-bold") Title
+        input(
+          type="text"
+          class="form-control"
+          id="title"
+          name="title"
+          required
+          placeholder="Enter product title"
+        )
+
+        .form-group
+          label(for="category" class="font-weight-bold") Category
+          select(
+            name="category"
+            id="category"
+            class="form-control"
+          )
+            option(value="") -- Choose category --
+            if (categoryTree)
+              +select-category-by-tree(categoryTree)
 
       .form-group
-        label(for="category" class="font-weight-bold") Category
-        select(
-          name="category"
-          id="category"
-          class="form-control"
+        label(for="desc" class="font-weight-bold") Description
+        textarea(
+          class="form-control textarea-mce"
+          id="desc"
+          name="description"
+          rows="5"
+          placeholder="Enter product description"
         )
-          option(value="") -- Choose category --
-          if (categoryTree)
-            +select-category-by-tree(categoryTree)
 
-    .form-group
-      label(for="desc" class="font-weight-bold") Description
-      textarea(
-        class="form-control textarea-mce"
-        id="desc"
-        name="description"
-        rows="5"
-        placeholder="Enter product description"
-      )
+      .form-row
+        .form-group.col-md-6
+          label(for="price" class="font-weight-bold") Price
+          input(
+            type="number"
+            class="form-control"
+            id="price"
+            name="price"
+            value="0"
+            min="0"
+          )
 
-    .form-row
-      .form-group.col-md-6
-        label(for="price" class="font-weight-bold") Price
+        .form-group.col-md-6
+          label(for="discount" class="font-weight-bold") Discount (%)
+          input(
+            type="number"
+            class="form-control"
+            id="discount"
+            name="discountPercentage"
+            value="0"
+            min="0"
+          )
+
+      .form-row
+        .form-group.col-md-6
+          label(for="stock" class="font-weight-bold") Stock
+          input(
+            type="number"
+            class="form-control"
+            id="stock"
+            name="stock"
+            value="0"
+            min="0"
+          )
+
+        .form-group.col-md-6
+          label(for="thumbnail" class="font-weight-bold") Image
+          //- By url
+          //- input(
+          //-   type="text"
+          //-   class="form-control"
+          //-   id="thumbnail"
+          //-   name="thumbnail"
+          //-   placeholder="Enter image URL"
+          //- )
+          //- By upload using multer
+          input(
+            type="file"
+            class="form-control-file"
+            id="thumbnail"
+            upload-image-input
+            name="thumbnail"
+            accept="image/*"
+          )
+          img(
+            upload-image-preview
+            src=""
+            alt="Your image"
+            class="upload-image-preview"
+          )
+      .form-group
+        label(for="position" class="font-weight-bold") Position
         input(
           type="number"
           class="form-control"
-          id="price"
-          name="price"
-          value="0"
-          min="0"
+          id="position"
+          name="position"
+          placeholder="Auto increase"
+          min="1"
         )
 
-      .form-group.col-md-6
-        label(for="discount" class="font-weight-bold") Discount (%)
-        input(
-          type="number"
-          class="form-control"
-          id="discount"
-          name="discountPercentage"
-          value="0"
-          min="0"
-        )
+      .form-group
+        label(class="font-weight-bold d-block") Status
+        .form-check.form-check-inline
+          input(
+            type="radio"
+            class="form-check-input"
+            id="statusActive"
+            name="status"
+            value="active"
+            checked
+          )
+          label(for="statusActive" class="form-check-label") Active
 
-    .form-row
-      .form-group.col-md-6
-        label(for="stock" class="font-weight-bold") Stock
-        input(
-          type="number"
-          class="form-control"
-          id="stock"
-          name="stock"
-          value="0"
-          min="0"
-        )
+        .form-check.form-check-inline
+          input(
+            type="radio"
+            class="form-check-input"
+            id="statusInactive"
+            name="status"
+            value="inactive"
+          )
+          label(for="statusInactive" class="form-check-label") Inactive
 
-      .form-group.col-md-6
-        label(for="thumbnail" class="font-weight-bold") Image
-        //- By url
-        //- input(
-        //-   type="text"
-        //-   class="form-control"
-        //-   id="thumbnail"
-        //-   name="thumbnail"
-        //-   placeholder="Enter image URL"
-        //- )
-        //- By upload using multer
-        input(
-          type="file"
-          class="form-control-file"
-          id="thumbnail"
-          upload-image-input
-          name="thumbnail"
-          accept="image/*"
-        )
-        img(
-          upload-image-preview
-          src=""
-          alt="Your image"
-          class="upload-image-preview"
-        )
-    .form-group
-      label(for="position" class="font-weight-bold") Position
-      input(
-        type="number"
-        class="form-control"
-        id="position"
-        name="position"
-        placeholder="Auto increase"
-        min="1"
-      )
-
-    .form-group
-      label(class="font-weight-bold d-block") Status
-      .form-check.form-check-inline
-        input(
-          type="radio"
-          class="form-check-input"
-          id="statusActive"
-          name="status"
-          value="active"
-          checked
-        )
-        label(for="statusActive" class="form-check-label") Active
-
-      .form-check.form-check-inline
-        input(
-          type="radio"
-          class="form-check-input"
-          id="statusInactive"
-          name="status"
-          value="inactive"
-        )
-        label(for="statusInactive" class="form-check-label") Inactive
-
-    .form-group.text-center.mt-3
-      button(
-        type="submit"
-        class="btn btn-primary"
-      ) Create
+      .form-group.text-center.mt-3
+        button(
+          type="submit"
+          class="btn btn-primary"
+        ) Create
 
 
-  script(src="/admin/js/product.js")
+    script(src="/admin/js/product.js")
+  else 
+    +403()

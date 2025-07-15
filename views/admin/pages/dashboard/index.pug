@@ -5,4 +5,35 @@ block main
   +alert-success(5000)
   +alert-error(5000)
 
-  h1 Dashboard
+  .container.my-5
+    h1.text-center Dashboard
+
+    // Thông tin người dùng
+    .card.mb-4.shadow.p-4.rounded-3
+      .d-flex.align-items-center
+        img(src=user.avatar alt=user.fullName class="rounded-circle me-3" style="width:80px;height:80px;object-fit:cover;")
+        .flex-grow-1
+          h2.mb-1= user.fullName
+          p.text-muted= user.email
+          p.text-muted= user.phone
+          span.badge.bg-success= user.status
+
+      hr
+      p.text-secondary
+        | Ngày tạo tài khoản: 
+        strong= new Date(user.createdAt).toLocaleString()
+
+    // Thông tin vai trò
+    .card.mb-4.shadow.p-4.rounded-3
+      h3 Vai trò: #{role.title}
+      p.text-muted Các quyền được cấp:
+      ul.list-group
+        each permission in role.permissions
+          li.list-group-item
+            i.bi.bi-check-circle.text-success.me-2
+            | #{permission}
+
+    // Nút hành động
+    .text-center.mt-4
+      a.btn.btn-primary(href="/admin/profile") Manage Profile
+      a.btn.btn-outline-secondary.ms-2(href="/admin/auth/logout") Logout

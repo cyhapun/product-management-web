@@ -1,109 +1,114 @@
 extends ../../../admin/layouts/default.pug
+
 include ../../../admin/mixins/showAlert.pug
+include ../../../admin/mixins/403.pug
 
-block main  
-  +alert-error(5000)
-  +alert-success(5000)
+block main 
+  if (role.permissions.includes('accounts_edit'))
+    +alert-error(5000)
+    +alert-success(5000)
 
-  a(href="/admin/accounts" class="back-button") Back
-  
-  h1(class="mb-4 text-center") Edit Account
+    a(href="/admin/accounts" class="back-button") Back
+    
+    h1(class="mb-4 text-center") Edit Account
 
-  form(
-    action=`${prefixAdmin}/accounts/edit/${account._id}?_method=PATCH`
-    method="POST"
-    enctype="multipart/form-data"
-  )
-    div(class="form-group")
-      label(for="fullName") Full name *
-      input(
-        type="text"
-        class="form-control"
-        id="fullName"
-        name="fullName"
-        value=account.fullName
-        required
-      )
-
-    div(class="form-group")
-      label(for="email") Email *
-      input(
-        type="email"
-        class="form-control"
-        id="email"
-        name="email"
-        value=account.email
-        required
-      )
-
-    div(class="form-group")
-      label(for="password") Password *
-      input(
-        type="password"
-        class="form-control"
-        name="password"
-        id="password"
-        placeholder="Enter new password (leave blank if not changing)"
-      )
-
-    div(class="form-group")
-      label(for="phone") Phone number
-      input(
-        type="text"
-        class="form-control"
-        id="phone"
-        name="phone"
-        value=account.phone
-      )
-
-    div
-      .form-group
-        label(for="avatar") Avatar
+    form(
+      action=`${prefixAdmin}/accounts/edit/${account._id}?_method=PATCH`
+      method="POST"
+      enctype="multipart/form-data"
+    )
+      div(class="form-group")
+        label(for="fullName") Full name *
         input(
-            type="file"
-            class="form-control-file"
-            id="avatar"
-            name="avatar"
-            accept="image/*"
-            upload-image-input
-        )
-        img(
-            upload-image-preview
-            src=account.avatar
-            alt="Your image"
-            class="upload-image-preview"
+          type="text"
+          class="form-control"
+          id="fullName"
+          name="fullName"
+          value=account.fullName
+          required
         )
 
-    div(class="form-group")
-      label(for="role_id") Permission *
-      select(name="roleId" id="role_id" class="form-control")
-        option(disabled) -- Choose --
-        for role in roles
-          option(value=role._id selected=(account.roleId == role._id))= role.title
+      div(class="form-group")
+        label(for="email") Email *
+        input(
+          type="email"
+          class="form-control"
+          id="email"
+          name="email"
+          value=account.email
+          required
+        )
 
-    div(class="form-group form-check form-check-inline")
-      input(
-        type="radio"
-        class="form-check-input"
-        id="statusActive"
-        name="status"
-        value="active"
-        checked
-      )
-      label(for="statusActive" class="form-check-label") Active
+      div(class="form-group")
+        label(for="password") Password *
+        input(
+          type="password"
+          class="form-control"
+          name="password"
+          id="password"
+          placeholder="Enter new password (leave blank if not changing)"
+        )
 
-    div(class="form-group form-check form-check-inline")
-      input(
-        type="radio"
-        class="form-check-input"
-        id="statusInactive"
-        name="status"
-        value="inactive"
-      )
-      label(for="statusInactive" class="form-check-label") Inactive
+      div(class="form-group")
+        label(for="phone") Phone number
+        input(
+          type="text"
+          class="form-control"
+          id="phone"
+          name="phone"
+          value=account.phone
+        )
 
-    div(class="form-group text-center")
-        button(
-            type="submit"
-            class="btn btn-primary"
-        ) Submit
+      div
+        .form-group
+          label(for="avatar") Avatar
+          input(
+              type="file"
+              class="form-control-file"
+              id="avatar"
+              name="avatar"
+              accept="image/*"
+              upload-image-input
+          )
+          img(
+              upload-image-preview
+              src=account.avatar
+              alt="Your image"
+              class="upload-image-preview"
+          )
+
+      div(class="form-group")
+        label(for="role_id") Permission *
+        select(name="roleId" id="role_id" class="form-control")
+          option(disabled) -- Choose --
+          for role in roles
+            option(value=role._id selected=(account.roleId == role._id))= role.title
+
+      div(class="form-group form-check form-check-inline")
+        input(
+          type="radio"
+          class="form-check-input"
+          id="statusActive"
+          name="status"
+          value="active"
+          checked
+        )
+        label(for="statusActive" class="form-check-label") Active
+
+      div(class="form-group form-check form-check-inline")
+        input(
+          type="radio"
+          class="form-check-input"
+          id="statusInactive"
+          name="status"
+          value="inactive"
+        )
+        label(for="statusInactive" class="form-check-label") Inactive
+
+      div(class="form-group text-center")
+          button(
+              type="submit"
+              class="btn btn-primary"
+          ) Submit
+  else 
+    +403()
