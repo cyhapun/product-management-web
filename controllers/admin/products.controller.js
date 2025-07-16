@@ -78,6 +78,18 @@ module.exports.products = async (req, res) => {
     }
   }
 
+  // Lấy thông tin người cập nhật sản phẩm từ accountId
+  for (let i = 0; i < products.length; i++) {
+    if (products[i].updatedBy && products[i].updatedBy.length > 0) {
+      const account = await Accounts.findOne({_id: products[i].updatedBy[products[i].updatedBy.length - 1].accountId, deleted: false});
+      if (account) {
+        products[i].updatedBy[products[i].updatedBy.length - 1].fullName = account.fullName;
+      } else {
+        products[i].updatedBy[products[i].updatedBy.length - 1].fullName = null;
+      }
+    }
+  }
+
   res.render('admin/pages/products/index', {
     pageTitle: "Products",
     products: products,
@@ -94,9 +106,18 @@ module.exports.changeStatus = async (req, res) => {
 
   const newStatus = req.params.status;
   const productId = req.params.id;
+  const updated = {
+    accountId: res.locals.user._id || null,
+    updatedAt: new Date()
+  }
 
   // Do trường id trong DB có tên _id
-  await Products.updateOne({_id: productId}, {status:newStatus});
+  await Products.updateOne({_id: productId}, {
+    status:newStatus, 
+    $push: {
+      updatedBy: updated
+    }
+  });
   
   // Thông báo cập nhật thành công.
   req.flash('success', 'Cập nhật trạng thái sản phẩm thành công thành công!');
@@ -114,19 +135,27 @@ module.exports.multiChange = async (req, res) => {
   // console.log(req.body);
   const ids = req.body.ids.split(', ');
   const type = req.body.type;
+  const updated = {
+    accountId: res.locals.user._id || null,
+    updatedAt: new Date()
+  }
 
   switch (type) {
     case "active":
-      await Products.updateMany({_id: {$in:ids}}, {status: type});      
+      await Products.updateMany({_id: {$in:ids}}, {status: type, $push: {updatedBy: updated}});      
       req.flash('success', `Cập nhật trạng thái thành công cho ${ids.length} sản phẩm!`);
       break;
     case "inactive":
-      await Products.updateMany({_id: {$in:ids}}, {status: type});    
+      await Products.updateMany({_id: {$in:ids}}, {status: type, $push: {updatedBy: updated}});    
       req.flash('success', `Cập nhật trạng thái thành công cho ${ids.length} sản phẩm!`);
       break;
     case "delete-product":
       // Xóa mềm
-      await Products.updateMany({_id: {$in:ids}}, {
+      const deletedBy = {
+        accountId: res.locals.user._id || null,
+        deletedAt: new Date()
+      }
+      await Products.updateMany({_id: {$in:ids, deletedBy:deletedBy}}, {
         deleted:true,
         deletedBy: {
           accountId: res.locals.user._id || null,
@@ -148,7 +177,10 @@ module.exports.multiChange = async (req, res) => {
         const [productId, productPosition] =  product.split('-');
         // Lưu ý kiểu dữ liệu lưu trữ trong DB       
         await Products.updateOne({_id:productId}, {
-          position: parseInt(productPosition)
+          position: parseInt(productPosition),
+          $push: {
+            updatedBy: updated
+          }
         });
       }
       req.flash('success', `Thay đổi vị trí cho ${ids.length} sản phẩm thành công!`);
@@ -263,9 +295,18 @@ module.exports.modifyProductMethodPatch = async (req, res) => {
   // if (req.file) { 
   //   req.body.thumbnail = `/uploads/${req.file.filename}`;
   // } không sử dụng nữa do ta đã dùng middleware upload để xử lý ảnh trước khi đến controller này.
+  const updated = {
+    accountId: res.locals.user._id || null,
+    updatedAt: new Date()
+  }
 
   try {
-    await Products.updateOne({_id:productId}, req.body);
+    await Products.updateOne({_id:productId}, {
+      ...req.body,
+      $push: {
+        updatedBy: updated
+      }
+    });
   }
   catch (error) {
     req.flash("error", "Product is undefined!")

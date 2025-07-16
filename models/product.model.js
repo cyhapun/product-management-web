@@ -26,6 +26,12 @@ const productSchema = new mongoose.Schema({
     accountId: { type: mongoose.Schema.Types.ObjectId, ref: 'Account' },
     deletedAt: Date
   },
+  updatedBy: [
+    {
+      accountId: { type: mongoose.Schema.Types.ObjectId, ref: 'Account' },
+      updatedAt: Date
+    }
+  ],
   slug: { type: String, slug: "title", unique: true },
 }, {
   timestamps:true

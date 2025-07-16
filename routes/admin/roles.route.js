@@ -1,6 +1,7 @@
 const router = require('express').Router();
 const controller = require('../../controllers/admin/roles.controller');
 const validate = require('../../validates/admin/roles.validate')
+
 router.get('/', controller.index);
 
 router.get('/create', controller.create);

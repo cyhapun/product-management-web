@@ -76,6 +76,7 @@ block main
               th Position
               th Status 
               th Creator
+              th Latest Update
               th Actions
           tbody
             if (products.length > 0) 
@@ -150,6 +151,16 @@ block main
                         +formatDate(product.createdBy.createdAt)
                     else 
                       span Not found
+
+                  td 
+                    if (product.updatedBy && product.updatedBy.length > 0)
+                      span 
+                        | #{product.updatedBy[product.updatedBy.length - 1].fullName || "Not found"} 
+                      p 
+                        +formatDate(product.updatedBy[product.updatedBy.length - 1].updatedAt)
+                    else 
+                      span None
+
                   td 
                     //- Có thể sử dụng thẻ a thì k cần bắt sự kiện
                     if (role.permissions.includes("products-list_view"))
