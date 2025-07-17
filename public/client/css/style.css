@@ -129,3 +129,21 @@
 
 
 /* End product-item */
+
+/* Footer flexible */
+html, body {
+  height: 100%;        /* Đảm bảo full height */
+  margin: 0;           /* Xóa margin mặc định */
+}
+
+.wrapper {
+  min-height: 100%;    /* Đảm bảo wrapper chiếm full màn hình */
+  display: flex;       
+  flex-direction: column;
+}
+
+main.flex-fill {
+  flex: 1;             /* Chiếm toàn bộ không gian trống */
+}
+
+/* End Footer flexible */

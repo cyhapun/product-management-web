@@ -1,0 +1,114 @@
+extends ../../layouts/default.pug
+
+include ../../mixins/showAlert.pug
+
+block main
+  +alert-success(3000)
+  +alert-error(3000)
+  
+  h1.text-center.mb-5.fw-bold Edit Profile
+
+  .container(style="max-width: 700px;")
+    .card.shadow-sm.rounded-4
+      .card-body.p-4
+
+        // Form Edit Profile
+        form(action=`${prefixAdmin}/profile/edit?_method=PATCH` method="POST" enctype="multipart/form-data")
+          // Avatar Preview + Upload
+          h4.text-center
+            label.form-label.fw-semibold(for="avatar") Change Avatar
+          input(type="file" name="avatar" id="avatar" accept="image/*" upload-image-input class="form-control-file")
+          img(
+            src=user.avatar
+            class="rounded-circle shadow-sm upload-image-preview"
+            width="120"
+            height="120"
+            alt="Current Avatar"
+            upload-image-preview
+          )
+
+          hr.my-4
+
+          // Full Name
+          .mb-3
+            label.form-label.fw-semibold(for="fullName") Full Name*
+            input.form-control(
+              type="text"
+              name="fullName"
+              id="fullName"
+              placeholder="Enter your full name"
+              value=user.fullName
+              required
+            )
+
+          // Email
+          .mb-3
+            label.form-label.fw-semibold(for="email") Email*
+            input.form-control(
+              type="email"
+              name="email"
+              id="email"
+              value=user.email
+              required
+              placeholder="Enter your email"
+            )
+
+          // Phone
+          .mb-3
+            label.form-label.fw-semibold(for="phone") Phone
+            input.form-control(
+              type="text"
+              name="phone"
+              id="phone"
+              placeholder="Enter your phone number"
+              value=user.phone
+            )
+
+          // Status (Optional)
+          if user.status
+            .mb-3
+              label.form-label.fw-semibold.mr-1 Status:
+              if user.status === "active"
+                span.badge.bg-success.ms-2 Active
+              else
+                span.badge.bg-danger.ms-2 Inactive
+
+          hr.my-4
+
+          // Change Password Section
+          h4.mb-3.text-primary Change Password (Optional)
+          small.text-muted.d-block.mb-3 Leave blank if you don’t want to change
+
+          .mb-3
+            label.form-label.fw-semibold(for="currentPassword") Current Password
+            input.form-control(
+              type="password"
+              name="currentPassword"
+              id="currentPassword"
+              placeholder="Enter current password"
+            )
+
+          .mb-3
+            label.form-label.fw-semibold(for="newPassword") New Password
+            input.form-control(
+              type="password"
+              name="newPassword"
+              id="newPassword"
+              placeholder="Enter new password"
+            )
+
+          .mb-3
+            label.form-label.fw-semibold(for="confirmPassword") Confirm New Password
+            input.form-control(
+              type="password"
+              name="confirmPassword"
+              id="confirmPassword"
+              placeholder="Re-enter new password"
+            )
+
+          hr.my-4
+
+          // Action Buttons
+          .d-flex.justify-content-between
+            a.btn.btn-outline-secondary.px-4(href=`${prefixAdmin}/profile`) ← Back
+            button.btn.btn-primary.px-4(type="submit") Save Changes

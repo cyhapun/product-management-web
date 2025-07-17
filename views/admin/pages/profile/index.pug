@@ -1,0 +1,59 @@
+extends ../../layouts/default.pug
+
+block main
+  h1(class="text-center mb-5 fw-bold") User Profile
+
+  // Avatar + Name
+  .text-center.mb-4
+    if (user.avatar)
+      img(
+        src=user.avatar 
+        class="rounded-circle shadow-sm mb-3"
+        width="150"
+        height="150"
+        alt="User Avatar"
+      )
+    else
+      img(
+        src="/admin/images/avatar.png"
+        class="rounded-circle shadow-sm mb-3"
+        width="150"
+        height="150"
+        alt="Default Avatar"
+      )
+    h3.mt-2 #{user.fullName || 'Unknown User'}
+
+  hr.my-4
+
+  // User Info Section
+  .profile-info(style="max-width: 500px; margin: auto; font-size: 1.1rem;")
+    if (user.email)
+      p.mb-2
+        strong Email: 
+        span.text-muted #{user.email}
+
+    if (user.phone)
+      p.mb-2
+        strong Phone: 
+        span.text-muted #{user.phone}
+
+    p.mb-2
+      strong Status: 
+      if (user.status === "active")
+        span.badge.bg-success Active
+      else
+        span.badge.bg-danger Inactive
+
+    if (role.title)
+      p.mb-2
+        strong Role: 
+        span.badge.bg-primary #{role.title}
+
+  hr.my-4
+
+  // Action Buttons
+  .text-center.mt-4
+    a(
+      href=`${prefixAdmin}/profile/edit`
+      class="btn btn-primary px-4 me-2"
+    ) Edit Profile
