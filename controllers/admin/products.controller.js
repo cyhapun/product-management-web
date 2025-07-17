@@ -7,6 +7,7 @@ const buttonStatusFilterHelper = require('../../helpers/filterStatus');
 const searchObjectHelper = require('../../helpers/search.js');
 const paginationHelper = require('../../helpers/pagination.js');
 const createTreeHelper = require('../../helpers/createTree.js');
+const isFuturedHelper = require('../../helpers/checkFeatured.js')
 
 // Comment ghi chú [Method] path để quản lí dễ
 
@@ -244,7 +245,10 @@ module.exports.createNewProductMethodPost = async (req, res) => {
   // req.body.thumbnail = req.file ? `/uploads/${req.file.filename}` : ''; comment do ta đã dùng middleware upload để xử lý ảnh trước khi đến controller này.
   // // Trả về 1 object:
   // console.log(req.body);
-
+  if (req.body.featured) {
+    req.body.featured = isFuturedHelper(req.body.featured);
+  }
+  
   req.body.createdBy = {
     accountId: res.locals.user._id || null, 
   };
@@ -295,6 +299,10 @@ module.exports.modifyProductMethodPatch = async (req, res) => {
   // if (req.file) { 
   //   req.body.thumbnail = `/uploads/${req.file.filename}`;
   // } không sử dụng nữa do ta đã dùng middleware upload để xử lý ảnh trước khi đến controller này.
+  if (req.body.featured) {
+    req.body.featured = isFuturedHelper(req.body.featured);
+  }
+  
   const updated = {
     accountId: res.locals.user._id || null,
     updatedAt: new Date()

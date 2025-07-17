@@ -144,13 +144,35 @@ block main
             value="inactive"
           )
           label(for="statusInactive" class="form-check-label") Inactive
+        
+      .form-group
+        label(class="font-weight-bold d-block") Featured
+        .form-check.form-check-inline
+          input(
+            type="radio"
+            class="form-check-input"
+            id="featuredYes"
+            name="featured"
+            value='1'
+          )
+          label(for="featuredYes" class="form-check-label") Yes
+
+        .form-check.form-check-inline
+          input(
+            type="radio"
+            class="form-check-input"
+            id="featuredNo"
+            name="featured"
+            value='0'
+            checked
+          )
+          label(for="featuredNo" class="form-check-label") No
 
       .form-group.text-center.mt-3
         button(
           type="submit"
           class="btn btn-primary"
         ) Create
-
 
     script(src="/admin/js/product.js")
   else 

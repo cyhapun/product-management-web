@@ -16,6 +16,7 @@ const productSchema = new mongoose.Schema({
   stock: Number,
   thumbnail: String,
   status: String,
+  featured: Boolean,
   createdBy: {
     createdAt: { type: Date, default: Date.now },
     accountId: { type: mongoose.Schema.Types.ObjectId, ref: 'Account' }
@@ -31,6 +32,7 @@ const productSchema = new mongoose.Schema({
       accountId: { type: mongoose.Schema.Types.ObjectId, ref: 'Account' },
       updatedAt: Date
     }
+
   ],
   slug: { type: String, slug: "title", unique: true },
 }, {
