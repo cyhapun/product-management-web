@@ -61,10 +61,10 @@
   color: inherit;
   transition: transform 0.2s ease, box-shadow 0.3s ease;
   background: #fff;
+  transform: translateY(-4px);
 }
 
 .product-item:hover {
-  transform: translateY(-4px);
   box-shadow: 0 8px 20px rgba(0, 0, 0, 0.1);
 }
 
@@ -125,6 +125,19 @@
   border-radius: 6px;
   display: inline-block;
 }
+
+.product-item .inner-featured {
+  position: absolute;
+  top: 0;
+  right: 0;
+  background: green;
+  color: white;
+  padding: 3px 6px;
+  font-weight: 600;
+  font-size: 14px;
+  border-radius: 8px;
+}
+
 
 /* Ẩn spinner trên Chrome, Safari, Edgem, Firebox */
 input[type="number"] {

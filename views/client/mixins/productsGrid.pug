@@ -1,0 +1,6 @@
+include ./productItem
+
+mixin productsGrid(products)
+  .row
+    each product in products  
+      +productItem(product)          

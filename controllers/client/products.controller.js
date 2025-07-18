@@ -1,6 +1,6 @@
 const Product = require("../../models/product.model");
+const ProductsHelper = require('../../helpers/client/products');
 const mongoose = require('mongoose');
-
 // Comment ghi chú [Method] path để quản lí dễ
 
 // [GET] /products
@@ -15,12 +15,9 @@ module.exports.index = async (req, res) => {
 
     const products = await Product.find(condition)
     .sort({position:"desc"});
-
-    // Dùng map():
-    const newProducts = products.map(item => ({
-            ...item.toObject(),
-            newPrice: item.price * (100 - item.discountPercentage) / 100
-    }))
+    
+    // Add new price
+    const newProducts = ProductsHelper.calculateNewPrice(products);
     //  Khi bạn gọi await Product.find(), bạn nhận được một mảng các Mongoose Documents.
     //  Nếu bạn in trực tiếp products, bạn sẽ không thấy metadata ('$__', '$isNew'...), vì Mongoose có cơ chế ẩn metadata khi in ra console.
     // console.log(newProducts);
@@ -29,8 +26,6 @@ module.exports.index = async (req, res) => {
     // products.forEach(item => {
     //     item.newPrice = item.price * (100 - item.discountPercentage) / 100
     // })
-
-    // console.log(products);
 
     res.render('client/pages/products/index.pug', {
         pageTitle: "List product",

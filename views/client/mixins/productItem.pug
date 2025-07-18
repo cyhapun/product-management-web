@@ -1,0 +1,13 @@
+mixin productItem(product)
+    .col-12.col-md-6.col-lg-4.mb-4.d-flex
+            a.product-item.flex-fill(href=`/products/${product.slug == null ? product._id : product.slug}`)
+              .inner-image 
+                img(src=product.thumbnail, alt=product.title)
+              if (product.featured)
+                .inner-featured Featured
+              .inner-content 
+                h3.inner-title #{product.title}
+                .inner-price-wrapper 
+                  .inner-price-new #{product.newPrice.toFixed(2)}$
+                  .inner-price-old #{product.price}$
+                .inner-discount -#{product.discountPercentage}%
