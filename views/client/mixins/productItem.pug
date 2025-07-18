@@ -1,6 +1,6 @@
 mixin productItem(product)
     .col-12.col-md-6.col-lg-4.mb-4.d-flex
-            a.product-item.flex-fill(href=`/products/${product.slug == null ? product._id : product.slug}`)
+            a.product-item.flex-fill(href=`/products/detail/${product.slug == null ? product._id : product.slug}`)
               .inner-image 
                 img(src=product.thumbnail, alt=product.title)
               if (product.featured)

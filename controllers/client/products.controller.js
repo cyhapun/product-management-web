@@ -1,7 +1,8 @@
-const Product = require("../../models/product.model");
+const Products = require("../../models/product.model");
 const ProductsHelper = require('../../helpers/client/products');
 const mongoose = require('mongoose');
-// Comment ghi chú [Method] path để quản lí dễ
+const ProductCategories = require('../../models/productCategory.model');
+const ProductCategoryHelper = require('../../helpers/client/productCategories');
 
 // [GET] /products
 module.exports.index = async (req, res) => {
@@ -13,7 +14,7 @@ module.exports.index = async (req, res) => {
         deleted:false
     };
 
-    const products = await Product.find(condition)
+    const products = await Products.find(condition)
     .sort({position:"desc"});
     
     // Add new price
@@ -28,13 +29,13 @@ module.exports.index = async (req, res) => {
     // })
 
     res.render('client/pages/products/index.pug', {
-        pageTitle: "List product",
+        pageTitle: "Product list",
         products: newProducts
         // products: products
-    })
+    });
 };
 
-// [GET] /products/:id
+// [GET] /products/detail/:slugProduct
 module.exports.detail = async (req, res) => {
     const productId = req.params.id;
 
@@ -44,7 +45,7 @@ module.exports.detail = async (req, res) => {
         : { slug: productId, deleted: false, status: "active" };
 
     try {
-        const product = await Product.findOne(query);
+        const product = await Products.findOne(query);
 
         if (!product) {
             return res.status(404).render('client/pages/404NotFound', {
@@ -64,3 +65,39 @@ module.exports.detail = async (req, res) => {
         });
     }
 };
+
+// [GET] /products/:slugProductCategory
+module.exports.getProductsByCategory = async (req, res) => {
+    // Get list category (children and it)
+    const slugProductCategory = req.params.slugProductCategory;
+    const productCategory = await ProductCategories.findOne({
+        deleted: false,
+        status: 'active',
+        slug: slugProductCategory,
+    })
+    if (!productCategory) {
+        return res.render('client/pages/404NotFound.pug', {
+            pageTitle: "Not found category",
+        });
+    }
+
+    const productCategories = await ProductCategories.find({
+        deleted: false,
+        status: 'active',
+    })
+    const categoryList = ProductCategoryHelper.getChildrenProductCategory(productCategories, productCategory);
+    const categoryIds = categoryList.map(c => c._id.toString());
+    // End of get list category 
+    
+    const productsByCategory = await Products.find({
+        deleted: false,
+        status: 'active',
+        category: { $in: categoryIds },
+    }).sort({position:"desc"});
+    const newProducts = ProductsHelper.calculateNewPrice(productsByCategory);
+   
+    res.render('client/pages/products/index.pug', {
+        pageTitle: productCategory.title,
+        products: newProducts,
+    });
+}
