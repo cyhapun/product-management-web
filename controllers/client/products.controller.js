@@ -37,7 +37,7 @@ module.exports.index = async (req, res) => {
 
 // [GET] /products/detail/:slugProduct
 module.exports.detail = async (req, res) => {
-    const productId = req.params.id;
+    const productId = req.params.slugProduct
 
     // Tìm kiếm theo ID nếu hợp lệ, ngược lại dùng slug
     const query = mongoose.Types.ObjectId.isValid(productId)
@@ -46,7 +46,16 @@ module.exports.detail = async (req, res) => {
 
     try {
         const product = await Products.findOne(query);
-
+        if (product.category) {
+            const productCategory = await ProductCategories.findOne({
+                deleted:false,
+                status:"active",
+                _id: product.category,
+            })
+            if (productCategory) {
+                product.category = productCategory;
+            }
+        }
         if (!product) {
             return res.status(404).render('client/pages/404NotFound', {
                 pageTitle: "Not Found",
