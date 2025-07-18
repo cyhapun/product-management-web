@@ -22,6 +22,9 @@ module.exports.create = (req, res) => {
 
 // [POST] '/admin/roles/create/'
 module.exports.createPost = async (req, res) => {
+  if (!res.locals.role.permissions.includes("role-permission_create")) {
+    return res.send("Can not do this!");
+  }
   const role = new Roles(req.body);
   
   role.save();
@@ -56,6 +59,9 @@ module.exports.editRole = async (req, res) => {
 
 // [PATCH] /admin/roles/edit/:id
 module.exports.editRoleMethodPatch = async (req, res) => {
+  if (!res.locals.role.permissions.includes("role-permission_edit")) {
+    return res.send("Can not do this!");
+  }
   try {
     const roleId = req.params.id;
     await Roles.updateOne({_id:roleId}, req.body);
@@ -87,6 +93,9 @@ module.exports.permissions = async (req, res) => {
 
 // [PATCH] /admin/roles/permissions
 module.exports.permissionsPatch = async (req, res) => {
+  if (!res.locals.role.permissions.includes("role-permission_assignment")) {
+    return res.send("Can not do this!");
+  }
   const rolePermission = req.body.rolePermission;
 
   for (const role of rolePermission) {

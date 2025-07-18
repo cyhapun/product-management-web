@@ -78,6 +78,9 @@ module.exports.createNewCategory = async (req, res) => {
 
 // [POST] /admin/product-category/create-new
 module.exports.createNewCategoryMethodPost = async (req, res) => {
+  if (!res.locals.role.permissions.includes('products-category_create')) {
+    return res.send("Can not do this!");
+  }
   req.body.position = req.body.position === '' ? parseInt(await ProductCategories.countDocuments()) + 1 : parseInt(req.body.position);
   // req.file là một obj của ảnh tải từ user.
   // Nếu k có ảnh -> undefined -> error if not check
@@ -116,6 +119,9 @@ module.exports.modifyCategory = async (req, res) => {
 
 // [PACTH] /admin/product-category/modify-product/:id
 module.exports.modifyProductCategoryMethodPost = async (req, res) => {
+  if (!res.locals.role.permissions.includes("products-category_edit")) {
+    return res.send("Can not do this!");
+  }
   const categoryId = req.params.id;
   req.body.position = req.body.position === '' ? parseInt(await Products.countDocuments()) + 1 : parseInt(req.body.position);
 

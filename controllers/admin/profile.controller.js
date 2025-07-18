@@ -8,12 +8,14 @@ module.exports.index = (req, res) => {
   });
 }
 
+// [GET]
 module.exports.updateProfile = (req, res) => {
   res.render('./admin/pages/profile/edit.pug', {
     pageTitle: 'Edit Profile',
   });
 }
 
+// [PATCH]
 module.exports.updateProfilePatch = async (req, res) => {
   try {
     const token = req.cookies.token;

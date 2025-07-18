@@ -104,7 +104,9 @@ module.exports.products = async (req, res) => {
 module.exports.changeStatus = async (req, res) => {
   // req.params dùng để lấy tham số từ URL khi sử dụng route parameters(trả về 1 object chứa các tham số).
   // console.log(req.params);
-
+  if (!res.locals.role.permissions.includes("products-list_edit")) {
+    return res.send("Can not do this!");
+  }
   const newStatus = req.params.status;
   const productId = req.params.id;
   const updated = {
@@ -143,14 +145,23 @@ module.exports.multiChange = async (req, res) => {
 
   switch (type) {
     case "active":
+      if (!res.locals.role.permissions.includes("products-list_edit")) {
+        break;
+      }
       await Products.updateMany({_id: {$in:ids}}, {status: type, $push: {updatedBy: updated}});      
       req.flash('success', `Cập nhật trạng thái thành công cho ${ids.length} sản phẩm!`);
       break;
     case "inactive":
+      if (!res.locals.role.permissions.includes("products-list_edit")) {
+        break;
+      }
       await Products.updateMany({_id: {$in:ids}}, {status: type, $push: {updatedBy: updated}});    
       req.flash('success', `Cập nhật trạng thái thành công cho ${ids.length} sản phẩm!`);
       break;
     case "delete-product":
+      if (!res.locals.role.permissions.includes("products-list_delete")) {
+        break;
+      }
       // Xóa mềm
       const deletedBy = {
         accountId: res.locals.user._id || null,
@@ -166,6 +177,9 @@ module.exports.multiChange = async (req, res) => {
       req.flash('success', `Đã xóa ${ids.length} sản phẩm thành công!`);
       break;
     case "change-position":
+      if (!res.locals.role.permissions.includes("products-list_edit")) {
+        break;
+      }
       // Lưu ý forEach là một phương thức đồng bộ. Khi truyền một hàm bất đồng bộ (async function) vào forEach, 
       // nó sẽ gọi hàm đó ngay lập tức cho từng phần tử, nhưng không chờ từng Promise hoàn thành trước khi tiếp tục với phần tử tiếp theo.
       // (Khi sử dụng await trong một vòng lặp, vòng lặp cần trả về một Promise để có thể await được. Nhưng forEach luôn trả về undefined,
@@ -198,6 +212,9 @@ module.exports.multiChange = async (req, res) => {
 // [DELETE] /admin/product-list/delete-product/:id
 // Phương thức chỉ có tác dụng ngữ nghĩa k ảnh hưởng gì nên ta có thể dùng bất kì phương thức gì cũng được.
 module.exports.deleteProduct = async (req, res) => {
+  if (!res.locals.role.permissions.includes("products-list_delete")) {
+    return res.send("Can not do this!");
+  }
   const productId = req.params.id;
 
   // Có 2 kiểu delete product: Một là xóa hẳn khỏi db, hai là xóa 'mềm' gán thuộc tính deleted=true để k hiển thị ra giao diện.
@@ -236,6 +253,9 @@ module.exports.createNewProduct = async (req, res) => {
 
 // [POST] /admin/product-list/create-new
 module.exports.createNewProductMethodPost = async (req, res) => {
+  if (!res.locals.role.permissions.includes("products-list_create")) {
+    return res.send("Can not do this!");
+  }
   req.body.price = parseInt(req.body.price);
   req.body.discountPercentage = parseInt(req.body.discountPercentage);
   req.body.stock = parseInt(req.body.stock);
@@ -289,6 +309,9 @@ module.exports.modifyProduct = async (req, res) => {
 
 // [PATCH] /admin/product-list/modify-product/:id
 module.exports.modifyProductMethodPatch = async (req, res) => {
+  if (!res.locals.role.permissions.includes("products-list_edit")) {
+    return res.send("Can not do this");
+  }
   const productId = req.params.id;
   req.body.price = parseInt(req.body.price);
   req.body.discountPercentage = parseInt(req.body.discountPercentage);

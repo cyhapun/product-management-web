@@ -38,6 +38,9 @@ module.exports.create = async (req, res) => {
 
 // [POST] '/admin/accounts/create'
 module.exports.createPost = async (req, res) => {
+  if (!res.locals.role.permissions.includes("accounts_create")) {
+    return res.send("Can not do this!");
+  }
   try {
     const emailExists = await Accounts.findOne({ email: req.body.email, deleted: false });
     if (emailExists) {
@@ -81,6 +84,9 @@ module.exports.edit = async (req, res) => {
 
 // [PATCH] '/admin/accounts/edit/:id'
 module.exports.editPatch = async (req, res) => {
+  if (!res.locals.role.permissions.includes("accounts_edit")) {
+    return res.send("Can not do this!");
+  }
   try {
     const emailExists = await Accounts.findOne({_id: { $ne: req.params.id }, email: req.body.email, deleted: false });
     if (emailExists) {
