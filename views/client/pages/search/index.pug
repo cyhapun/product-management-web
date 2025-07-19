@@ -1,0 +1,15 @@
+extends ../../layouts/default.pug
+
+include ../../mixins/box-head
+include ../../mixins/productsGrid
+
+block main
+    if (products.length > 0)
+        .container.my-3 
+            .row 
+            .col-12 
+                +box-head(pageTitle)
+            +productsGrid(products)
+    else 
+      div(class="alert alert-warning text-center mt-4")
+        strong Không có sản phẩm được tìm thấy.

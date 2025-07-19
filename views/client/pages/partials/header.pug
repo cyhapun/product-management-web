@@ -7,8 +7,27 @@ header.header
         .inner-logo
           a(href="/")
             img(src="/uploads/logoWeb.png", alt="logo")
-          
-      .col-9 
+
+      .col-5 
+        form(
+          action=`/search?keyword=${keyword}`
+          method="GET"
+        )
+          div(class="form-group d-flex mb-0")
+            input(
+              type="text"
+              placeholder="Nhập từ khóa..."
+              class="form-control"
+              name="keyword"
+              value=keyword
+            )
+            button(
+              type="submit"
+              class="btn btn-primary"
+            )
+              | Find
+
+      .col-4
         .inner-menu 
           ul 
             li
