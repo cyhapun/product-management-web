@@ -12,9 +12,9 @@ block main
     .container.my-5
       // 🔙 Back button
       .mb-4
-        a.btn.btn-outline-secondary(href="javascript:history.back()")
+        a.btn.btn-outline-secondary(href="/products")
           i.bi.bi-arrow-left-circle.me-1
-          | Back
+          | Back to products
 
       .row.g-4
         .col-md-6
@@ -28,8 +28,8 @@ block main
               span.fw-bold.text-muted Category:
               a.ms-1.text-decoration-none.text-success(href=`/products/${product.category.slug}`) #{product.category.title}
 
-          if (product.priceNew)
-            div.inner-price-new.fs-4.text-danger.fw-bold.mt-3 #{product.priceNew.toLocaleString()} $
+          if (product.newPrice)
+            div.inner-price-new.fs-4.text-danger.fw-bold.mt-3 #{product.newPrice.toLocaleString()} $
 
           if (product.price)
             div.inner-price-old.text-muted.text-decoration-line-through #{product.price.toLocaleString()} $
@@ -43,7 +43,7 @@ block main
           else
             div.inner-stock.mt-3.text-danger.fw-bold Out of stock
 
-          form.mt-4(action=`/cart/add/${product.id}` method="POST")
+          form.mt-4(action=`/cart/add/${product._id}` method="POST")
             // ✅ Quantity with +/-
             .input-group.mb-3(style="max-width:180px;")
               button.btn.btn-outline-secondary(

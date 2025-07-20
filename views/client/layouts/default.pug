@@ -1,3 +1,5 @@
+include ../mixins/showAlert.pug
+
 doctype html
 html
   head 
@@ -6,10 +8,12 @@ html
     link(rel="stylesheet" href="/client/css/style.css")
     link(rel="icon" type="image/png" href="/uploads/logoWeb.png")
 
-  body
+  body    
     .wrapper
       include ../pages/partials/header.pug    
-      main.flex-fill
+      +alert-success(3500)
+      +alert-error(3500)
+      main.flex-fill        
         block main
       include ../pages/partials/footer.pug
 

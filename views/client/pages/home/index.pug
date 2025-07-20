@@ -4,15 +4,14 @@ include ../../mixins/box-head.pug
 include ../../mixins/productsGrid.pug
 
 block main 
-  h1 Home Page
   .section-products-featured.my-5
-  .container
-    .row
-      .col-12
-        +box-head("Featured Product")
-    +productsGrid(featuredProducts)
-    
-    .row
-      .col-12
-        +box-head("New Product")
-    +productsGrid(newProducts)
+    .container
+      .row
+        .col-12
+          +box-head("Featured Product")
+      +productsGrid(featuredProducts)
+      
+      .row
+        .col-12
+          +box-head("New Product")
+      +productsGrid(newProducts)

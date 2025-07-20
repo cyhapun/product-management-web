@@ -214,3 +214,63 @@ main.flex-fill {
 }
 /* End sub-menu */
 
+/* Show alert */
+[show-alert] {
+  position: fixed;
+  top: 20px;
+  right: 20px;  /* Thay đổi từ left: 75% */
+  z-index: 9999;
+
+  /* Giao diện */
+  max-width: 300px;
+  color: #fff;
+  padding: 12px 20px;
+  border-radius: 6px;
+  box-shadow: 0 2px 8px rgba(0,0,0,0.2);
+  font-size: 14px;
+  font-weight: 500;
+
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 10px;
+}
+
+/* Thêm style riêng cho từng loại alert */
+[show-alert].success {
+  background: #4caf50; /* Màu xanh cho thành công */
+}
+
+[show-alert].error {
+  background: #f44336; /* Màu đỏ cho lỗi */
+}
+
+[show-alert].alert-hidden {
+  animation-name: alert-hidden;
+  animation-fill-mode: both;
+}
+
+@keyframes alert-hidden {
+  from {
+    right: 20px;
+  }
+  to {
+    right: -100%;
+    display: none;
+  }
+}
+
+[show-alert] [close-alert] {
+  margin-left: 5px;
+  background: #ffffffc4;
+  color: #333; /* Thay đổi màu chữ của nút đóng */
+  display: inline-block;
+  text-align: center;
+  width: 24px;
+  height: 24px;
+  line-height: 24px;
+  font-weight: 600;
+  border-radius: 30%;
+  cursor: pointer;
+}
+/* End show alert */

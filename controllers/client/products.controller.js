@@ -45,13 +45,13 @@ module.exports.detail = async (req, res) => {
         : { slug: productId, deleted: false, status: "active" };
 
     try {
-        const product = await Products.findOne(query);
+        const product = await Products.findOne(query).lean();
         if (product.category) {
             const productCategory = await ProductCategories.findOne({
                 deleted:false,
                 status:"active",
                 _id: product.category,
-            })
+            });
             if (productCategory) {
                 product.category = productCategory;
             }
