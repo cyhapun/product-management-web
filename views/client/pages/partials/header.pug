@@ -32,7 +32,14 @@ header.header
           ul 
             li
               a(href="/") Home Page
+
             li(class="sub-menu")
-              -const pathProduct = "/products";
+              - const pathProduct = "/products";
               a(href=pathProduct) Products
               +subMenu(productCategoriesDropdown, pathProduct)
+            
+            li
+              a(href="/cart")
+                i.bi.bi-cart.me-1 
+                | Cart
+                span(class="ms-1") (#{cart.totalQuantity || 0})
