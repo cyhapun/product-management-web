@@ -13,3 +13,15 @@ if (showAlert) {
 
 }
 // End show alert
+
+// Back button
+ function goBackFromCart() {
+    if (document.referrer && document.referrer !== window.location.href) {
+      // Nếu có referrer (trang trước) → quay lại
+      window.location.href = document.referrer;
+    } else {
+      // Nếu không có (mở trực tiếp) → fallback
+      window.location.href = "/";
+    }
+  }
+// End back button

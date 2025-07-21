@@ -12,9 +12,9 @@ block main
     .container.my-5
       // 🔙 Back button
       .mb-4
-        a.btn.btn-outline-secondary(href="/products")
-          i.bi.bi-arrow-left-circle.me-1
-          | Back to products
+        button.btn.btn-outline-secondary(type="button", onclick="goBackFromCart()")
+          i.bi.bi-arrow-left.me-1.mr-1
+          | Back
 
       .row.g-4
         .col-md-6

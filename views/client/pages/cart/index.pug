@@ -45,9 +45,9 @@ block main
   .cart-page.my-5
     .container
       .mb-4
-        a.btn.btn-outline-secondary(href="/products")
-          i.bi.bi-arrow-left-circle.me-1.mr-2
-          | Back to products
+        button.btn.btn-outline-secondary(type="button", onclick="goBackFromCart()")
+          i.bi.bi-arrow-left.me-1.mr-1
+          | Back
       h1.mb-5.text-center.text-primary
         i.bi.bi-cart4.me-2.mr-2
         | Your Shopping Cart
@@ -72,7 +72,7 @@ block main
                     .flex-grow-1
                       h5.mb-1
                         a(
-                          href=`/products/detail/${item.productId}`,
+                          href=`/products/detail/${item.productInfo.slug}`,
                           class="text-dark text-decoration-none"
                         ) #{item.productInfo.title}
                       
