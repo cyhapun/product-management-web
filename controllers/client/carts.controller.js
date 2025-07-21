@@ -174,3 +174,63 @@ module.exports.deleteProduct = async (req, res) => {
     res.redirect(req.get("Referrer") || "/");
   }
 }
+
+// [POST] /cart/update - AJAX
+module.exports.updateCart = async (req, res) => {
+  try {
+    const { products } = req.body; 
+    const token = req.cookies.token;
+    
+    if (token) {
+      const user = await Accounts.findOne({ token });
+    
+      if (user) {
+        const carts = await Carts.findOne({ userId: user._id });
+        if (!carts) {
+          return res.json({ success: false, message: 'Cart not found!' });
+        }     
+        // Update quantity
+        carts.products.forEach(item => {
+          const updated = products.find(p => p.id === item.productId.toString());
+          if (updated) {
+            let q = parseInt(updated.quantity);
+            if (q < 1) q = 1;
+            item.quantity = q;
+          }
+        });
+
+        // Update totalQuantity
+        carts.totalQuantity = carts.products.reduce((sum, p) => sum + p.quantity, 0);
+        
+        await carts.save();
+           
+        return res.json({ success: true });
+      }
+      res.clearCookie('token');
+    }
+    let carts = req.cookies.guestCart || [];
+    carts = await CartHelpers.validateGuestCart(carts);
+    
+    // Update quantity
+    carts.products.forEach(item => {
+      const updated = products.find(p => p.id === item.productId.toString());
+      if (updated) {
+        let q = parseInt(updated.quantity);
+        if (q < 1) q = 1;
+        item.quantity = q;
+      }
+    });
+
+    // Update totalQuantity
+    carts.totalQuantity = carts.products.reduce((sum, p) => sum + p.quantity, 0);
+    
+    res.cookie('guestCart', JSON.stringify(carts), {
+      maxAge: 1000 * 60 * 60 * 24 * 30 // 30 days
+    });
+
+    return res.json({ success: true });
+  } catch (err) {
+    console.error(err);
+    return res.json({ success: false, message: 'Update failed!' });
+  }
+};

@@ -10,4 +10,7 @@ router.post('/add/:productId', controllers.addPost);
 // [GET] '/cart/delete/:productId'
 router.get('/delete/:productId', controllers.deleteProduct);
 
+// [POST] '/cart/update'
+router.post('/update', controllers.updateCart);
+
 module.exports = router;

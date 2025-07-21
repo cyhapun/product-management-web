@@ -1,0 +1,34 @@
+body {
+  background: #f8f9fa;
+}
+.cart-page h1 {
+  font-weight: 700;
+}
+.cart-item-card {
+  transition: all 0.2s ease-in-out;
+}
+.cart-item-card:hover {
+  transform: translateY(-3px);
+  box-shadow: 0 6px 20px rgba(0,0,0,0.08);
+}
+.price-text {
+  color: #dc3545;
+  font-weight: 600;
+}
+/* Scroll riêng cho danh sách */
+.cart-items-scroll {
+  max-height: 500px; /* Hoặc dùng 70vh nếu muốn responsive hơn */
+  overflow-y: auto;
+  padding-right: 5px;
+}
+/* Scrollbar đẹp hơn */
+.cart-items-scroll::-webkit-scrollbar {
+  width: 6px;
+}
+.cart-items-scroll::-webkit-scrollbar-thumb {
+  background: #ccc;
+  border-radius: 3px;
+}
+.cart-items-scroll::-webkit-scrollbar-thumb:hover {
+  background: #999;
+}

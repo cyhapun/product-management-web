@@ -155,20 +155,24 @@ input[type="number"]::-webkit-inner-spin-button {
 
 /* Footer flexible */
 html, body {
-  height: 100%;        /* Đảm bảo full height */
-  margin: 0;           /* Xóa margin mặc định */
+  height: 100vh;    /* Dùng viewport height thay vì % */
+  margin: 0;
 }
 
 .wrapper {
-  min-height: 100%;    /* Đảm bảo wrapper chiếm full màn hình */
-  display: flex;       
+  min-height: 100vh; /* luôn cao bằng màn hình */
+  display: flex;
   flex-direction: column;
 }
 
 main.flex-fill {
-  flex: 1;             /* Chiếm toàn bộ không gian trống */
+  flex: 1; /* đẩy footer xuống đáy */
 }
 
+body.swal2-shown {
+  padding-right: 0 !important;
+  overflow-y: auto !important; /* vẫn cho scroll, không khóa body */
+}
 /* End Footer flexible */
 
 /* Start sub-menu */

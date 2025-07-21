@@ -31,10 +31,9 @@ module.exports.validateGuestCart = async (rawCart) => {
       productId: item.productId,
       quantity: qty
     });
-
     totalQuantity += qty;
   }
-
+  
   return {
     products: validProducts,
     totalQuantity
