@@ -117,3 +117,60 @@ module.exports.addPost = async (req, res) => {
     res.redirect(req.get("Referrer") || "/");
   }
 };
+
+// [GET] /cart/delete/:productId
+module.exports.deleteProduct = async (req, res) => {
+  try {
+    const productId = req.params.productId;
+    const token = req.cookies.token;
+    let carts = null;
+    const product = await Products.findOne({deleted:false, status:'active', _id:productId});
+    
+    if (!product) {
+      req.flash("error", "Product is not existed!");
+      return res.redirect(req.get("Referrer") || "/");
+    }
+
+    if (token) {
+      const user = await Accounts.findOne({token:token});
+
+      if (user) {
+        carts = await Carts.findOne({
+          userId: user._id,
+        });
+        if (!carts) {
+          carts = {
+            products:[],
+            totalQuantity:0,
+          };
+          req.flash("error", "Cart is empty!");
+          return res.redirect(req.get("Referrer") || "/");
+        }
+        carts.products = carts.products.filter(item => item.productId != productId);
+        await carts.save();
+        req.flash("success", "Deleted product successfully!");
+        return res.redirect(req.get("Referrer") || "/");
+      }
+      else {
+        res.clearCookie("token");
+      }
+    }
+    if (req.cookies.guestCart) {
+      carts = await CartHelpers.validateGuestCart(req.cookies.guestCart);
+    }
+    if (carts) {
+      carts.products = carts.products.filter(item => item.productId != productId);
+    }
+
+    res.cookie('guestCart', JSON.stringify(carts), {
+      maxAge: 1000 * 60 * 60 * 24 * 30 // 30 days
+    });
+
+    req.flash("success", "Deleted product successfully!");
+    res.redirect(req.get("Referrer") || "/");
+  } catch(error) {
+    console.error("Error when deleting product to cart:", error);
+    req.flash("error", "Delete product failed!");
+    res.redirect(req.get("Referrer") || "/");
+  }
+}

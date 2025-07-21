@@ -44,7 +44,11 @@ module.exports.validateGuestCart = async (rawCart) => {
 // Add full product info for user login cart (from DB)
 module.exports.addInfoProductInCart = async (cart) => {
   if (!cart || !Array.isArray(cart.products) || cart.products.length === 0) {
-    return cart;
+    return {
+      products:[],
+      totalQuantity:0,
+      totalPrice:0,
+    };
   }
 
   const enrichedProducts = [];
