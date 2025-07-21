@@ -228,7 +228,7 @@ module.exports.updateCart = async (req, res) => {
       maxAge: 1000 * 60 * 60 * 24 * 30 // 30 days
     });
 
-    return res.json({ success: true });
+    return res.json({ success: true, totalQuantity: carts.totalQuantity });
   } catch (err) {
     console.error(err);
     return res.json({ success: false, message: 'Update failed!' });

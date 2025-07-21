@@ -84,6 +84,7 @@ async function saveCartToServer() {
     const result = await res.json();
 
     if (result.success) {
+      updateMiniCartCount(result.totalQuantity);
       Swal.fire({
         icon: 'success',
         title: 'Cart updated!',
@@ -107,6 +108,13 @@ async function saveCartToServer() {
       text: 'Could not connect to server',
       scrollbarPadding: false
     });
+  }
+}
+
+function updateMiniCartCount(newTotalQuantity) {
+  const miniCart = document.querySelector('.mini-cart-total-quantity');
+  if (miniCart) {
+    miniCart.innerHTML = `(${newTotalQuantity})`;
   }
 }
 // End update quantity submit server
