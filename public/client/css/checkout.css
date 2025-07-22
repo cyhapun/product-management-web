@@ -1,36 +1,105 @@
 /* checkout.css */
 
-.checkout-page h1 {
-  color: #0d6efd; /* Bootstrap primary color */
+/* Ngăn cuộn ngang toàn trang */
+html, body {
+  width: 100%;
+  overflow-x: hidden !important;
 }
 
-.customer-info, .order-summary {
+.checkout-page .row {
+  margin-left: 0 !important;
+  margin-right: 0 !important;
+}
+
+.checkout-page .list-group-item {
+  flex-wrap: wrap;
+  word-break: break-word;
+}
+
+.checkout-page img {
+  max-width: 100%;
+  height: auto;
+}
+
+.checkout-page .d-flex {
+  flex-wrap: wrap; /* Cho phép xuống dòng */
+}
+
+.checkout-page * {
+  max-width: 100%;
+  box-sizing: border-box;
+}
+
+/* Tiêu đề */
+.checkout-page h1 {
+  color: #0d6efd;
+  font-weight: 700;
+}
+
+/* Khối thông tin + tóm tắt đơn hàng */
+.customer-info,
+.order-summary {
   background-color: #f8f9fa;
   transition: box-shadow 0.3s ease;
+  overflow-x: hidden; /* Chặn tràn ngang */
 }
 
-.customer-info:hover, .order-summary:hover {
+.customer-info:hover,
+.order-summary:hover {
   box-shadow: 0 .5rem 1rem rgba(0,0,0,.1) !important;
 }
 
+/* Focus form */
 .form-control:focus {
   border-color: #86b7fe;
   box-shadow: 0 0 0 0.25rem rgba(13, 110, 253, 0.25);
 }
 
+/* Danh sách sản phẩm không tràn ngang */
 .order-summary .list-group-item {
   background-color: transparent;
   border: none;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 10px;
+  overflow: hidden;
+  flex-wrap: wrap; /* Cho phép xuống dòng thay vì kéo ngang */
 }
 
+/* Ảnh co gọn không gây overflow */
+.order-summary img {
+  width: 60px;
+  height: 60px;
+  max-width: 100%;
+  object-fit: cover;
+  flex-shrink: 0;
+}
+
+/* Nội dung sản phẩm tự xuống dòng nếu dài */
+.order-summary .list-group-item div {
+  flex: 1;
+  min-width: 0;
+  word-break: break-word;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: normal; /* Cho phép xuống dòng */
+}
+
+/* Giá tiền không bị tràn */
+.order-summary .fw-semibold {
+  white-space: nowrap;
+}
+
+/* Màu đỏ cho total */
 .order-summary .text-danger {
   color: #dc3545 !important;
 }
-
 .order-summary .fw-bolder {
   font-weight: 700 !important;
 }
 
+/* Nút đặt hàng */
 .btn-lg {
   padding: 0.8rem 1.25rem;
   font-size: 1.2rem;
@@ -38,8 +107,32 @@
   letter-spacing: 0.5px;
   transition: all 0.3s ease;
 }
-
 .btn-lg:hover {
   transform: translateY(-2px);
   box-shadow: 0 4px 10px rgba(0,0,0,0.15);
 }
+
+/* Vùng scroll riêng cho danh sách dài */
+.order-items-scrollable {
+  max-height: 45vh;
+  overflow-y: auto;
+  overflow-x: hidden;
+  padding-right: 8px;
+}
+
+/* Scrollbar đẹp hơn */
+.order-items-scrollable::-webkit-scrollbar {
+  width: 8px;
+}
+.order-items-scrollable::-webkit-scrollbar-track {
+  background: #f1f1f1;
+  border-radius: 4px;
+}
+.order-items-scrollable::-webkit-scrollbar-thumb {
+  background: #ccc;
+  border-radius: 4px;
+}
+.order-items-scrollable::-webkit-scrollbar-thumb:hover {
+  background: #999;
+}
+

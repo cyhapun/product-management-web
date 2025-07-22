@@ -39,3 +39,8 @@ module.exports.index = async (req, res) => {
     res.redirect(req.get("Referrer") || "/");
   }
 }
+
+// [POST] '/checkout/order'
+module.exports.orderPost = async (req, res) => {
+  res.send("OK");
+}
