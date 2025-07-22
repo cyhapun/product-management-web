@@ -15,7 +15,7 @@ if (showAlert) {
 // End show alert
 
 // Back button
- function goBackFromCart() {
+ function goBack() {
     if (document.referrer && document.referrer !== window.location.href) {
       // Nếu có referrer (trang trước) → quay lại
       window.location.href = document.referrer;

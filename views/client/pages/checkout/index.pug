@@ -1,0 +1,110 @@
+extends ../../layouts/default.pug
+
+block main
+  //- Custom CSS for checkout page
+  link(rel="stylesheet", href="/css/checkout.css")
+
+  .checkout-page.my-5
+    .container
+      .mb-4
+        button.btn.btn-outline-secondary(type="button", onclick="goBack()")
+            i.bi.bi-arrow-left.me-1.mr-1
+            | Back
+    
+    if cart.products && cart.products.length > 0
+      //- Page Title
+      h1.text-center.mb-5.fw-bold Checkout Order
+      //- Order information form
+      form(action="/order/create", method="POST", id="order-form")
+        .row.g-5
+          //- LEFT COLUMN: SHIPPING INFORMATION
+          .col-lg-7
+            .customer-info.p-4.border.rounded.shadow-sm
+              h4.mb-4.text-primary Shipping Information
+              
+              //- Full Name Input
+              .mb-3
+                label(for="fullName", class="form-label fw-semibold") Full Name
+                input(
+                  type="text",
+                  class="form-control",
+                  id="fullName",
+                  name="fullName",
+                  placeholder="E.g.: John Doe",
+                  required
+                )
+              
+              //- Phone Number Input
+              .mb-3
+                label(for="phone", class="form-label fw-semibold") Phone Number
+                input(
+                  type="tel",
+                  class="form-control",
+                  id="phone",
+                  name="phone",
+                  placeholder="Used for delivery contact",
+                  required
+                )
+              
+              //- Address Input
+              .mb-3
+                label(for="address", class="form-label fw-semibold") Shipping Address
+                textarea(
+                  class="form-control",
+                  id="address",
+                  name="address",
+                  rows="3",
+                  placeholder="House number, street name, ward/district, city/province",
+                  required
+                )
+
+          //- RIGHT COLUMN: ORDER SUMMARY
+          .col-lg-5
+            .order-summary.p-4.border.rounded.shadow-sm
+              h4.mb-4.text-primary Your Order
+              
+              //- Product List
+              ul.list-group.list-group-flush
+                each item in cart.products
+                  li.list-group-item.d-flex.justify-content-between.align-items-center.px-0
+                    .d-flex.align-items-center
+                      img(
+                        src=item.productInfo.thumbnail,
+                        alt=item.productInfo.title,
+                        class="img-fluid rounded me-3 mr-1",
+                        style="width: 60px; height: 60px; object-fit: cover;"
+                      )
+                      div
+                        a(href=`/products/detail/${item.productInfo.slug}` class='fw-bold')
+                            div #{item.productInfo.title}
+                        small.text-muted Quantity: #{item.quantity}
+                    span.fw-semibold #{(item.totalPrice).toLocaleString()}$
+              
+              hr.my-3
+
+              //- Order Total Details
+              ul.list-group.list-group-flush
+                li.list-group-item.d-flex.justify-content-between.px-0
+                  span Subtotal
+                  strong #{cart.totalPrice.toLocaleString()}$
+                li.list-group-item.d-flex.justify-content-between.px-0
+                  span Shipping Fee
+                  strong Free
+                
+                hr.my-2
+                
+                li.list-group-item.d-flex.justify-content-between.align-items-center.px-0.fs-5
+                  span.fw-bold Total
+                  strong.text-danger.fw-bolder #{(cart.totalPrice).toLocaleString()}$
+              
+              //- Place Order Button
+              button(type="submit", class="btn btn-success w-100 mt-4 btn-lg")
+                i.bi.bi-check-circle-fill.me-2.mr-2
+                | PLACE ORDER
+    else
+      .row.justify-content-center
+        .col-md-6.text-center
+          .p-5.bg-white.border.rounded.shadow-sm
+            i.bi.bi-cart-x.display-1.text-muted.mr-1
+            h3.mt-3 Your cart is empty
+            p.text-muted Start shopping to fill up your cart!

@@ -2,7 +2,7 @@ mixin productItem(product)
     .col-12.col-md-6.col-lg-4.mb-4.d-flex
             a.product-item.flex-fill(href=`/products/detail/${product.slug == null ? product._id : product.slug}`)
               .inner-image 
-                img(src=product.thumbnail, alt=product.title)
+                img(src=product.thumbnail, alt=product.title style="object-fit: contain")
               if (product.featured)
                 .inner-featured Featured
               .inner-content 

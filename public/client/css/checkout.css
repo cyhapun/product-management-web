@@ -1,0 +1,45 @@
+/* checkout.css */
+
+.checkout-page h1 {
+  color: #0d6efd; /* Bootstrap primary color */
+}
+
+.customer-info, .order-summary {
+  background-color: #f8f9fa;
+  transition: box-shadow 0.3s ease;
+}
+
+.customer-info:hover, .order-summary:hover {
+  box-shadow: 0 .5rem 1rem rgba(0,0,0,.1) !important;
+}
+
+.form-control:focus {
+  border-color: #86b7fe;
+  box-shadow: 0 0 0 0.25rem rgba(13, 110, 253, 0.25);
+}
+
+.order-summary .list-group-item {
+  background-color: transparent;
+  border: none;
+}
+
+.order-summary .text-danger {
+  color: #dc3545 !important;
+}
+
+.order-summary .fw-bolder {
+  font-weight: 700 !important;
+}
+
+.btn-lg {
+  padding: 0.8rem 1.25rem;
+  font-size: 1.2rem;
+  font-weight: 600;
+  letter-spacing: 0.5px;
+  transition: all 0.3s ease;
+}
+
+.btn-lg:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 4px 10px rgba(0,0,0,0.15);
+}

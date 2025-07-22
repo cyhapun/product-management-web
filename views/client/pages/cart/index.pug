@@ -1,122 +1,103 @@
 extends ../../layouts/default.pug
 
 block main
-  // Bootstrap Icons
   link(rel="stylesheet", href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.css")
-  // SweetAlert2 CSS 
   link(rel="stylesheet", href="https://cdn.jsdelivr.net/npm/sweetalert2@11/dist/sweetalert2.min.css")
-  
-  link(rel="stylesheet", href="/client/style/cart.css")
+  link(rel="stylesheet", href="/client/css/cart.css")
 
   .cart-page.my-5
     .container
       .mb-4
-        button.btn.btn-outline-secondary(type="button", onclick="goBackFromCart()")
+        button.btn.btn-outline-secondary(type="button", onclick="goBack()")
           i.bi.bi-arrow-left.me-1.mr-1
           | Back
+      
       h1.mb-5.text-center.text-primary
-        i.bi.bi-cart4.me-2.mr-2
+        i.bi.bi-cart4.me-2.mr-1
         | Your Shopping Cart
 
-      if cart.products.length > 0
-        .row.g-4
-          //- Cột danh sách sản phẩm
-          .col-lg-8
-            .cart-items-scroll
-              each item, index in cart.products
-                .card.cart-item-card.mb-3.shadow-sm.border-0.rounded-3
-                  .card-body.d-flex.align-items-center.gap-3
-                    // Hình ảnh sản phẩm
-                    img(
-                      src=item.productInfo.thumbnail,
-                      alt=item.productInfo.title,
-                      class="rounded mr-2",
-                      style="width: 100px; height: 100px; object-fit: cover;"
-                    )
+      if cart.products && cart.products.length > 0
+        form(action="/cart/update", method="POST")
+          .row.g-4
+            .col-lg-8
+              .cart-items-scrollable
+                each item, index in cart.products
+                  .card.cart-item-card.mb-3.shadow-sm.border-0.rounded-3
+                    .card-body.d-flex.align-items-center.gap-3
+                      img(
+                        src=item.productInfo.thumbnail,
+                        alt=item.productInfo.title,
+                        class="rounded mr-2",
+                        style="width: 100px; height: 100px; object-fit: cover;"
+                      )
 
-                    // Thông tin sản phẩm
-                    .flex-grow-1
-                      h5.mb-1
-                        a(
-                          href=`/products/detail/${item.productInfo.slug}`,
-                          class="text-dark text-decoration-none"
-                        ) #{item.productInfo.title}
-                      
-                      small.text-muted Unit Price: 
-                        span.price-text.ms-1 #{item.productInfo.price.toLocaleString()}$
-                      br
-                      small.text-muted Total: 
-                        span.total-price.price-text.ms-1 #{item.totalPrice.toLocaleString()}$
-                      
-                      // Điều khiển số lượng
-                      .d-flex.align-items-center.mt-2
-                        button.btn.btn-sm.btn-outline-secondary(
-                          type="button",
-                          onclick="updateQuantity(this,-1)"
-                        )
-                          i.bi.bi-dash
+                      .flex-grow-1
+                        h5.mb-1
+                          a(
+                            href=`/products/detail/${item.productInfo.slug}`,
+                            class="text-dark text-decoration-none"
+                          ) #{item.productInfo.title}
                         
-                        input(
-                          type="number"
-                          class="form-control form-control-sm text-center mx-1 quantity-input"
-                          name=`products[${index}][quantity]`
-                          value=item.quantity
-                          min="1"
-                          data-stock=item.productInfo.stock
-                          style="width:60px"
-                          onchange="updateRowTotal(this)"
-                        )
-                        input(
-                          type="hidden",
-                          name=`products[${index}][id]`,
-                          value=item.productId
-                        )
+                        small.text-muted Unit Price: 
+                          span.price-text.ms-1 #{item.productInfo.price.toLocaleString()}$
+                        br
+                        small.text-muted Total: 
+                          span.total-price.price-text.ms-1 #{item.totalPrice.toLocaleString()}$
                         
-                        button.btn.btn-sm.btn-outline-secondary(
-                          type="button",
-                          onclick="updateQuantity(this,1)"
-                        )
-                          i.bi.bi-plus
+                        .d-flex.align-items-center.mt-2
+                          button.btn.btn-sm.btn-outline-secondary(type="button", onclick=`updateQuantity(this, -1, ${item.productInfo.stock})`)
+                            i.bi.bi-dash
+                          
+                          input(
+                            type="number",
+                            class="form-control form-control-sm text-center mx-1 quantity-input",
+                            name=`products[${index}][quantity]`,
+                            value=item.quantity,
+                            min="1",
+                            max=item.productInfo.stock,
+                            style="width:60px",
+                            onchange="updateRowTotal(this)"
+                          )
+                          input(type="hidden", name=`products[${index}][id]`, value=item.productId)
+                          
+                          button.btn.btn-sm.btn-outline-secondary(type="button", onclick=`updateQuantity(this, 1, ${item.productInfo.stock})`)
+                            i.bi.bi-plus
+                      
+                      a(href=`/cart/delete/${item.productId}`, class="btn btn-outline-danger btn-sm ms-auto delete-btn")
+                        i.bi.bi-trash
+
+              //- Update cart button
+              .text-end.mt-4
+                button(type="submit" class="btn btn-info px-4 py-2")
+                  i.bi.bi-arrow-repeat.me-2.mr-2
+                  | Update Cart
+
+            //- ORDER SUMMARY COLUMN (STICKY)
+            .col-lg-4
+              .order-summary-sticky
+                .card.shadow-sm.border-0.rounded-3
+                  .card-body
+                    h4.mb-4.text-center
+                      i.bi.bi-receipt-cutoff.me-2.mr-1
+                      | Order Summary
+                    hr
+                    .d-flex.justify-content-between.mb-3
+                      span.fw-bold Total:
+                      span#cart-subtotal.fw-bold.text-danger #{cart.totalPrice.toLocaleString()}$
                     
-                    // Nút xóa
-                    a(
-                      href=`/cart/delete/${item.productId}`,
-                      class="btn btn-outline-danger btn-sm ms-auto"
-                    )
-                      i.bi.bi-trash
-
-            // Nút cập nhật giỏ hàng
-            .text-end.mt-4
-              button(type="button" class="btn btn-info px-4 py-2" onclick="saveCartToServer()")
-                i.bi.bi-arrow-repeat.me-2.mr-1
-                | Update Cart
-
-          //- Cột Order Summary
-          .col-lg-4
-            .card.shadow-sm.border-0.rounded-3
-              .card-body
-                h4.mb-4.text-center
-                  i.bi.bi-receipt-cutoff.me-2.mr-1
-                  | Order Summary
-                hr
-                .d-flex.justify-content-between.mb-3
-                  span.fw-bold Total:
-                  span#cart-subtotal.fw-bold.text-danger #{cart.totalPrice.toLocaleString()}$
-                
-                p.text-muted.small.text-center Shipping fees will be calculated at checkout.
-                
-                a(href="/checkout", class="btn btn-success w-100 mt-3 py-2")
-                  i.bi.bi-wallet-fill.me-2.mr-2
-                  | Checkout
+                    p.text-muted.small.text-center Shipping fees will be calculated at checkout.
+                    
+                    a(href="/checkout", class="btn btn-success w-100 mt-3 py-2")
+                      i.bi.bi-wallet-fill.me-2.mr-1
+                      | Proceed to Checkout
       else
         .row.justify-content-center
           .col-md-6.text-center
             .p-5.bg-white.border.rounded.shadow-sm
-              i.bi.bi-cart-x.display-1.text-muted
+              i.bi.bi-cart-x.display-1.text-muted.mr-1
               h3.mt-3 Your cart is empty
               p.text-muted Start shopping to fill up your cart!
 
-  //- JS xử lý cập nhật giỏ hàng + kiểm tra stock
-  script(src="/client/js/cart.js")
-  // SweetAlert2 CDN
+  //- Required scripts
   script(src="https://cdn.jsdelivr.net/npm/sweetalert2@11")
+  script(src="/client/js/cart.js")

@@ -1,34 +1,65 @@
 body {
   background: #f8f9fa;
 }
+
 .cart-page h1 {
   font-weight: 700;
 }
+
 .cart-item-card {
   transition: all 0.2s ease-in-out;
+  background-color: #fff;
 }
+
 .cart-item-card:hover {
   transform: translateY(-3px);
-  box-shadow: 0 6px 20px rgba(0,0,0,0.08);
+  box-shadow: 0 6px 20px rgba(0,0,0,0.08) !important;
 }
+
 .price-text {
   color: #dc3545;
   font-weight: 600;
 }
-/* Scroll riêng cho danh sách */
-.cart-items-scroll {
-  max-height: 500px; /* Hoặc dùng 70vh nếu muốn responsive hơn */
-  overflow-y: auto;
-  padding-right: 5px;
+
+/* Vùng chứa danh sách sản phẩm có thể cuộn */
+.cart-items-scrollable {
+  max-height: 70vh; /* Giới hạn chiều cao tối đa bằng 70% chiều cao màn hình */
+  overflow-y: auto;   /* Bật thanh cuộn dọc khi cần */
+  padding-right: 10px; /* Tạo khoảng trống cho thanh cuộn */
+  margin-right: -10px; /* Bù lại padding để nội dung không bị lệch */
 }
-/* Scrollbar đẹp hơn */
-.cart-items-scroll::-webkit-scrollbar {
-  width: 6px;
+
+/* Tùy chỉnh thanh cuộn cho đẹp hơn */
+.cart-items-scrollable::-webkit-scrollbar {
+  width: 8px;
 }
-.cart-items-scroll::-webkit-scrollbar-thumb {
+
+.cart-items-scrollable::-webkit-scrollbar-track {
+  background: #f1f1f1;
+  border-radius: 4px;
+}
+
+.cart-items-scrollable::-webkit-scrollbar-thumb {
   background: #ccc;
-  border-radius: 3px;
+  border-radius: 4px;
 }
-.cart-items-scroll::-webkit-scrollbar-thumb:hover {
+
+.cart-items-scrollable::-webkit-scrollbar-thumb:hover {
   background: #999;
+}
+
+/* Giữ cho cột tóm tắt đơn hàng đứng yên khi cuộn */
+.order-summary-sticky {
+  position: -webkit-sticky; /* Dành cho Safari */
+  position: sticky;
+  top: 20px; /* Khoảng cách từ đỉnh màn hình */
+}
+
+.delete-btn {
+  transition: all 0.2s ease;
+}
+
+.delete-btn:hover {
+  background-color: #dc3545;
+  color: white;
 }

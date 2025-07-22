@@ -27,5 +27,5 @@ module.exports.index = async (req, res) => {
         pageTitle: "Home page",
         featuredProducts: featuredProducts,
         newProducts: newProducts,
-    })
+    });
 };
