@@ -1,5 +1,6 @@
 const CartHelpers = require('../../helpers/client/cart');
 const Carts = require('../../models/cart.model');
+const Orders = require('../../models/order.model');
 
 // [GET] '/checkout'
 module.exports.index = async (req, res) => {
@@ -42,5 +43,82 @@ module.exports.index = async (req, res) => {
 
 // [POST] '/checkout/order'
 module.exports.orderPost = async (req, res) => {
-  res.send("OK");
+  try {
+    const info = req.body;
+    const token = req.cookies.token;
+    let cart = null;
+    let tmpCart = null;
+
+    if (token) {
+      const user = await Accounts.findOne({
+        token:token,
+      });
+
+      if (user) {
+        cart = await Carts.findOne({
+          userId: user._id,
+        });
+
+        if (cart) {
+          tmpCart = {...cart};
+          cart.products = [];
+          cart.totalQuantity = 0;
+          cart.totalPrice = 0;
+          await cart.save();
+        }
+        else {
+          req.flash('error', 'Cart not found for user.');
+          return res.redirect('/checkout');
+        }
+      }
+      else {
+        res.clearCookie('token');
+      }
+    }
+    else {
+      if (!res.locals.cart) {
+        cart = await CartHelpers.validateGuestCart(req.cookies.guestCart);
+        if (cart) {
+          tmpCart = cart;
+          cart.products = [];
+          cart.totalQuantity = 0;
+          cart.totalPrice = 0;
+          res.cookie('guestCart', JSON.stringify(cart), { maxAge: 30 * 24 * 60 * 60 * 1000, httpOnly: true }); // 30 days
+        }
+      }
+      else {
+        tmpCart = {...res.locals.cart};
+        res.locals.cart.products = [];
+        res.locals.cart.totalQuantity = 0;
+        res.locals.cart.totalPrice = 0;
+
+        res.cookie('guestCart', JSON.stringify(res.locals.cart), { maxAge: 30 * 24 * 60 * 60 * 1000, httpOnly: true }); // 30 days
+      }
+    }
+    const order = new Orders({
+      userId: token ? user._id : null,
+      info: {
+        fullName: info.fullName,
+        email: info.email,
+        phone: info.phone,
+        address: info.address
+      },
+      products: tmpCart.products.map(item => ({
+        productId: item.productId,
+        quantity: item.quantity,
+        priceAtOrder: item.productInfo.price, // Lưu giá tại thời điểm order
+        discountPercentage: item.productInfo.discountPercentage // Lưu phần trăm giảm giá nếu có
+      })),
+      totalPrice: tmpCart.totalPrice,
+      totalQuantity: tmpCart.totalQuantity,
+    });
+    await order.save();
+    req.flash('success', 'Order placed successfully!');
+    return res.redirect('/checkout');
+    
+  } catch(error) {
+    console.error("Error when placing order:", error);
+    req.flash('error', 'Failed to place order.');
+    res.redirect('/checkout');
+  }
 }

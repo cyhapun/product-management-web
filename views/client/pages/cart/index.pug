@@ -17,79 +17,78 @@ block main
         | Your Shopping Cart
 
       if cart.products && cart.products.length > 0
-        form(action="/cart/update", method="POST")
-          .row.g-4
-            .col-lg-8
-              .cart-items-scrollable
-                each item, index in cart.products
-                  .card.cart-item-card.mb-3.shadow-sm.border-0.rounded-3
-                    .card-body.d-flex.align-items-center.gap-3
-                      img(
-                        src=item.productInfo.thumbnail,
-                        alt=item.productInfo.title,
-                        class="rounded mr-2",
-                        style="width: 100px; height: 100px; object-fit: cover;"
-                      )
+        .row.g-4
+          .col-lg-8
+            .cart-items-scrollable
+              each item, index in cart.products
+                .card.cart-item-card.mb-3.shadow-sm.border-0.rounded-3
+                  .card-body.d-flex.align-items-center.gap-3
+                    img(
+                      src=item.productInfo.thumbnail,
+                      alt=item.productInfo.title,
+                      class="rounded mr-2",
+                      style="width: 100px; height: 100px; object-fit: cover;"
+                    )
 
-                      .flex-grow-1
-                        h5.mb-1
-                          a(
-                            href=`/products/detail/${item.productInfo.slug}`,
-                            class="text-dark text-decoration-none"
-                          ) #{item.productInfo.title}
-                        
-                        small.text-muted Unit Price: 
-                          span.price-text.ms-1 #{item.productInfo.price.toLocaleString()}$
-                        br
-                        small.text-muted Total: 
-                          span.total-price.price-text.ms-1 #{item.totalPrice.toLocaleString()}$
-                        
-                        .d-flex.align-items-center.mt-2
-                          button.btn.btn-sm.btn-outline-secondary(type="button", onclick=`updateQuantity(this, -1, ${item.productInfo.stock})`)
-                            i.bi.bi-dash
-                          
-                          input(
-                            type="number",
-                            class="form-control form-control-sm text-center mx-1 quantity-input",
-                            name=`products[${index}][quantity]`,
-                            value=item.quantity,
-                            min="1",
-                            max=item.productInfo.stock,
-                            style="width:60px",
-                            onchange="updateRowTotal(this)"
-                          )
-                          input(type="hidden", name=`products[${index}][id]`, value=item.productId)
-                          
-                          button.btn.btn-sm.btn-outline-secondary(type="button", onclick=`updateQuantity(this, 1, ${item.productInfo.stock})`)
-                            i.bi.bi-plus
+                    .flex-grow-1
+                      h5.mb-1
+                        a(
+                          href=`/products/detail/${item.productInfo.slug}`,
+                          class="text-dark text-decoration-none"
+                        ) #{item.productInfo.title}
                       
-                      a(href=`/cart/delete/${item.productId}`, class="btn btn-outline-danger btn-sm ms-auto delete-btn")
-                        i.bi.bi-trash
-
-              //- Update cart button
-              .text-end.mt-4
-                button(type="submit" class="btn btn-info px-4 py-2")
-                  i.bi.bi-arrow-repeat.me-2.mr-2
-                  | Update Cart
-
-            //- ORDER SUMMARY COLUMN (STICKY)
-            .col-lg-4
-              .order-summary-sticky
-                .card.shadow-sm.border-0.rounded-3
-                  .card-body
-                    h4.mb-4.text-center
-                      i.bi.bi-receipt-cutoff.me-2.mr-1
-                      | Order Summary
-                    hr
-                    .d-flex.justify-content-between.mb-3
-                      span.fw-bold Total:
-                      span#cart-subtotal.fw-bold.text-danger #{cart.totalPrice.toLocaleString()}$
+                      small.text-muted Unit Price: 
+                        span.price-text.ms-1 #{item.productInfo.price.toLocaleString()}$
+                      br
+                      small.text-muted Total: 
+                        span.total-price.price-text.ms-1 #{item.totalPrice.toLocaleString()}$
+                      
+                      .d-flex.align-items-center.mt-2
+                        button.btn.btn-sm.btn-outline-secondary(type="button", onclick=`updateQuantity(this, -1, ${item.productInfo.stock})`)
+                          i.bi.bi-dash
+                        
+                        input(
+                          type="number",
+                          class="form-control form-control-sm text-center mx-1 quantity-input",
+                          name=`products[${index}][quantity]`,
+                          value=item.quantity,
+                          min="1",
+                          max=item.productInfo.stock,
+                          style="width:60px",
+                          onchange="updateRowTotal(this)"
+                        )
+                        input(type="hidden", name=`products[${index}][id]`, value=item.productId)
+                        
+                        button.btn.btn-sm.btn-outline-secondary(type="button", onclick=`updateQuantity(this, 1, ${item.productInfo.stock})`)
+                          i.bi.bi-plus
                     
-                    p.text-muted.small.text-center Shipping fees will be calculated at checkout.
-                    
-                    a(href="/checkout", class="btn btn-success w-100 mt-3 py-2")
-                      i.bi.bi-wallet-fill.me-2.mr-1
-                      | Proceed to Checkout
+                    a(href=`/cart/delete/${item.productId}`, class="btn btn-outline-danger btn-sm ms-auto delete-btn")
+                      i.bi.bi-trash
+
+            //- Update cart button
+            .text-end.mt-4
+              button(type="submit" class="btn btn-info px-4 py-2 btn-update-cart")
+                i.bi.bi-arrow-repeat.me-2.mr-2
+                | Update Cart
+
+          //- ORDER SUMMARY COLUMN (STICKY)
+          .col-lg-4
+            .order-summary-sticky
+              .card.shadow-sm.border-0.rounded-3
+                .card-body
+                  h4.mb-4.text-center
+                    i.bi.bi-receipt-cutoff.me-2.mr-1
+                    | Order Summary
+                  hr
+                  .d-flex.justify-content-between.mb-3
+                    span.fw-bold Total:
+                    span#cart-subtotal.fw-bold.text-danger #{cart.totalPrice.toLocaleString()}$
+                  
+                  p.text-muted.small.text-center Shipping fees will be calculated at checkout.
+                  
+                  a(href="/checkout", class="btn btn-success w-100 mt-3 py-2")
+                    i.bi.bi-wallet-fill.me-2.mr-1
+                    | Proceed to Checkout
       else
         .row.justify-content-center
           .col-md-6.text-center

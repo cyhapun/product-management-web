@@ -16,7 +16,11 @@ module.exports = (app) => {
 
     app.use('/search', searchRouters);
 
-    app.use('/cart', cartRouters);
+    app.use('/cart',
+        cartMiddlewares.getCartWithInfoProducts, 
+        cartRouters);
 
-    app.use('/checkout', checkoutRouters);
+    app.use('/checkout', 
+        cartMiddlewares.getCartWithInfoProducts,
+        checkoutRouters);
 }

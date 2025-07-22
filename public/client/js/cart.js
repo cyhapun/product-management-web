@@ -64,10 +64,17 @@ function updateCartTotal() {
 // End update quantity client view
 
 //- Update quantity submit server
+const buttonUpdateCart = document.querySelector('.btn-update-cart');
+if (buttonUpdateCart) {
+  buttonUpdateCart.addEventListener('click', async (e) => {
+    e.preventDefault();
+    await saveCartToServer();
+  });
+}
+
 async function saveCartToServer() {
   const rows = document.querySelectorAll('.cart-item-card');
   const products = [];
-
   rows.forEach(row => {
     const id = row.querySelector('input[type="hidden"]').value;
     const quantity = parseInt(row.querySelector('.quantity-input').value);
@@ -84,6 +91,7 @@ async function saveCartToServer() {
     const result = await res.json();
 
     if (result.success) {
+      
       updateMiniCartCount(result.totalQuantity);
       Swal.fire({
         icon: 'success',
@@ -91,14 +99,12 @@ async function saveCartToServer() {
         text: 'Your cart has been successfully updated.',
         timer: 2000,
         showConfirmButton: false,
-        scrollbarPadding: false
       });
     } else {
       Swal.fire({
         icon: 'error',
         title: 'Update failed',
         text: result.message || 'Something went wrong!',
-        scrollbarPadding: false
       });
     }
   } catch (err) {
@@ -106,7 +112,6 @@ async function saveCartToServer() {
       icon: 'error',
       title: 'Server error',
       text: 'Could not connect to server',
-      scrollbarPadding: false
     });
   }
 }

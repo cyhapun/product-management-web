@@ -20,10 +20,11 @@ const orderSchema = new mongoose.Schema(
         productId: { type: mongoose.Schema.Types.ObjectId, ref: 'Product', required: true },
         quantity: { type: Number, required: true, min: 1 },
         priceAtOrder: { type: Number, required: true }, // lưu giá tại thời điểm order
-        discountPercentage: Float,
+        discountPercentage: Number,
       }
     ],
 
+    totalQuantity: {type: Number , required: true},
     totalPrice: { type: Number, required: true }, // tổng tiền lúc tạo order
 
     status: {

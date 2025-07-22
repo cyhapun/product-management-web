@@ -6,34 +6,9 @@ const CartHelpers = require('../../helpers/client/cart');
 // [GET] /cart
 module.exports.index = async (req, res) => {
   try {
-    const token = req.cookies.token;
-    let carts = null;
-
-    if (token) {
-      // User login
-      const user = await Accounts.findOne({ token });
-      if (user) {
-        carts = await Carts.findOne({ userId: user._id });
-        if (!carts) {
-          carts = { products: [], totalQuantity: 0, totalPrice: 0 };
-        }
-        // Enrich thông tin sản phẩm từ DB
-        carts = await CartHelpers.addInfoProductInCart(carts);
-      } else {
-        res.clearCookie('token');
-      }
-    } else {
-      // Guest: lấy cookie + validate
-      if (req.cookies.guestCart) {
-        carts = await CartHelpers.validateGuestCart(req.cookies.guestCart);
-        carts = await CartHelpers.addInfoProductInCart(carts);
-      }
-      if (!carts) carts = { products: [], totalQuantity: 0 };
-    }
-
     res.render("client/pages/cart/index", {
       pageTitle: "Cart",
-      cart: carts
+      cart: res.locals.cart,
     });
 
   } catch (error) {
@@ -45,46 +20,29 @@ module.exports.index = async (req, res) => {
 // [POST] /cart/add/:productId
 module.exports.addPost = async (req, res) => {
   try {
-    const token = req.cookies.token;
     const productId = req.params.productId;
     const quantity = parseInt(req.body.quantity) || 1;
-
+    const token = req.cookies.token;
+    
     // Nếu user login (chỉ mở khi cần)
     if (token) {
       const user = await Accounts.findOne({ token: token, deleted: false });
       if (user) {
-        let cart = await Carts.findOne({ userId: user._id });
-        if (!cart) {
-          cart = new Carts({ userId: user._id, products: [] });
-        }
-
-        const existingItem = cart.products.find(
+        const existingItem = res.locals.cart.products.find(
           item => item.productId.toString() === productId
         );
         if (existingItem) {
           existingItem.quantity += quantity;
         } else {
-          cart.products.push({ productId, quantity });
+          res.locals.cart.products.push({ productId, quantity });
         }
 
-        await cart.save();
+        await res.locals.cart.save();
         req.flash("success", "Added product successfully!");
-        res.clearCookie('guestCart'); // clear guestCart nếu có
         return res.redirect(req.get("Referrer") || "/");
       }
       res.clearCookie('token');
     }
-
-    // Guest (not logged in)
-    let guestCart = { products: [], totalQuantity: 0 };
-    try {
-      if (req.cookies.guestCart) {
-        guestCart = JSON.parse(req.cookies.guestCart);
-      }
-    } catch (e) {
-      guestCart = { products: [], totalQuantity: 0 };
-    }
-
     // Lấy thông tin sản phẩm từ DB để lưu đầy đủ vào cookie
     const product = await Products.findById(productId).select("title price thumbnail stock");
     if (!product || product.stock <= 0) {
@@ -92,19 +50,19 @@ module.exports.addPost = async (req, res) => {
       return res.redirect(req.get("Referrer") || "/");
     }
 
-    const existing = guestCart.products.find(item => item.productId === productId);
+    const existing = res.locals.cart.products.find(item => item.productId === productId);
     if (existing) {
       existing.quantity += quantity;
     } else {
-      guestCart.products.push({
+      res.locals.cart.products.push({
         productId,
         quantity
       });
     }
 
-    guestCart.totalQuantity += quantity;
+    res.locals.cart.totalQuantity += quantity;
 
-    res.cookie('guestCart', JSON.stringify(guestCart), {
+    res.cookie('guestCart', JSON.stringify(res.locals.cart), {
       maxAge: 1000 * 60 * 60 * 24 * 30 // 30 days
     });
 
@@ -123,7 +81,6 @@ module.exports.deleteProduct = async (req, res) => {
   try {
     const productId = req.params.productId;
     const token = req.cookies.token;
-    let carts = null;
     const product = await Products.findOne({deleted:false, status:'active', _id:productId});
     
     if (!product) {
@@ -135,19 +92,16 @@ module.exports.deleteProduct = async (req, res) => {
       const user = await Accounts.findOne({token:token});
 
       if (user) {
-        carts = await Carts.findOne({
-          userId: user._id,
-        });
-        if (!carts) {
-          carts = {
+        if (!res.locals.cart) {
+          res.locals.cart = {
             products:[],
             totalQuantity:0,
           };
           req.flash("error", "Cart is empty!");
           return res.redirect(req.get("Referrer") || "/");
         }
-        carts.products = carts.products.filter(item => item.productId != productId);
-        await carts.save();
+        res.locals.cart.products = res.locals.cart.products.filter(item => item.productId != productId);
+        await res.locals.cart.save();
         req.flash("success", "Deleted product successfully!");
         return res.redirect(req.get("Referrer") || "/");
       }
@@ -155,14 +109,11 @@ module.exports.deleteProduct = async (req, res) => {
         res.clearCookie("token");
       }
     }
-    if (req.cookies.guestCart) {
-      carts = await CartHelpers.validateGuestCart(req.cookies.guestCart);
-    }
-    if (carts) {
-      carts.products = carts.products.filter(item => item.productId != productId);
+    if (res.locals.cart) {
+      res.locals.cart.products = res.locals.cart.products.filter(item => item.productId != productId);
     }
 
-    res.cookie('guestCart', JSON.stringify(carts), {
+    res.cookie('guestCart', JSON.stringify(res.locals.cart), {
       maxAge: 1000 * 60 * 60 * 24 * 30 // 30 days
     });
 
@@ -178,19 +129,18 @@ module.exports.deleteProduct = async (req, res) => {
 // [POST] /cart/update - AJAX
 module.exports.updateCart = async (req, res) => {
   try {
-    const { products } = req.body; 
     const token = req.cookies.token;
+    const products = req.body.products;
     
     if (token) {
       const user = await Accounts.findOne({ token });
     
       if (user) {
-        const carts = await Carts.findOne({ userId: user._id });
-        if (!carts) {
+        if (!res.locals.cart) {
           return res.json({ success: false, message: 'Cart not found!' });
         }     
         // Update quantity
-        carts.products.forEach(item => {
+        res.locals.cart.products.forEach(item => {
           const updated = products.find(p => p.id === item.productId.toString());
           if (updated) {
             let q = parseInt(updated.quantity);
@@ -200,19 +150,15 @@ module.exports.updateCart = async (req, res) => {
         });
 
         // Update totalQuantity
-        carts.totalQuantity = carts.products.reduce((sum, p) => sum + p.quantity, 0);
+        res.locals.cart.totalQuantity = res.locals.cart.products.reduce((sum, p) => sum + p.quantity, 0);
         
-        await carts.save();
-           
+        await res.locals.cart.save();
         return res.json({ success: true });
       }
       res.clearCookie('token');
     }
-    let carts = req.cookies.guestCart || [];
-    carts = await CartHelpers.validateGuestCart(carts);
-    
     // Update quantity
-    carts.products.forEach(item => {
+    res.locals.cart.products.forEach(item => {
       const updated = products.find(p => p.id === item.productId.toString());
       if (updated) {
         let q = parseInt(updated.quantity);
@@ -222,13 +168,13 @@ module.exports.updateCart = async (req, res) => {
     });
 
     // Update totalQuantity
-    carts.totalQuantity = carts.products.reduce((sum, p) => sum + p.quantity, 0);
+    res.locals.cart.totalQuantity = res.locals.cart.products.reduce((sum, p) => sum + p.quantity, 0);
     
-    res.cookie('guestCart', JSON.stringify(carts), {
+    res.cookie('guestCart', JSON.stringify(res.locals.cart), {
       maxAge: 1000 * 60 * 60 * 24 * 30 // 30 days
     });
 
-    return res.json({ success: true, totalQuantity: carts.totalQuantity });
+    return res.json({ success: true, totalQuantity: res.locals.cart.totalQuantity });
   } catch (err) {
     console.error(err);
     return res.json({ success: false, message: 'Update failed!' });
