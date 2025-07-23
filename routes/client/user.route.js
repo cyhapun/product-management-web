@@ -14,4 +14,6 @@ router.post('/register',
   validateUser.validateRegister,
   controllers.registerPost);
 
+router.get('/profile', controllers.profile);
+
 module.exports = router;

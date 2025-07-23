@@ -44,10 +44,21 @@ header.header
                 | Cart
                 span(class="ms-1 mini-cart-total-quantity") (#{cart.totalQuantity || 0})
             
-            li
-              a(href="/user/login")
-                | Login
-                 
-            li
-              a(href="/user/register")
-                | Register
+            if (!user)
+              li
+                a(href="/user/login")
+                  | Login
+                  
+              li
+                a(href="/user/register")
+                  | Register
+            else  
+              li 
+                a(href="/user/logout")
+                  | Logout
+              
+              li 
+                a(
+                  href=`/user/profile`
+                  class="btn btn-primary btn-sm mr-2"
+                ) #{user.fullName}
