@@ -152,3 +152,43 @@ module.exports.success = async (req, res) => {
     res.redirect('/');
   }
 };
+
+// [GET] 'checkout/order/detail/:orderId'
+module.exports.orderDetail = async (req, res) => {
+  try {
+    const orderId = req.params.orderId;
+
+    const order = await Orders.findOne({
+      _id: orderId,
+      deleted: false
+    }).populate({
+      path: 'products.productId',
+      select: 'title thumbnail price slug'
+    });
+
+    if (!order) {
+      return res.render('client/pages/404NotFound.pug', {
+        pageTitle: 'Order Not Found'
+      });
+    }
+
+    // Tạo trạng thái timeline
+    const statusSteps = [
+      { key: 'pending', label: 'Pending' },
+      { key: 'confirmed', label: 'Confirmed' },
+      { key: 'shipped', label: 'Shipped' },
+      { key: 'completed', label: 'Completed' },
+    ];
+
+    res.render('client/pages/checkout/orderDetail.pug', {
+      pageTitle: `Order detail`,
+      order,
+      statusSteps
+    });
+
+  } catch (err) {
+    console.error(err);
+    res.redirect('/');
+  }
+};
+

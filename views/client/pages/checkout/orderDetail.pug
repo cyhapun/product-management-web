@@ -1,0 +1,264 @@
+extends ../../layouts/default.pug
+
+block main
+  style.
+    .order-container {
+      max-width: 1000px;
+      margin: 40px auto;
+      background: #fff;
+      padding: 35px;
+      border-radius: 18px;
+      box-shadow: 0 6px 25px rgba(0,0,0,0.08);
+    }
+    .order-section-title {
+      font-size: 22px;
+      font-weight: 700;
+      margin: 30px 0 20px;
+      color: #0d6efd;
+      display: flex;
+      align-items: center;
+    }
+    .order-section-title i {
+      font-size: 22px;
+      margin-right: 8px;
+    }
+    .order-overview p {
+      margin-bottom: 8px;
+      font-size: 15px;
+    }
+    .order-overview span {
+      display: inline-block;
+      min-width: 140px;
+      font-weight: 500;
+      color: #495057;
+    }
+    /* Timeline */
+    .timeline {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin: 25px 0 35px;
+      position: relative;
+    }
+    .timeline::before {
+      content: '';
+      position: absolute;
+      top: 50%;
+      left: 0;
+      right: 0;
+      height: 4px;
+      background: #e9ecef;
+      z-index: 1;
+    }
+    .timeline-step {
+      text-align: center;
+      position: relative;
+      z-index: 2;
+      flex: 1;
+    }
+    .timeline-circle {
+      width: 30px;
+      height: 30px;
+      border-radius: 50%;
+      background: #adb5bd;
+      margin: auto;
+      line-height: 30px;
+      color: #fff;
+      font-size: 14px;
+      font-weight: bold;
+      margin-bottom: 5px;
+    }
+    .timeline-active .timeline-circle {
+      background: #0d6efd;
+      box-shadow: 0 0 8px rgba(13,110,253,0.5);
+    }
+    .timeline-step small {
+      font-size: 13px;
+      color: #6c757d;
+      display: block;
+    }
+    /* Product list */
+    .product-item {
+      display: flex;
+      align-items: flex-start;
+      padding: 18px 0;
+      border-bottom: 1px dashed #dee2e6;
+    }
+    .product-img {
+      width: 85px;
+      height: 85px;
+      object-fit: cover;
+      border-radius: 10px;
+      margin-right: 15px;
+      box-shadow: 0 2px 8px rgba(0,0,0,0.05);
+    }
+    .product-info { flex: 1; }
+    .product-title {
+      font-weight: 600;
+      font-size: 16px;
+      margin-bottom: 6px;
+      color: #212529;
+    }
+    .product-desc {
+      font-size: 13px;
+      color: #868e96;
+      margin-bottom: 6px;
+    }
+    .product-prices {
+      min-width: 180px;
+      text-align: right;
+    }
+    .price-original {
+      text-decoration: line-through;
+      color: #868e96;
+      font-size: 13px;
+    }
+    .price-discount {
+      color: #dc3545;
+      font-size: 13px;
+      font-weight: 500;
+    }
+    .price-final {
+      font-weight: 600;
+      color: #198754;
+      font-size: 15px;
+      margin-top: 3px;
+    }
+    .summary-box {
+      background: #f8f9fa;
+      padding: 20px;
+      border-radius: 12px;
+      margin-top: 30px;
+    }
+    .summary-box hr {
+      margin: 10px 0;
+    }
+    .grand-total {
+      font-size: 20px;
+      font-weight: 700;
+      color: #198754;
+    }
+    .back-btn {
+      margin-top: 25px;
+      padding: 10px 25px;
+      border-radius: 8px;
+    }
+    i {
+        margin-right: 3px;
+    }
+    img {
+        object-fit:contain !important;
+    }
+
+  .container.my-5
+    button.btn.btn-outline-secondary.back-btn(type="button", onclick="goBack()")
+          i.bi.bi-arrow-left.me-1
+          | Back
+    h1.text-center.mb-3.text-dark 
+      i.bi.bi-receipt.me-2
+      | Order Details
+    p.text-center.text-muted.fs-6 View and track your order below.
+
+    .order-container
+
+      // === ORDER OVERVIEW ===
+      h4.order-section-title
+        i.bi.bi-info-circle
+        | Order Overview
+      .order-overview
+        p
+          span Order ID:
+          code.text-secondary #{order._id}
+        p
+          span Created At:
+          | #{new Date(order.createdAt).toLocaleString()}
+        p
+          span Status:
+          span.badge.bg-primary.text-light #{order.status}
+        p
+          span Total Items:
+          | #{order.totalQuantity} products
+        p
+          span Total Amount:
+          strong.text-danger #{order.totalPrice.toLocaleString()}$
+
+      // === TIMELINE STATUS ===
+      h4.order-section-title
+        i.bi.bi-clock-history
+        | Order Progress
+      .timeline
+        each step in statusSteps
+          - const stepIndex = statusSteps.findIndex(s => s.key == step.key)
+          - const activeIndex = statusSteps.findIndex(s => s.key == order.status)
+          - const isActive = stepIndex <= activeIndex
+          .timeline-step(class=isActive ? 'timeline-active' : '')
+            .timeline-circle #{stepIndex + 1}
+            small #{step.label}
+
+      // === SHIPPING INFO ===
+      h4.order-section-title 
+        i.bi.bi-geo-alt
+        | Shipping Information
+      .mb-3
+        p.mb-1 
+          strong Name: 
+          | #{order.info.fullName}
+        if order.info.phone
+          p.mb-1
+            strong Phone: 
+            | #{order.info.phone}
+        if order.info.email
+          p.mb-1
+            strong Email: 
+            | #{order.info.email}
+        p.mb-1
+          strong Address: 
+          | #{order.info.address}
+
+      // === PRODUCTS LIST ===
+      h4.order-section-title 
+        i.bi.bi-box-seam
+        | Products in Order
+      each item in order.products
+        - const product = item.productId
+        - const basePrice = item.priceAtOrder
+        - const discount = item.discountPercentage || 0
+        - const finalPrice = Math.round(basePrice * (1 - discount/100))
+        - const totalFinal = finalPrice * item.quantity
+        - const slug = item.slug
+
+        .product-item.px-2
+          if product && product.thumbnail
+            img.product-img(src=product.thumbnail, alt=product.title)
+          else
+            img.product-img(src="/images/no-image.png", alt="No Image")
+
+          .product-info
+            a(href=`/products/detail/${item.productId.slug}`)
+                .product-title #{product ? product.title : 'Product Removed'}
+            div.text-muted Quantity: #{item.quantity}
+            
+          .product-prices
+            if discount > 0
+              div.price-original #{basePrice.toLocaleString()}$
+              div.price-discount -#{discount}% OFF
+            div.price-final #{finalPrice.toLocaleString()}$ × #{item.quantity}
+            div.mt-1.text-danger Total: #{totalFinal.toLocaleString()}$
+
+      // === ORDER SUMMARY ===
+      .summary-box
+        .d-flex.justify-content-between.mb-2
+          span Subtotal:
+          span #{order.totalPrice.toLocaleString()}$
+        .d-flex.justify-content-between.mb-2
+          span Shipping Fee:
+          span.text-success Free
+        hr
+        .d-flex.justify-content-between.align-items-center
+          strong Grand Total:
+          span.grand-total #{order.totalPrice.toLocaleString()}$
+
+      .text-center.mt-4
+        a.btn.btn-primary.mr-1(href="/") 
+          i.bi.bi-house-door.me-2.mr-1
+          | Back to Home

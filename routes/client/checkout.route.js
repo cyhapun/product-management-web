@@ -11,4 +11,6 @@ router.post('/order',
 
 router.get('/success/:orderId', controllers.success);
 
+router.get('/order/detail/:orderId', controllers.orderDetail);
+
 module.exports = router;
