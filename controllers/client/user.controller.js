@@ -34,7 +34,6 @@ module.exports.registerPost = async (req, res) => {
     const { fullName, email, password } = req.body;
     const newUser = new Users({ fullName, email, password });
     await newUser.save();
-    res.cookie("UserToken", req.user.userToken);
     res.json({ success:true});
   } catch (error) {
     res.status(500).json({ success:false, message: 'Server error!' });

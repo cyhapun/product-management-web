@@ -13,11 +13,17 @@ module.exports.validateLogin = async (req, res, next) => {
   }
 
   // 2. Tìm user theo email
-  const user = await Users.findOne({ email });
+  const user = await Users.findOne({ email:email });
   if (!user) {
     return res.status(400).json({
       success: false,
       message: 'User not found!',
+    });
+  }
+  if (user.status === 'inactive') {
+    return res.status(400).json({
+      success:false,
+      message: 'Account is inactive!',
     });
   }
 
