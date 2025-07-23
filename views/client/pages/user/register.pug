@@ -1,0 +1,179 @@
+extends ../../layouts/default.pug
+
+block main
+  style.
+    /* Nền chỉ áp dụng cho phần main, không đè header/footer */
+    main.flex-fill {
+      min-height: calc(100vh - 120px); /* trừ header + footer */
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 60px 15px; /* tránh dính header/footer */
+      font-family: 'Poppins', sans-serif;
+    }
+
+    .register-wrapper {
+      width: 100%;
+      max-width: 460px;
+      background: #fff;
+      padding: 40px;
+      border-radius: 16px;
+      box-shadow: 0 8px 20px rgba(0,0,0,0.15);
+      animation: fadeIn 0.5s ease-in-out;
+    }
+
+    .register-wrapper h2 {
+      font-weight: 700;
+      color: #333;
+      font-size: 28px;
+    }
+    .register-wrapper p {
+      color: #6c757d;
+      font-size: 14px;
+      margin-bottom: 20px;
+    }
+
+    .form-control {
+      border-radius: 10px;
+      padding: 12px 14px;
+      font-size: 15px;
+      border: 1px solid #ddd;
+      transition: 0.3s ease;
+    }
+    .form-control:focus {
+      border-color: #dd2476;
+      box-shadow: 0 0 8px rgba(221,36,118,0.3);
+    }
+
+    .btn-register {
+      width: 100%;
+      background: linear-gradient(45deg, #ff512f, #dd2476);
+      color: #fff;
+      border: none;
+      padding: 12px;
+      font-weight: 600;
+      font-size: 16px;
+      border-radius: 10px;
+      transition: 0.3s ease;
+    }
+    .btn-register:hover {
+      filter: brightness(0.95);
+      transform: translateY(-2px);
+    }
+
+    .extra-links {
+      text-align: center;
+      margin-top: 20px;
+      font-size: 14px;
+    }
+    .extra-links a {
+      color: #dd2476;
+      text-decoration: none;
+      font-weight: 500;
+      margin-left: 5px;
+      transition: 0.2s ease;
+    }
+    .extra-links a:hover {
+      text-decoration: underline;
+    }
+
+    @keyframes fadeIn {
+      from { opacity: 0; transform: translateY(20px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+
+  .register-wrapper
+    .text-center.mb-4
+      i.bi.bi-person-plus-fill.fs-1.text-danger.mb-2
+      h2 Create Account
+      p Join us and enjoy exclusive features
+
+    form#registerForm
+      .mb-3
+        label.form-label(for="fullName") Full Name
+        input#fullName.form-control(type="text" placeholder="Enter your full name")
+
+      .mb-3
+        label.form-label(for="email") Email
+        input#email.form-control(type="email" placeholder="Enter your email")
+
+      .mb-3
+        label.form-label(for="password") Password
+        input#password.form-control(type="password" placeholder="Enter your password")
+
+      .mb-3
+        label.form-label(for="confirmPassword") Confirm Password
+        input#confirmPassword.form-control(type="password" placeholder="Re-enter your password")
+
+      button.btn-register.mt-2(type="submit")
+        i.bi.bi-person-check-fill.me-2.mr-2
+        | Register
+
+    .extra-links
+      | Already have an account?
+      a(href="/user/login") Login here
+
+  // SweetAlert2 popup
+  script(src="https://cdn.jsdelivr.net/npm/sweetalert2@11")
+
+  script.
+    document.getElementById('registerForm').addEventListener('submit', async (e) => {
+      e.preventDefault();
+
+      const fullName = document.getElementById('fullName').value.trim();
+      const email = document.getElementById('email').value.trim();
+      const password = document.getElementById('password').value.trim();
+      const confirmPassword = document.getElementById('confirmPassword').value.trim();
+
+      if (!fullName || !email || !password || !confirmPassword) {
+        Swal.fire({
+          icon: 'warning',
+          title: 'Missing fields',
+          text: 'Please fill out all fields!'
+        });
+        return;
+      }
+
+      if (password !== confirmPassword) {
+        Swal.fire({
+          icon: 'error',
+          title: 'Passwords do not match',
+          text: 'Please re-enter the same password!'
+        });
+        return;
+      }
+
+      try {
+        const res = await fetch('/user/register', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ fullName, email, password, confirmPassword })
+        });
+        
+        const result = await res.json();
+
+        if (result.success) {
+          Swal.fire({
+            icon: 'success',
+            title: 'Registration successful!',
+            text: 'Redirecting to login...',
+            timer: 2000,
+            showConfirmButton: false
+          }).then(() => {
+            window.location.href = '/user/login';
+          });
+        } else {
+          Swal.fire({
+            icon: 'error',
+            title: 'Registration failed',
+            text: result.message || 'Failed to register!'
+          });
+        }
+      } catch (error) {
+        Swal.fire({
+          icon: 'error',
+          title: 'Server error',
+          text: 'Unable to connect. Please try again.'
+        });
+      }
+    });

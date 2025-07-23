@@ -3,12 +3,12 @@ include ../../mixins/subMenu.pug
 header.header 
   .container 
     .row.align-items-center 
-      .col-3.text-left
+      .col-2.text-left
         .inner-logo
           a(href="/")
             img(src="/uploads/logoWeb.png", alt="logo")
 
-      .col-5 
+      .col-4
         form(
           action=`/search?keyword=${keyword}`
           method="GET"
@@ -27,7 +27,7 @@ header.header
             )
               | Find
 
-      .col-4
+      .col-6
         .inner-menu 
           ul 
             li
@@ -43,3 +43,11 @@ header.header
                 i.bi.bi-cart.me-1 
                 | Cart
                 span(class="ms-1 mini-cart-total-quantity") (#{cart.totalQuantity || 0})
+            
+            li
+              a(href="/user/login")
+                | Login
+                 
+            li
+              a(href="/user/register")
+                | Register

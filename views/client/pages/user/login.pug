@@ -1,0 +1,167 @@
+extends ../../layouts/default.pug
+
+block main
+  style.
+    main.flex-fill {
+      min-height: calc(100vh - 120px); /* trừ header + footer */
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 60px 15px; /* thêm padding để không dính header/footer */
+      font-family: 'Poppins', sans-serif;
+    }
+
+    .login-card {
+      background: rgba(255, 255, 255, 0.97);
+      padding: 50px 40px;
+      border-radius: 20px;
+      box-shadow: 0 10px 35px rgba(0,0,0,0.25);
+      width: 100%;
+      max-width: 420px;
+      text-align: center;
+      animation: fadeIn 0.6s ease-in-out;
+    }
+
+    .login-card .icon {
+      font-size: 60px;
+      color: #2575fc;
+      margin-bottom: 15px;
+    }
+
+    .login-card h2 {
+      font-weight: 700;
+      color: #222;
+      margin-bottom: 8px;
+      font-size: 28px;
+    }
+
+    .login-card p {
+      color: #666;
+      margin-bottom: 25px;
+      font-size: 15px;
+    }
+
+    .form-control {
+      border-radius: 12px;
+      padding: 12px 15px;
+      font-size: 15px;
+      border: 1px solid #ddd;
+      transition: all 0.3s ease;
+    }
+    .form-control:focus {
+      border-color: #2575fc;
+      box-shadow: 0 0 8px rgba(37,117,252,0.3);
+    }
+
+    .btn-login {
+      width: 100%;
+      background: linear-gradient(45deg, #2575fc, #6a11cb);
+      color: #fff;
+      border: none;
+      padding: 14px;
+      font-weight: 600;
+      font-size: 16px;
+      border-radius: 12px;
+      transition: 0.3s ease;
+    }
+    .btn-login:hover {
+      transform: translateY(-2px);
+      opacity: 0.95;
+    }
+
+    .extra-links {
+      margin-top: 20px;
+      font-size: 14px;
+    }
+    .extra-links a {
+      color: #2575fc;
+      text-decoration: none;
+      font-weight: 500;
+      margin: 0 8px;
+      transition: color 0.2s ease;
+    }
+    .extra-links a:hover {
+      color: #6a11cb;
+      text-decoration: underline;
+    }
+
+    @keyframes fadeIn {
+      0% { opacity: 0; transform: translateY(20px); }
+      100% { opacity: 1; transform: translateY(0); }
+    }
+
+  .login-card
+    i.bi.bi-person-circle.icon
+    h2 Welcome Back
+    p Please login to continue
+
+    form#loginForm
+      .mb-3.text-start
+        label.form-label(for="email") Email Address
+        input#email.form-control(type="email" placeholder="Enter your email")
+      .mb-3.text-start
+        label.form-label(for="password") Password
+        input#password.form-control(type="password" placeholder="Enter your password")
+
+      button.btn-login(type="submit")
+        i.bi.bi-box-arrow-in-right.me-2
+        | Login
+
+    .extra-links
+      a(href="/forgot-password") Forgot password?
+      | • 
+      a(href="/user/register") Create an account
+
+  // SweetAlert2 CDN
+  script(src="https://cdn.jsdelivr.net/npm/sweetalert2@11")
+
+  script.
+    const loginForm = document.getElementById('loginForm');
+    loginForm.addEventListener('submit', async (e) => {
+      e.preventDefault();
+      const email = document.getElementById('email').value.trim();
+      const password = document.getElementById('password').value.trim();
+
+      if (!email || !password) {
+        Swal.fire({
+          icon: 'warning',
+          title: 'Missing fields',
+          text: 'Please enter both email and password!'
+        });
+        return;
+      }
+
+      try {
+        const res = await fetch('/user/login', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ email, password })
+        });
+
+        const result = await res.json();
+
+        if (result.success) {
+          Swal.fire({
+            icon: 'success',
+            title: 'Login successful!',
+            text: 'Redirecting...',
+            timer: 2000,
+            showConfirmButton: false
+          }).then(() => {
+            window.location.href = result.redirect || '/';
+          });
+        } else {
+          Swal.fire({
+            icon: 'error',
+            title: 'Login failed',
+            text: result.message || 'Invalid credentials!'
+          });
+        }
+      } catch (error) {
+        Swal.fire({
+          icon: 'error',
+          title: 'Error',
+          text: 'Something went wrong. Please try again!'
+        });
+      }
+    });
