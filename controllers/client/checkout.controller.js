@@ -5,12 +5,12 @@ const Orders = require('../../models/order.model');
 // [GET] '/checkout'
 module.exports.index = async (req, res) => {
   try {
-    const token = req.cookies.token;
+    const userToken = req.cookies.userToken;
     let carts = null;
 
-    if (token) {
+    if (userToken) {
       // User login
-      const user = await Accounts.findOne({ token });
+      const user = await Accounts.findOne({ userToken });
       if (user) {
         carts = await Carts.findOne({ userId: user._id });
         if (!carts) {
@@ -19,7 +19,7 @@ module.exports.index = async (req, res) => {
         // Enrich thông tin sản phẩm từ DB
         carts = await CartHelpers.addInfoProductInCart(carts);
       } else {
-        res.clearCookie('token');
+        res.clearCookie('userToken');
       }
     } else {
       // Guest: lấy cookie + validate
@@ -45,13 +45,13 @@ module.exports.index = async (req, res) => {
 module.exports.orderPost = async (req, res) => {
   try {
     const info = req.body;
-    const token = req.cookies.token;
+    const userToken = req.cookies.userToken;
     let cart = null;
     let tmpCart = null;
 
-    if (token) {
+    if (userToken) {
       const user = await Accounts.findOne({
-        token:token,
+        userToken:userToken,
       });
 
       if (user) {
@@ -72,7 +72,7 @@ module.exports.orderPost = async (req, res) => {
         }
       }
       else {
-        res.clearCookie('token');
+        res.clearCookie('userToken');
       }
     }
     else {
@@ -96,7 +96,7 @@ module.exports.orderPost = async (req, res) => {
       }
     }
     const order = new Orders({
-      userId: token ? user._id : null,
+      userId: userToken ? user._id : null,
       info: {
         fullName: info.fullName,
         email: info.email,

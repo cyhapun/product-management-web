@@ -1,7 +1,5 @@
-const Carts = require('../../models/cart.model');
-const Accounts = require('../../models/account.model');
+const Users = require('../../models/account.model');
 const Products = require('../../models/product.model');
-const CartHelpers = require('../../helpers/client/cart');
 
 // [GET] /cart
 module.exports.index = async (req, res) => {
@@ -22,11 +20,11 @@ module.exports.addPost = async (req, res) => {
   try {
     const productId = req.params.productId;
     const quantity = parseInt(req.body.quantity) || 1;
-    const token = req.cookies.token;
+    const userToken = req.cookies.userToken;
     
     // Nếu user login (chỉ mở khi cần)
-    if (token) {
-      const user = await Accounts.findOne({ token: token, deleted: false });
+    if (userToken) {
+      const user = await Users.findOne({ userToken: userToken, deleted: false });
       if (user) {
         const existingItem = res.locals.cart.products.find(
           item => item.productId.toString() === productId
@@ -41,7 +39,7 @@ module.exports.addPost = async (req, res) => {
         req.flash("success", "Added product successfully!");
         return res.redirect(req.get("Referrer") || "/");
       }
-      res.clearCookie('token');
+      res.clearCookie('userToken');
     }
     // Lấy thông tin sản phẩm từ DB để lưu đầy đủ vào cookie
     const product = await Products.findById(productId).select("title price thumbnail stock");
@@ -80,7 +78,7 @@ module.exports.addPost = async (req, res) => {
 module.exports.deleteProduct = async (req, res) => {
   try {
     const productId = req.params.productId;
-    const token = req.cookies.token;
+    const userToken = req.cookies.userToken;
     const product = await Products.findOne({deleted:false, status:'active', _id:productId});
     
     if (!product) {
@@ -88,14 +86,15 @@ module.exports.deleteProduct = async (req, res) => {
       return res.redirect(req.get("Referrer") || "/");
     }
 
-    if (token) {
-      const user = await Accounts.findOne({token:token});
+    if (userToken) {
+      const user = await Users.findOne({userToken:userToken});
 
       if (user) {
         if (!res.locals.cart) {
           res.locals.cart = {
             products:[],
             totalQuantity:0,
+            totalPrice:0,
           };
           req.flash("error", "Cart is empty!");
           return res.redirect(req.get("Referrer") || "/");
@@ -106,7 +105,7 @@ module.exports.deleteProduct = async (req, res) => {
         return res.redirect(req.get("Referrer") || "/");
       }
       else {
-        res.clearCookie("token");
+        res.clearCookie("userToken");
       }
     }
     if (res.locals.cart) {
@@ -129,11 +128,11 @@ module.exports.deleteProduct = async (req, res) => {
 // [POST] /cart/update - AJAX
 module.exports.updateCart = async (req, res) => {
   try {
-    const token = req.cookies.token;
+    const userToken = req.cookies.userToken;
     const products = req.body.products;
     
-    if (token) {
-      const user = await Accounts.findOne({ token });
+    if (userToken) {
+      const user = await Users.findOne({ userToken });
     
       if (user) {
         if (!res.locals.cart) {
@@ -155,7 +154,7 @@ module.exports.updateCart = async (req, res) => {
         await res.locals.cart.save();
         return res.json({ success: true });
       }
-      res.clearCookie('token');
+      res.clearCookie('userToken');
     }
     // Update quantity
     res.locals.cart.products.forEach(item => {
