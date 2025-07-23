@@ -59,7 +59,6 @@ module.exports.addInfoProductInCart = async (cart) => {
       totalPrice: 0,
     };
   }
-
   const enrichedProducts = [];
   let totalPrice = 0;
   let totalQuantity = 0;

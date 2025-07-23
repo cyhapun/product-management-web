@@ -30,28 +30,10 @@ module.exports = async function validateOrder(req, res, next) {
       return res.redirect('/checkout');
     }
 
-    // 2️⃣ Kiểm tra giỏ hàng có sản phẩm không
-    const token = req.cookies.token;
-    let cart = null;
-
-    if (token) {
-      const user = await Accounts.findOne({ token });
-      if (user) {
-        cart = await Carts.findOne({ userId: user._id });
-      } else {
-        res.clearCookie('token');
-      }
-    } else {
-      if (req.cookies.guestCart) {
-        cart = await CartHelpers.validateGuestCart(req.cookies.guestCart);
-      }
-    }
-
-    if (!cart || !cart.products || cart.products.length === 0) {
-      req.flash('error', 'Your cart is empty. Please add some products before ordering.');
+    if (!res.locals.cart || !res.locals.cart.products) {
+      req.flash('error', 'Cart is empty!');
       return res.redirect('/checkout');
     }
-
     // Nếu mọi thứ OK → cho qua
     next();
   } catch (error) {

@@ -52,8 +52,8 @@ module.exports.loginPost = async (req, res) => {
   // Set cookie an toàn
   res.cookie("userToken", req.user.userToken, {
     httpOnly: true,      // ✅ Ngăn JS truy cập cookie (chống XSS)
-    secure: true,        // ✅ Bắt buộc HTTPS (nếu dùng HTTPS)
-    sameSite: "strict",  // ✅ Chống CSRF
+    // secure: true,        // ✅ Bắt buộc HTTPS (nếu dùng HTTPS)
+    // sameSite: "strict",  // ✅ Chống CSRF
     maxAge: 1 * 24 * 60 * 60 * 1000 // ✅ 7 ngày
   });
   return res.send({

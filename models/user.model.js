@@ -20,6 +20,7 @@ const userSchema = new mongoose.Schema({
   phone: String,
   avatar: String,
   status: { type: String, enum: ['active', 'inactive', 'banned'], default: 'active' },
+  deleted: { type: Boolean, default: false },
   deletedDate: Date,
 }, {
   timestamps:true

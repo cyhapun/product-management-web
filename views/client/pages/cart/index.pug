@@ -53,6 +53,7 @@ block main
                           name=`products[${index}][quantity]`,
                           value=item.quantity,
                           min="1",
+                          data-stock=item.productInfo.stock, 
                           max=item.productInfo.stock,
                           style="width:60px",
                           onchange="updateRowTotal(this)"

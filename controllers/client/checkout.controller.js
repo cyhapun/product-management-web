@@ -1,102 +1,67 @@
 const CartHelpers = require('../../helpers/client/cart');
 const Carts = require('../../models/cart.model');
 const Orders = require('../../models/order.model');
+const Users = require('../../models/user.model');
 
 // [GET] '/checkout'
 module.exports.index = async (req, res) => {
   try {
-    const userToken = req.cookies.userToken;
-    let carts = null;
-
-    if (userToken) {
-      // User login
-      const user = await Accounts.findOne({ userToken });
-      if (user) {
-        carts = await Carts.findOne({ userId: user._id });
-        if (!carts) {
-          carts = { products: [], totalQuantity: 0, totalPrice: 0 };
-        }
-        // Enrich thông tin sản phẩm từ DB
-        carts = await CartHelpers.addInfoProductInCart(carts);
-      } else {
-        res.clearCookie('userToken');
-      }
-    } else {
-      // Guest: lấy cookie + validate
-      if (req.cookies.guestCart) {
-        carts = await CartHelpers.validateGuestCart(req.cookies.guestCart);
-        carts = await CartHelpers.addInfoProductInCart(carts);
-      }
-      if (!carts) carts = { products: [], totalQuantity: 0 };
+    let cart = res.locals.cart;
+    if (cart && typeof cart.toObject === "function") {
+      cart = cart.toObject();
+    }
+    // Nếu chưa có thông tin productInfo thì enrich
+    if (cart && cart.products && cart.products.length > 0 && !cart.products[0].productInfo) {
+      cart = await CartHelpers.addInfoProductInCart(cart);
     }
 
     res.render('client/pages/checkout/index.pug', {
       pageTitle: "Checkout",
-      cart: carts,
+      cart
     });
 
   } catch (error) {
-    console.error("Error when display cart:", error);
-    res.redirect(req.get("Referrer") || "/");
+    console.error("Error when display checkout:", error);
+    res.redirect("/");
   }
-}
+};
 
 // [POST] '/checkout/order'
 module.exports.orderPost = async (req, res) => {
   try {
     const info = req.body;
-    const userToken = req.cookies.userToken;
-    let cart = null;
-    let tmpCart = null;
+    const cart = res.locals.cart;     // ✅ dùng luôn cart đã load sẵn
+    const user = res.locals.user;     // ✅ dùng luôn user đã load sẵn
+    
+    // Nếu cart trống
+    if (!cart) {
+      req.flash("error", "Your cart is empty!");
+      return res.redirect("/checkout");
+    }
 
-    if (userToken) {
-      const user = await Accounts.findOne({
-        userToken:userToken,
+    // Deep copy cart để lưu order
+    let tmpCart = JSON.parse(JSON.stringify(cart));
+
+    // ✅ Nếu user đã login → reset DB cart
+    if (user) {
+      cart.products = [];
+      cart.totalQuantity = 0;
+      cart.totalPrice = 0;
+      await cart.save();
+    } else {
+      // ✅ Guest → reset guestCart cookie
+      const emptyGuestCart = { products: [], totalQuantity: 0, totalPrice: 0 };
+      res.cookie("guestCart", JSON.stringify(emptyGuestCart), {
+        maxAge: 30 * 24 * 60 * 60 * 1000,
+        httpOnly: true
       });
-
-      if (user) {
-        cart = await Carts.findOne({
-          userId: user._id,
-        });
-
-        if (cart) {
-          tmpCart = {...cart};
-          cart.products = [];
-          cart.totalQuantity = 0;
-          cart.totalPrice = 0;
-          await cart.save();
-        }
-        else {
-          req.flash('error', 'Cart not found for user.');
-          return res.redirect('/checkout');
-        }
-      }
-      else {
-        res.clearCookie('userToken');
-      }
     }
-    else {
-      if (!res.locals.cart) {
-        cart = await CartHelpers.validateGuestCart(req.cookies.guestCart);
-        if (cart) {
-          tmpCart = cart;
-          cart.products = [];
-          cart.totalQuantity = 0;
-          cart.totalPrice = 0;
-          res.cookie('guestCart', JSON.stringify(cart), { maxAge: 30 * 24 * 60 * 60 * 1000, httpOnly: true }); // 30 days
-        }
-      }
-      else {
-        tmpCart = {...res.locals.cart};
-        res.locals.cart.products = [];
-        res.locals.cart.totalQuantity = 0;
-        res.locals.cart.totalPrice = 0;
-
-        res.cookie('guestCart', JSON.stringify(res.locals.cart), { maxAge: 30 * 24 * 60 * 60 * 1000, httpOnly: true }); // 30 days
-      }
+    if (!tmpCart.products[0].productInfo) {
+      tmpCart = await CartHelpers.addInfoProductInCart(tmpCart);
     }
+    // ✅ Tạo order từ tmpCart
     const order = new Orders({
-      userId: userToken ? user._id : null,
+      userId: user ? user._id : null,
       info: {
         fullName: info.fullName,
         email: info.email,
@@ -106,46 +71,45 @@ module.exports.orderPost = async (req, res) => {
       products: tmpCart.products.map(item => ({
         productId: item.productId,
         quantity: item.quantity,
-        priceAtOrder: item.productInfo.price, // Lưu giá tại thời điểm order
-        discountPercentage: item.productInfo.discountPercentage // Lưu phần trăm giảm giá nếu có
+        priceAtOrder: item.productInfo.price || 0,
+        discountPercentage: item.productInfo.discountPercentage || 0
       })),
       totalPrice: tmpCart.totalPrice,
-      totalQuantity: tmpCart.totalQuantity,
+      totalQuantity: tmpCart.totalQuantity
     });
+
     await order.save();
-    req.flash('success', 'Order placed successfully!');
+
+    req.flash("success", "Order placed successfully!");
     return res.redirect(`/checkout/success/${order._id}`);
-    
-  } catch(error) {
+
+  } catch (error) {
     console.error("Error when placing order:", error);
-    req.flash('error', 'Failed to place order.');
-    res.redirect('/checkout');
+    req.flash("error", "Failed to place order.");
+    res.redirect("/checkout");
   }
-}
+};
+
 
 // [GET] '/checkout/success/:orderId'
 module.exports.success = async (req, res) => {
   try {
     const orderId = req.params.orderId;
-
-    // Tìm đơn hàng & populate thông tin sản phẩm
     const order = await Orders.findOne({
       _id: orderId,
       deleted: false,
     }).populate({
       path: 'products.productId',
-      select: 'title thumbnail', // chỉ lấy tên & ảnh sản phẩm
+      select: 'title thumbnail'
     });
 
     if (!order) {
-      return res.render('client/pages/404NotFound.pug', {  
-        pageTitle: 'Not found',
-      });
+      return res.render('client/pages/404NotFound.pug', { pageTitle: 'Order not found' });
     }
 
     res.render('client/pages/checkout/orderSuccess.pug', {
       pageTitle: 'Order Successfully',
-      order: order,
+      order
     });
   } catch (err) {
     console.error(err);
@@ -153,7 +117,7 @@ module.exports.success = async (req, res) => {
   }
 };
 
-// [GET] 'checkout/order/detail/:orderId'
+// [GET] '/checkout/order/detail/:orderId'
 module.exports.orderDetail = async (req, res) => {
   try {
     const orderId = req.params.orderId;
@@ -167,21 +131,18 @@ module.exports.orderDetail = async (req, res) => {
     });
 
     if (!order) {
-      return res.render('client/pages/404NotFound.pug', {
-        pageTitle: 'Order Not Found'
-      });
+      return res.render('client/pages/404NotFound.pug', { pageTitle: 'Order Not Found' });
     }
 
-    // Tạo trạng thái timeline
     const statusSteps = [
       { key: 'pending', label: 'Pending' },
       { key: 'confirmed', label: 'Confirmed' },
       { key: 'shipped', label: 'Shipped' },
-      { key: 'completed', label: 'Completed' },
+      { key: 'completed', label: 'Completed' }
     ];
 
     res.render('client/pages/checkout/orderDetail.pug', {
-      pageTitle: `Order detail`,
+      pageTitle: `Order Detail`,
       order,
       statusSteps
     });
@@ -191,4 +152,3 @@ module.exports.orderDetail = async (req, res) => {
     res.redirect('/');
   }
 };
-
