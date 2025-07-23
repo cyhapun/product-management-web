@@ -86,3 +86,10 @@ module.exports.profile = (req, res) => {
     pageTitle: 'Profile',
   });
 }
+
+// [GET] '/user/logout'
+module.exports.logout = (req, res) => {
+  res.clearCookie('userToken');
+  req.flash('success', 'Logout successfully!');
+  res.redirect('/');
+}
