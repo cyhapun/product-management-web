@@ -1,0 +1,134 @@
+extends ../../layouts/default.pug
+
+block main
+  style.
+    .order-success {
+      text-align: center;
+      padding: 40px 20px;
+    }
+    .order-success-icon {
+      font-size: 80px;
+      color: #28a745;
+    }
+    .order-summary {
+      max-width: 900px;
+      margin: 30px auto;
+      background: #fff;
+      padding: 25px;
+      border-radius: 12px;
+      box-shadow: 0 4px 15px rgba(0,0,0,0.05);
+    }
+    .product-item {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      padding: 12px 0;
+      border-bottom: 1px solid #eee;
+    }
+    .product-img {
+      width: 70px;
+      height: 70px;
+      border-radius: 8px;
+      object-fit: cover;
+    }
+    .product-info {
+      flex-grow: 1;
+      text-align: left;
+    }
+    .price-line {
+      font-size: 14px;
+      display: flex;
+      justify-content: space-between;
+    }
+    .discount {
+      color: #dc3545;
+      font-weight: 600;
+    }
+    .final-price {
+      font-weight: bold;
+      color: #28a745;
+    }
+
+  .order-success
+    i.bi.bi-check-circle-fill.order-success-icon
+    h1.mt-3.text-success Order Placed Successfully!
+    p.text-muted Your order was placed and is now being processed.
+
+    // Thông tin đơn hàng
+    .order-summary
+      h4.mb-3.text-center Order Summary
+      .d-flex.justify-content-between.mb-2
+        span Order ID:
+        strong #{order._id}
+      .d-flex.justify-content-between.mb-2
+        span Total Quantity:
+        strong #{order.totalQuantity} items
+      .d-flex.justify-content-between.mb-2
+        span Total Price:
+        strong.text-danger #{order.totalPrice.toLocaleString()}$
+      .d-flex.justify-content-between.mb-2
+        span Status:
+        span.badge.bg-warning.text-dark #{order.status}
+
+      hr
+
+      h5.mt-3.mb-2 Shipping Info
+      p.mb-1 
+        strong Name:
+        |  #{order.info.fullName}
+      if order.info.phone
+        p.mb-1 
+          strong Phone:
+          |  #{order.info.phone}
+      if order.info.email
+        p.mb-1 
+          strong Email:
+          |  #{order.info.email}
+      p
+        strong Address:
+        |  #{order.info.address}
+
+      hr
+
+      h5.mt-3.mb-3 Products
+      each item in order.products
+        - const basePrice = item.priceAtOrder
+        - const discount = item.discountPercentage || 0
+        - const finalPrice = Math.round(basePrice * (1 - discount / 100))
+        - const totalFinal = finalPrice * item.quantity
+
+        .product-item.px-2
+          if item.productId && item.productId.thumbnail
+            img.product-img(src=item.productId.thumbnail, alt=item.productId.title)
+          else
+            img.product-img(src="/images/no-image.png", alt="No image")
+
+          .product-info
+            strong #{item.productId ? item.productId.title : 'Product Removed'}
+            div.text-muted Quantity: #{item.quantity}
+
+            .price-line
+              span Original:
+              span #{basePrice.toLocaleString()}$
+            .price-line
+              span Discount:
+              span.discount -#{discount}%
+            .price-line
+              span After Discount:
+              span.final-price #{finalPrice.toLocaleString()}$
+            .price-line
+              span Total:
+              strong.text-danger #{totalFinal.toLocaleString()}$
+
+      hr.mt-4
+      .d-flex.justify-content-between.fs-5
+        strong Grand Total:
+        strong.text-success #{order.totalPrice.toLocaleString()}$
+
+    .mt-4
+      a.btn.btn-primary.mr-1(href="/") 
+        i.bi.bi-house-door.me-2.mr-1
+        | Back to Home
+      a.btn.btn-outline-secondary.ms-2(href=`checkout/order/detail/${order._id}`)
+        i.bi.bi-receipt-cutoff.me-2.mr-1
+        | View Order Details

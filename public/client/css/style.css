@@ -219,13 +219,19 @@ body.swal2-shown {
 /* End sub-menu */
 
 /* Show alert */
+.alert-container {
+  width: 100%;
+  display: flex;
+  justify-content: center;
+  margin-top: 10px;
+}
+
 [show-alert] {
   position: fixed;
-  top: 20px;
-  right: 20px;  /* Thay đổi từ left: 75% */
+  top: 72px;        /* header cao 60px + khoảng cách 10px */
+  right: 2px;      /* vẫn nằm bên phải */
   z-index: 9999;
 
-  /* Giao diện */
   max-width: 300px;
   color: #fff;
   padding: 12px 20px;

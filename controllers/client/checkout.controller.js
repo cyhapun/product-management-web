@@ -114,7 +114,7 @@ module.exports.orderPost = async (req, res) => {
     });
     await order.save();
     req.flash('success', 'Order placed successfully!');
-    return res.redirect('/checkout');
+    return res.redirect(`/checkout/success/${order._id}`);
     
   } catch(error) {
     console.error("Error when placing order:", error);
@@ -122,3 +122,33 @@ module.exports.orderPost = async (req, res) => {
     res.redirect('/checkout');
   }
 }
+
+// [GET] '/checkout/success/:orderId'
+module.exports.success = async (req, res) => {
+  try {
+    const orderId = req.params.orderId;
+
+    // Tìm đơn hàng & populate thông tin sản phẩm
+    const order = await Orders.findOne({
+      _id: orderId,
+      deleted: false,
+    }).populate({
+      path: 'products.productId',
+      select: 'title thumbnail', // chỉ lấy tên & ảnh sản phẩm
+    });
+
+    if (!order) {
+      return res.render('client/pages/404NotFound.pug', {  
+        pageTitle: 'Not found',
+      });
+    }
+
+    res.render('client/pages/checkout/orderSuccess.pug', {
+      pageTitle: 'Order Successfully',
+      order: order,
+    });
+  } catch (err) {
+    console.error(err);
+    res.redirect('/');
+  }
+};

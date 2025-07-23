@@ -12,8 +12,9 @@ html
   body    
     .wrapper
       include ../pages/partials/header.pug    
-      +alert-success(600)
-      +alert-error(600)
+      .alert-container
+        +alert-success(2000)
+        +alert-error(2000)
       main.flex-fill        
         block main
       include ../pages/partials/footer.pug

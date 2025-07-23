@@ -79,6 +79,17 @@ if (showAlert) {
   }, displayTime);
 
 }
+document.addEventListener("DOMContentLoaded", () => {
+  const header = document.querySelector(".header");
+  const alerts = document.querySelectorAll("[show-alert]");
+  
+  if (header) {
+    const headerHeight = header.offsetHeight;
+    alerts.forEach(alert => {
+      alert.style.top = (headerHeight + 10) + "px";
+    });
+  }
+});
 // End show alert
 
 // Preview Image Upload

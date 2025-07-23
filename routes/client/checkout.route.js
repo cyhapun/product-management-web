@@ -1,9 +1,14 @@
 const express = require('express');
 const router = express.Router();
-const controller = require('../../controllers/client/checkout.controller');
+const controllers = require('../../controllers/client/checkout.controller');
+const validateOrder = require('../../validates/client/authOrder');
 
-router.get('/', controller.index);    
+router.get('/', controllers.index);    
 
-router.post('/order', controller.orderPost);    
+router.post('/order', 
+  validateOrder,
+  controllers.orderPost);    
+
+router.get('/success/:orderId', controllers.success);
 
 module.exports = router;
