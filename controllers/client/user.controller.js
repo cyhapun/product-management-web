@@ -212,7 +212,7 @@ module.exports.passwordOTP = async (req, res) => {
   //     pageTitle: "Not found OTP email",
   //   });
   // }
-  res.render('client/pages/user/OtpForgotPassword',{
+  res.render('client/pages/user/otpForgotPassword',{
     pageTitle: 'Verify OTP',
     email:req.query.email,
   })
