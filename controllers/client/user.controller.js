@@ -2,6 +2,7 @@ const Users = require('../../models/user.model');
 const Carts = require('../../models/cart.model');
 const Products = require('../../models/product.model');
 const { validateGuestCart } = require('../../helpers/client/cart');
+const ForgotPassword = require('../../models/forgotPassword.model');
 
 // [GET] '/user/login'
 module.exports.login = (req, res) => {
@@ -116,5 +117,10 @@ module.exports.forgotPasswordPost = async (req, res) => {
     res.redirect('/user/password/forgot');
   }
   
+  const otp = new ForgotPassword({email});
+
+  await otp.save();
+  req.flash('success', "Sent to your email!");
+  res.redirect('back');
 }
 
