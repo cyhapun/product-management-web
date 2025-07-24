@@ -2,7 +2,7 @@ const Users = require('../../models/user.model');
 const Carts = require('../../models/cart.model');
 const { validateGuestCart } = require('../../helpers/client/cart');
 const ForgotPassword = require('../../models/forgotPassword.model');
-const md5 = require('md5');
+const UserHelpers = require('../../helpers/client/user');
 
 // [GET] '/user/login'
 module.exports.login = (req, res) => {
@@ -108,7 +108,7 @@ module.exports.forgotPasswordPost = async (req, res) => {
   
   if (!email) {
     req.flash('error', 'Email is empty!');
-    res.redirect('/user/password/forgot');
+    return res.redirect('/user/password/forgot');
   }
 
   const user = await Users.findOne({
@@ -119,14 +119,87 @@ module.exports.forgotPasswordPost = async (req, res) => {
 
   if (!user) {
     req.flash('error', 'Email is not existed!');
-    res.redirect('/user/password/forgot');
+    return res.redirect('/user/password/forgot');
   }
   
   const otp = new ForgotPassword({email});
 
   await otp.save();
+  
+  const subjectEmail = 'Mã OTP xác thực từ CYHAPUN';
+  const htmlContent = `
+    <!DOCTYPE html>
+    <html>
+    <head>
+      <meta charset="UTF-8">
+      <title>Your OTP Code</title>
+      <style>
+        body {
+          font-family: Arial, sans-serif;
+          background: #f4f4f4;
+          padding: 0;
+          margin: 0;
+        }
+        .container {
+          max-width: 500px;
+          margin: 30px auto;
+          background: #fff;
+          border-radius: 8px;
+          box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+          padding: 30px;
+          text-align: center;
+        }
+        h2 {
+          color: #333;
+        }
+        .otp-box {
+          background: #f0f7ff;
+          padding: 15px;
+          border-radius: 6px;
+          display: inline-block;
+          font-size: 22px;
+          font-weight: bold;
+          letter-spacing: 4px;
+          color: #1a73e8;
+          margin: 15px 0;
+        }
+        p {
+          color: #555;
+          font-size: 15px;
+        }
+        .footer {
+          margin-top: 20px;
+          font-size: 12px;
+          color: #888;
+        }
+      </style>
+    </head>
+    <body>
+      <div class="container">
+        <h2>Your Verification Code</h2>
+        <p>We received a request to verify your account. Please use the following OTP:</p>
+        
+        <div class="otp-box">${otp.otp}</div>
+        
+        <p>This code will expire in <strong>2 minutes</strong>.  
+          If you did not request this, you can safely ignore this email.</p>
+        
+        <div class="footer">
+          &copy; 2025 Cyhapun
+        </div>
+      </div>
+    </body>
+    </html>
+  `;
+
+  UserHelpers.sendMail(
+    email,
+    subjectEmail,
+    htmlContent,
+  );
+
   req.flash('success', "Sent to your email!");
-  res.redirect(`/user/password/otp?email=${email}`);
+  return res.redirect(`/user/password/otp?email=${email}`);
 }
 
 // [GET] '/user/password/otp'
@@ -181,15 +254,15 @@ module.exports.resetPassword = (req, res) => {
 module.exports.resetPasswordPost = async (req, res) => {
   const userToken = req.params.userToken;
   const password = req.body.newPassword;
-
   const user = await Users.findOne({userToken, deleted: false, status: 'active' });
+  
   if (!user) {
     res.clearCookie('userToken');
     req.flash('error', 'Account not found!');
     return res.redirect('/user/password/forgot');
   }
   await Users.updateOne({userToken}, {password:password});
-  await ForgotPassword.deleteOne({
+  await ForgotPassword.deleteMany({
     email:req.body.email,
   });
   req.flash('success', 'Your password has been updated! Please login.');
