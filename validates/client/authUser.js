@@ -104,3 +104,17 @@ module.exports.validateRegister = async (req, res, next) => {
   next();
 }
 
+module.exports.validateEmail = (req, res, next) => {
+  const email = req.body.email;
+  const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+  
+  if (!email) {
+    req.flash('error', 'Email empty!');
+    return res.redirect('/user/password/forgot');
+  }
+  if (!emailRegex.test(email)) {
+    req.flash('error', 'Email invalid!');
+    return res.redirect('/user/password/forgot');
+  }
+  next();
+}

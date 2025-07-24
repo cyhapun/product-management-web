@@ -93,3 +93,28 @@ module.exports.logout = (req, res) => {
   req.flash('success', 'Logout successfully!');
   res.redirect('/');
 }
+
+// [GET] '/user/password/forgot'
+module.exports.forgotPassword = (req, res) => {
+  res.render('client/pages/user/forgotPassword', {
+    pageTitle: 'Forgot password',
+  })
+}
+
+// [POST] '/user/password/forgot'
+module.exports.forgotPasswordPost = async (req, res) => {
+  const email = req.body.email;
+
+  const user = await Users.findOne({
+    deleted:false,
+    status:'active',
+    email: email,
+  });
+
+  if (!user) {
+    req.flash('error', 'Email is not existed!');
+    res.redirect('/user/password/forgot');
+  }
+  
+}
+

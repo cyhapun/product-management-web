@@ -18,4 +18,10 @@ router.get('/profile', controllers.profile);
 
 router.get('/logout', controllers.logout);
 
+router.get('/password/forgot', controllers.forgotPassword);
+
+router.post('/password/forgot', 
+  validateUser.validateEmail,
+  controllers.forgotPasswordPost);
+
 module.exports = router;
