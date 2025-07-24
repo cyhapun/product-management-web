@@ -118,3 +118,25 @@ module.exports.validateEmail = (req, res, next) => {
   }
   next();
 }
+
+module.exports.validateResetPassword= async (req, res, next) => {
+  try {
+    const {newPassword, confirmPassword } = req.body;
+
+    if (newPassword !== confirmPassword) {
+      req.flash('error', 'Passwords do not match!');
+      return res.redirect(`/user/password/reset/${req.params.userToken}`);
+    }
+
+    if (newPassword.trim().length < 3) {
+      req.flash('error', 'Password must be at least 3 characters long!');
+      return res.redirect(`/user/password/reset/${req.params.userToken}`);
+    }
+
+  } catch (err) {
+    console.error(err);
+    req.flash('error', 'Something went wrong. Please try again.');
+    return res.redirect('/user/password/forgot');
+  }
+  next();
+};

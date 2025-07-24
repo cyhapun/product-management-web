@@ -1,5 +1,5 @@
 const mongoose = require('mongoose');
-const timeExisted = 60 * 2; // 2 phút
+const timeExisted = 60 * 3; // 3 phút
 const { generateOTP } = require('../helpers/client/user');
 
 const ForgotPasswordSchema = new mongoose.Schema({
@@ -13,13 +13,13 @@ const ForgotPasswordSchema = new mongoose.Schema({
   },
   expireAt: {
     type: Date,
-    default: () => new Date(Date.now() + timeExisted * 1000), // Hết hạn sau 2 phút
+    default: () => new Date(Date.now() + timeExisted * 1000), // Corrected line: Use Date.now() and create a new Date object
     expires: 0 // TTL ngay khi đến expireAt
   },
 }, {
   timestamps: true
 });
-
+ForgotPasswordSchema.index({ "expireAt": 1 }, { expireAfterSeconds: 0 });
 const ForgotPassword = mongoose.model('ForgotPassword', ForgotPasswordSchema, 'forgot-password');
 
 module.exports = ForgotPassword;

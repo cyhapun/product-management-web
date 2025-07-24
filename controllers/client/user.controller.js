@@ -1,8 +1,8 @@
 const Users = require('../../models/user.model');
 const Carts = require('../../models/cart.model');
-const Products = require('../../models/product.model');
 const { validateGuestCart } = require('../../helpers/client/cart');
 const ForgotPassword = require('../../models/forgotPassword.model');
+const md5 = require('md5');
 
 // [GET] '/user/login'
 module.exports.login = (req, res) => {
@@ -105,6 +105,11 @@ module.exports.forgotPassword = (req, res) => {
 // [POST] '/user/password/forgot'
 module.exports.forgotPasswordPost = async (req, res) => {
   const email = req.body.email;
+  
+  if (!email) {
+    req.flash('error', 'Email is empty!');
+    res.redirect('/user/password/forgot');
+  }
 
   const user = await Users.findOne({
     deleted:false,
@@ -121,6 +126,72 @@ module.exports.forgotPasswordPost = async (req, res) => {
 
   await otp.save();
   req.flash('success', "Sent to your email!");
-  res.redirect('back');
+  res.redirect(`/user/password/otp?email=${email}`);
 }
 
+// [GET] '/user/password/otp'
+module.exports.passwordOTP = async (req, res) => {
+  // const email = await ForgotPassword.findOne({
+  //   email: req.query.email,
+  // });
+  // if (!email) {
+  //   return res.render('client/pages/404NotFound', {
+  //     pageTitle: "Not found OTP email",
+  //   });
+  // }
+  res.render('client/pages/user/OtpForgotPassword',{
+    pageTitle: 'Verify OTP',
+    email:req.query.email,
+  })
+}
+
+// [POST] '/user/password/otp'
+module.exports.passwordOTPPost = async (req, res) => {
+  const email = req.body.email;
+  const otp = req.body.otp1 + req.body.otp2 + req.body.otp3 + req.body.otp4
+  const otpEmail = await ForgotPassword.findOne({
+    email: email,
+    otp: otp,
+  });
+  if (!otpEmail) {
+    req.flash('error', 'OTP is not correct!');
+    return res.redirect('back');
+  }
+  const user = await Users.findOne({
+    deleted:false,
+    email:email,
+    status:'active',
+  });
+  res.cookie('resetEmail', email);
+  return res.redirect(`/user/password/reset/${user.userToken}`);
+}
+
+// [GET] '/user/password/reset/:userToken'
+module.exports.resetPassword = (req, res) => {
+  const email = req.cookies.resetEmail;
+  res.clearCookie('resetEmail');
+  res.render('client/pages/user/resetPassword', {
+    pageTitle: 'Reset password',
+    userToken: req.params.userToken,
+    email: email,
+  });
+}
+
+// [POST] '/user/password/reset/:userToken'
+module.exports.resetPasswordPost = async (req, res) => {
+  const userToken = req.params.userToken;
+  const password = req.body.newPassword;
+
+  const user = await Users.findOne({userToken, deleted: false, status: 'active' });
+  if (!user) {
+    res.clearCookie('userToken');
+    req.flash('error', 'Account not found!');
+    return res.redirect('/user/password/forgot');
+  }
+  await Users.updateOne({userToken}, {password:password});
+  await ForgotPassword.deleteOne({
+    email:req.body.email,
+  });
+  req.flash('success', 'Your password has been updated! Please login.');
+  return res.redirect('/user/login');
+}

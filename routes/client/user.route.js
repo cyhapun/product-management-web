@@ -24,4 +24,14 @@ router.post('/password/forgot',
   validateUser.validateEmail,
   controllers.forgotPasswordPost);
 
+router.get('/password/otp', controllers.passwordOTP);
+
+router.post('/password/otp', controllers.passwordOTPPost);
+
+router.get('/password/reset/:userToken', controllers.resetPassword);
+
+router.post('/password/reset/:userToken', 
+  validateUser.validateResetPassword,
+  controllers.resetPasswordPost);
+
 module.exports = router;
