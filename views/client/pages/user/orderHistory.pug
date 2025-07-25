@@ -1,0 +1,64 @@
+extends ../../layouts/default.pug
+
+block main
+  style.
+    body { background: #f5f6fa; }
+    .profile-wrapper { padding: 40px 0; }
+    .profile-container { display: flex; gap: 25px; }
+    .profile-content { flex: 1; }
+    .content-card {
+      background: #fff;
+      padding: 30px;
+      border-radius: 12px;
+      box-shadow: 0 4px 12px rgba(0,0,0,0.05);
+    }
+
+  .profile-wrapper
+    .container
+      .mb-4
+        button.btn.btn-outline-secondary(type="button", onclick="goBack()")
+          i.bi.bi-arrow-left.me-1.mr-1
+          | Back
+
+      .profile-container
+        // 🔹 Sidebar tái sử dụng
+        include ../partials/profileSidebar.pug
+
+        // 🔹 MAIN CONTENT
+        .profile-content
+          .content-card
+            h5.mb-3
+              i.bi.bi-bag-check.me-2.mr-1
+              | Order History
+
+            if orders && orders.length > 0
+              table.table.table-hover.align-middle
+                thead
+                  tr
+                    th Order ID
+                    th Date
+                    th Total
+                    th Status
+                    th Action
+                tbody
+                  each order in orders
+                    tr
+                      td #{order._id}
+                      td #{order.createdAt.toLocaleDateString('en-US')}
+                      td.text-primary.fw-bold #{order.totalPrice.toLocaleString()}$
+                      td 
+                        if order.status == 'completed'
+                          span.badge(style="background:#28a745; color:#fff;") Completed
+                        else if order.status == 'shipped'
+                          span.badge(style="background:#007bff; color:#fff;") Shipped
+                        else if order.status == 'confirmed'
+                          span.badge(style="background:#ffc107; color:#212529;") Confirmed
+                        else
+                          span.badge(style="background:#6c757d; color:#fff;") Pending
+
+                      td 
+                        a.btn.btn-sm.btn-outline-primary(href=`/checkout/order/detail/${order._id}`)
+                          i.bi.bi-eye.me-1.mr-1
+                          | View
+            else
+              p.text-muted.text-center.mt-4 No orders found.

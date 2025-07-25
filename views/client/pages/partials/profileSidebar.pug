@@ -1,0 +1,29 @@
+link(rel="stylesheet", href="/client/css/profileSidebar.css")
+
+.profile-sidebar
+  .profile-avatar-wrapper
+    img(src=user.avatar || "/uploads/default-avatar.png", alt="Avatar")
+
+  h5 #{user.fullName}
+  p 
+    i.bi.bi-envelope.me-1.mr-1
+    | #{user.email}
+
+  .sidebar-menu
+    a(href="/user/profile" class=(currentPath.startsWith('/user/profile') ? 'active' : ''))
+      i.bi.bi-person
+      | Profile Info
+
+    a(href="/user/order/history" class=(currentPath.startsWith('/user/order/history') ? 'active' : ''))
+      i.bi.bi-bag-check
+      | Order History
+
+    a(href="/user/settings" class=(currentPath.startsWith('/user/settings') ? 'active' : ''))
+      i.bi.bi-gear
+      | Settings
+
+    a(href="/user/logout")
+      i.bi.bi-box-arrow-right
+      | Logout
+    
+

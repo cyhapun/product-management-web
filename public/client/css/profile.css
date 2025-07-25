@@ -1,0 +1,136 @@
+/* ===== TRANG PROFILE ===== */
+
+body {
+  background: #f5f6fa;
+}
+
+/* Bọc toàn bộ profile */
+.profile-wrapper {
+  padding: 40px 0;
+}
+
+/* Container chia Sidebar & Content */
+.profile-container {
+  display: flex;
+  gap: 25px;
+}
+
+/* === SIDEBAR === */
+.profile-sidebar {
+  flex: 0 0 260px;
+  background: #fff;
+  border-radius: 12px;
+  padding: 25px 20px;
+  box-shadow: 0 4px 12px rgba(0,0,0,0.05);
+  text-align: center;
+}
+
+.profile-avatar-wrapper {
+  background: linear-gradient(135deg, #0d6efd20, #0d6efd10);
+  padding: 15px;
+  border-radius: 50%;
+  display: inline-block;
+}
+
+.profile-sidebar img {
+  width: 110px;
+  height: 110px;
+  border-radius: 50%;
+  object-fit: cover;
+  border: 4px solid #fff;
+  box-shadow: 0 4px 10px rgba(0,0,0,0.08);
+}
+
+.profile-sidebar h5 {
+  margin-top: 15px;
+  font-weight: 600;
+  font-size: 1.15rem;
+}
+
+.profile-sidebar p {
+  color: #6c757d;
+  font-size: 0.9rem;
+  margin-bottom: 20px;
+}
+
+/* Menu bên sidebar */
+.sidebar-menu {
+  text-align: left;
+  margin-top: 15px;
+}
+
+.sidebar-menu a {
+  display: flex;
+  align-items: center;
+  padding: 10px 12px;
+  color: #333;
+  border-radius: 8px;
+  margin-bottom: 8px;
+  transition: 0.2s;
+  text-decoration: none;
+  font-size: 0.95rem;
+  cursor: pointer;
+}
+
+.sidebar-menu a i {
+  margin-right: 10px;
+  font-size: 1.2rem;
+  color: #0d6efd;
+  width: 22px;
+}
+
+.sidebar-menu a:hover {
+  background: #f0f4ff;
+  color: #0d6efd;
+}
+
+.sidebar-menu a.active {
+  background: #0d6efd;
+  color: #fff;
+}
+
+.sidebar-menu a.active i {
+  color: #fff;
+}
+
+/* === NỘI DUNG PROFILE === */
+.profile-content {
+  flex: 1;
+}
+
+.content-card {
+  background: #fff;
+  padding: 30px;
+  border-radius: 12px;
+  box-shadow: 0 4px 12px rgba(0,0,0,0.05);
+}
+
+/* Thông tin từng dòng */
+.profile-info-item {
+  display: flex;
+  align-items: center;
+  padding: 12px 0;
+  border-bottom: 1px solid #f1f1f1;
+}
+
+.profile-info-item:last-child {
+  border-bottom: none;
+}
+
+.profile-info-item i {
+  font-size: 1.3rem;
+  color: #0d6efd;
+  width: 35px;
+  text-align: center;
+  margin-right: 12px;
+}
+
+.profile-info-item .label {
+  font-weight: 600;
+  margin-right: 6px;
+}
+
+/* Nút chỉnh sửa */
+.profile-content .btn {
+  min-width: 160px;
+}

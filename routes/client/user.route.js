@@ -34,4 +34,8 @@ router.post('/password/reset/:userToken',
   validateUser.validateResetPassword,
   controllers.resetPasswordPost);
 
+router.get('/order/history', controllers.orderHistory);
+
+router.get('/settings', controllers.settings);
+
 module.exports = router;

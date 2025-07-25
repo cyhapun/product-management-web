@@ -14,7 +14,8 @@ const ForgotPasswordSchema = new mongoose.Schema({
   expireAt: {
     type: Date,
     default: () => new Date(Date.now() + timeExisted * 1000), // Corrected line: Use Date.now() and create a new Date object
-    expires: 0 // TTL ngay khi đến expireAt
+    expires: 0, // TTL ngay khi đến expireAt
+    index: true
   },
 }, {
   timestamps: true

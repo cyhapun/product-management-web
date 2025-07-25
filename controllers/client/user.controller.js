@@ -3,6 +3,7 @@ const Carts = require('../../models/cart.model');
 const { validateGuestCart } = require('../../helpers/client/cart');
 const ForgotPassword = require('../../models/forgotPassword.model');
 const UserHelpers = require('../../helpers/client/user');
+const Orders = require('../../models/order.model');
 
 // [GET] '/user/login'
 module.exports.login = (req, res) => {
@@ -85,6 +86,7 @@ module.exports.profile = (req, res) => {
   }
   res.render('client/pages/user/profile', {
     pageTitle: 'Profile',
+    currentPath: req.originalUrl,
   });
 }
 
@@ -267,4 +269,37 @@ module.exports.resetPasswordPost = async (req, res) => {
   });
   req.flash('success', 'Your password has been updated! Please login.');
   return res.redirect('/user/login');
+}
+
+// [GET] '/user/order/history'
+module.exports.orderHistory = async (req, res) => {
+  if (!res.locals.user) {
+    return res.render('client/pages/404NotFound', {
+      pageTitle:'Not found',
+    });
+  }
+  
+  const orders = await Orders.find({
+    userId: res.locals.user._id,
+  });
+
+  res.render('client/pages/user/orderHistory', {
+    pageTitle:'Order history',
+    orders: orders,
+    currentPath: req.originalUrl,
+  });
+}
+
+// [GET] 'user/settings'
+module.exports.settings = (req, res) => {
+   if (!res.locals.user) {
+    return res.render('client/pages/404NotFound', {
+      pageTitle:'Not found',
+    });
+  }
+  
+  res.render('client/pages/user/settings', {
+    pageTitle:'Settings',
+    currentPath: req.originalUrl,
+  });
 }
