@@ -273,12 +273,6 @@ module.exports.resetPasswordPost = async (req, res) => {
 
 // [GET] '/user/order/history'
 module.exports.orderHistory = async (req, res) => {
-  if (!res.locals.user) {
-    return res.render('client/pages/404NotFound', {
-      pageTitle:'Not found',
-    });
-  }
-  
   const orders = await Orders.find({
     userId: res.locals.user._id,
   });
@@ -292,12 +286,6 @@ module.exports.orderHistory = async (req, res) => {
 
 // [GET] 'user/settings'
 module.exports.settings = (req, res) => {
-   if (!res.locals.user) {
-    return res.render('client/pages/404NotFound', {
-      pageTitle:'Not found',
-    });
-  }
-  
   res.render('client/pages/user/settings', {
     pageTitle:'Settings',
     currentPath: req.originalUrl,

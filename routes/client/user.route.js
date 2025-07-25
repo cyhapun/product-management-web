@@ -14,7 +14,9 @@ router.post('/register',
   validateUser.validateRegister,
   controllers.registerPost);
 
-router.get('/profile', controllers.profile);
+router.get('/profile', 
+  validateUser.validateUser,
+  controllers.profile);
 
 router.get('/logout', controllers.logout);
 
@@ -34,8 +36,12 @@ router.post('/password/reset/:userToken',
   validateUser.validateResetPassword,
   controllers.resetPasswordPost);
 
-router.get('/order/history', controllers.orderHistory);
+router.get('/order/history', 
+  validateUser.validateUser,
+  controllers.orderHistory);
 
-router.get('/settings', controllers.settings);
+router.get('/settings', 
+  validateUser.validateUser,
+  controllers.settings);
 
 module.exports = router;
