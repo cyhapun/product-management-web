@@ -8,9 +8,7 @@ module.exports.addInfoUser = async (req, res, next) => {
         userToken: req.cookies.userToken,
         status:'active',
       }).select('-password');
-    if (user) {
-      res.locals.user = user;
-    }
+    res.locals.user = user;
   }
   next();
 }

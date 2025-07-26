@@ -143,8 +143,8 @@ module.exports.validateResetPassword= async (req, res, next) => {
 
 module.exports.validateUser = (req, res, next) => {
   if (!res.locals.user) {
-    return res.render('client/pages/home/index', {
-      pageTitle:'Home',
+    return res.render('client/pages/404NotFound', {
+      pageTitle:'Not found',
     });
   }
   next();

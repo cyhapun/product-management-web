@@ -79,11 +79,6 @@ module.exports.registerPost = async (req, res) => {
 
 // [GET] '/user/profile' 
 module.exports.profile = (req, res) => {
-  if (!res.locals.user) {
-    res.render("client/pages/404NotFound",{
-      pageTitle:"Not found profile",
-    });
-  }
   res.render('client/pages/user/profile', {
     pageTitle: 'Profile',
     currentPath: req.originalUrl,
