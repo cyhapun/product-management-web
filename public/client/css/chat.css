@@ -1,0 +1,116 @@
+/* Giao diện chính của khung chat */
+.chat {
+  background-color: #f0f2f5;
+  border-radius: 16px;
+  padding: 20px;
+  max-height: 75vh;
+  overflow-y: auto;
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.05);
+  position: relative;
+}
+
+/* Vùng chứa tin nhắn */
+.inner-body {
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+  flex-grow: 1;
+}
+
+/* Tin nhắn đến */
+.inner-incoming {
+  align-self: flex-start;
+  max-width: 75%;
+  background-color: #ffffff;
+  padding: 10px 14px;
+  border-radius: 18px 18px 18px 6px;
+  font-size: 15px;
+  color: #212529;
+  position: relative;
+  box-shadow: 0 1px 3px rgba(0,0,0,0.08);
+}
+
+/* Tin nhắn đi */
+.inner-outgoing {
+  align-self: flex-end;
+  max-width: 75%;
+  background-color: #007bff;
+  color: #fff;
+  padding: 10px 14px;
+  border-radius: 18px 18px 6px 18px;
+  font-size: 15px;
+  position: relative;
+  box-shadow: 0 1px 3px rgba(0,0,0,0.12);
+}
+
+/* Tên người gửi (hiện phía trên mỗi tin nhắn đến) */
+.inner-name {
+  font-weight: 600;
+  font-size: 13px;
+  color: #495057;
+  margin-bottom: 4px;
+}
+
+/* Vùng nhập tin nhắn ở cuối */
+.inner-foot {
+  margin-top: auto;
+  padding: 12px 0 0;
+  background-color: #fff;
+  border-top: 1px solid #e0e0e0;
+  position: sticky;
+  bottom: 0;
+  z-index: 10;
+}
+
+/* Form nhập */
+.inner-form {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 10px 0;
+}
+
+/* Ô nhập nội dung */
+.inner-form input[type="text"] {
+  flex: 1;
+  background-color: #f0f2f5;
+  border: none;
+  border-radius: 999px;
+  padding: 10px 18px;
+  font-size: 15px;
+  transition: box-shadow 0.2s, background-color 0.2s;
+  box-shadow: inset 0 1px 2px rgba(0, 0, 0, 0.08);
+}
+
+.inner-form input[type="text"]:focus {
+  outline: none;
+  background-color: #fff;
+  box-shadow: 0 0 0 2px #007bff33;
+}
+
+/* Nút gửi */
+.inner-form button {
+  background-color: #007bff;
+  color: #fff;
+  border: none;
+  padding: 10px;
+  border-radius: 50%;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: background-color 0.2s ease;
+  box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+}
+
+.inner-form button:hover {
+  background-color: #0056d2;
+}
+
+/* Icon gửi */
+.fa-paper-plane {
+  font-size: 16px;
+}
