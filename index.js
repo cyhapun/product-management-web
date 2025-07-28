@@ -80,6 +80,11 @@ app.set('view engine', 'pug');
 // Routes
 routeClient(app);
 routeAdmin(app);
+app.get('*', (req, res) => {
+    res.render('client/pages/404NotFound.pug', {
+        pageTitle:"Not found",
+    });
+});
 
 app.listen(port, () => {
     console.log(`App listening on port ${port}!`)

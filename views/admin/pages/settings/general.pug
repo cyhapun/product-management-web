@@ -70,9 +70,9 @@ block main
           input.form-control(type="file", name="logo" upload-image-input)
           img(
             upload-image-preview
-            src=""
+            src=`${settings.logo}`
             alt="Your image"
-            class="upload-image-preview"
+            class="upload-image-preview mt-0"
           )
 
         button.btn.btn-primary.btn-save(type="submit") Save Settings
