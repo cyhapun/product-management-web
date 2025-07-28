@@ -10,7 +10,7 @@ const upload = multer();
 router.get('/general', controller.generalSettings);
 
 router.patch('/general', 
-  upload.single('thumbnail'),
+  upload.single('logo'),
   uploadCloud.upload,
   controller.generalSettingsPatch);
 

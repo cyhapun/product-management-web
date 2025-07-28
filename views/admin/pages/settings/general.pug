@@ -67,9 +67,13 @@ block main
 
         .form-group
           label.form-label(for="logo") Logo
-          input.form-control(type="file", name="logo")
-          if settings && settings.logo
-            img.logo-preview(src=`/uploads/${settings.logo}`, alt="Logo")
+          input.form-control(type="file", name="logo" upload-image-input)
+          img(
+            upload-image-preview
+            src=""
+            alt="Your image"
+            class="upload-image-preview"
+          )
 
         button.btn.btn-primary.btn-save(type="submit") Save Settings
 
