@@ -7,6 +7,7 @@ const accountListRoutes = require('./accounts.route');
 const authRoutes = require('./auth.route');
 const authMiddleware = require('../../middlewares/admin/auth.middleware');
 const profileRoutes = require('./profile.route');
+const settingsRoutes = require('./settings.route');
 
 module.exports = (app) => {
   // Sử dụng biến trong systemConfig
@@ -39,4 +40,7 @@ module.exports = (app) => {
     authMiddleware.requireAdmin,
     profileRoutes);
 
+  app.use(app.locals.prefixAdmin + '/settings',
+    authMiddleware.requireAdmin,
+    settingsRoutes);
 }

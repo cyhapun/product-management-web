@@ -1,0 +1,120 @@
+extends ../../layouts/default.pug
+
+block main
+  style.
+    body {
+      background: #f8f9fa;
+    }
+    .settings-wrapper {
+      max-width: 800px;
+      margin: 50px auto;
+      padding: 30px;
+    }
+    .settings-card {
+      background: #fff;
+      border-radius: 12px;
+      box-shadow: 0 8px 30px rgba(0,0,0,0.08);
+      padding: 30px;
+    }
+    .form-label {
+      font-weight: 600;
+      margin-bottom: 8px;
+    }
+    .form-control {
+      margin-bottom: 20px;
+      height: 45px;
+      font-size: 1rem;
+    }
+    .logo-preview {
+      max-height: 80px;
+      display: block;
+      margin-top: 10px;
+    }
+    .btn-save {
+      padding: 12px 24px;
+      font-size: 1rem;
+      font-weight: 600;
+    }
+    #alertBox .alert {
+      margin-top: 20px;
+    }
+  
+  
+  .settings-wrapper
+    h2.mb-4.text-center.text-primary General Settings
+
+    .settings-card
+      form#generalSettingsForm(enctype="multipart/form-data")
+        .form-group
+          label.form-label(for="websiteName") Website Name
+          input.form-control(type="text", name="websiteName", value=(settings && settings.websiteName) || '', placeholder="Enter website name")
+
+        .form-group
+          label.form-label(for="phone") Phone
+          input.form-control(type="text", name="phone", value=(settings && settings.phone) || '', placeholder="Enter phone number")
+
+        .form-group
+          label.form-label(for="email") Email
+          input.form-control(type="email", name="email", value=(settings && settings.email) || '', placeholder="Enter email address")
+
+        .form-group
+          label.form-label(for="address") Address
+          input.form-control(type="text", name="address", value=(settings && settings.address) || '', placeholder="Enter address")
+
+        .form-group
+          label.form-label(for="copyright") Copyright
+          input.form-control(type="text", name="copyright", value=(settings && settings.copyright) || '', placeholder="Enter copyright")
+
+        .form-group
+          label.form-label(for="logo") Logo
+          input.form-control(type="file", name="logo")
+          if settings && settings.logo
+            img.logo-preview(src=`/uploads/${settings.logo}`, alt="Logo")
+
+        button.btn.btn-primary.btn-save(type="submit") Save Settings
+
+      // Thông báo
+      #alertBox
+
+  script(src="https://code.jquery.com/jquery-3.6.0.min.js")
+  script(src="https://cdn.jsdelivr.net/npm/sweetalert2@11")
+  script.
+    document.addEventListener('DOMContentLoaded', function () {
+      const form = document.getElementById('generalSettingsForm');
+
+      if (!form) return;
+
+      form.addEventListener('submit', async function (event) {
+        event.preventDefault();
+
+        const formData = new FormData(form);
+
+        try {
+          const response = await fetch('/admin/settings/general', {
+            method: 'PATCH',
+            body: formData,
+          });
+
+          const result = await response.json();
+
+          if (response.ok) {
+            Swal.fire({
+              icon: 'success',
+              title: 'Success',
+              text: result.message || 'Settings updated successfully!',
+              timer: 2000,
+              showConfirmButton: false,
+            });
+          } else {
+            throw new Error(result.message || 'Update failed');
+          }
+        } catch (error) {
+          Swal.fire({
+            icon: 'error',
+            title: 'Oops...',
+            text: error.message || 'Something went wrong!',
+          });
+        }
+      });
+    });
+

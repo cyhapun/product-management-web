@@ -7,7 +7,10 @@ const cartMiddlewares = require('../../middlewares/client/cart.middleware');
 const checkoutRouters = require('./checkout.route');
 const userRouters = require('./user.route');
 const userMiddlerwares = require('../../middlewares/client/user.middlerware');
+const settingsMiddlerwares = require('../../middlewares/client/settings.middleware');
+
 module.exports = (app) => {
+    app.use(settingsMiddlerwares.generalSettings);
     app.use(userMiddlerwares.addInfoUser);
     app.use(productCategoryMiddlewares.addProductCategoriesDropdown);
     app.use(cartMiddlewares.addTotalQuantityInCart);
