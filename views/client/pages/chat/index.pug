@@ -3,43 +3,65 @@ extends ../../layouts/default.pug
 include ../../mixins/box-head.pug
 
 block main
-    link(rel="stylesheet", href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css", integrity="sha512-yzS+...==" crossorigin="anonymous" referrerpolicy="no-referrer")
+    //- Liên kết tới Font Awesome và file CSS mới của bạn
+    link(rel="stylesheet", href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css", crossorigin="anonymous", referrerpolicy="no-referrer")
     link(rel="stylesheet", href="/client/css/chat.css")
 
     .container.my-3
         .row
             .col-12
                 +box-head("Chat")
+
         .row
             .col-12
-                .chat
-                    //-.inner-head
-                    //-  .inner-avatar EY
-                    //-  .inner-name Em Yêu
-
-                    .inner-body
+                //- Khung chat chính, toàn bộ style được quản lý bởi chat.css
+                .chat.shadow-sm.rounded.bg-white.d-flex.flex-column(myId=user._id)
+                    //- Phần thân chat
+                    .inner-body.flex-grow-1.overflow-auto.p-3
                         each chat in chats 
+                            //- Tin nhắn đi (của bạn)
                             if chat.userId == user._id
-                                .inner-outgoing
-                                    .inner-content 
+                                .inner-outgoing.text-end.mb-2
+                                    .inner-content.d-inline-block.px-3.py-2.text-white(
+                                        style="word-wrap: break-word; white-space: pre-wrap;"
+                                    )
                                         | #{chat.content}
+                            //- Tin nhắn đến
                             else 
-                                .inner-incoming
-                                    if chat.infoUser
-                                        .inner-name #{chat.infoUser.fullName}
-                                    else 
-                                        .inner-name Unknow
-                                    .inner-content 
-                                        | #{chat.content}
-                                        
-                    .inner-foot
-                        form(class="inner-form", action="")
-                            input(
+                                .inner-incoming.d-flex.align-items-start.mb-2
+                                    //- Avatar người gửi
+                                    .avatar.bg-secondary.text-white.rounded-circle.me-2(
+                                        style="width: 36px; height: 36px; display: flex; align-items: center; justify-content: center; font-weight: bold;"
+                                    )
+                                        if chat.infoUser && chat.infoUser.fullName
+                                            = chat.infoUser.fullName[0].toUpperCase()
+                                        else
+                                            | U
+                                    .d-flex.flex-column
+                                        //- Tên người gửi
+                                        if chat.infoUser
+                                            .inner-name.small.text-muted.mb-1 #{chat.infoUser.fullName}
+                                        else 
+                                            .inner-name.small.text-muted.mb-1 Unknown
+                                        //- Nội dung tin nhắn
+                                        .inner-content.d-inline-block.px-3.py-2(
+                                            style="word-wrap: break-word; white-space: pre-wrap;"
+                                        )
+                                            | #{chat.content}
+
+                    //- Phần nhập liệu
+                    .inner-foot.border-top.p-2
+                        form.inner-form.d-flex.align-items-center.gap-2(action="", method="POST")
+                            input.form-control.rounded-pill(
                                 type="text",
                                 placeholder="Nhập nội dung...",
-                                name="content"
+                                name="content",
+                                autocomplete="off",
+                                required=true
                             )
-                            button
-                                i.fa-solid.fa-paper-plane
+                            button.btn.btn-link.p-0(type="submit")
+                                i.fa-solid.fa-paper-plane.fs-4
+
+    //- Các file script không thay đổi
     script(src="/socket.io/socket.io.js")
     script(src="/client/js/chat.js")
