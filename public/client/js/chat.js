@@ -1,25 +1,19 @@
+// Initial
 var socket = io();
 
-// Receive messages from server
-socket.on('SERVER_SEND_SOCKET_ID', function(msg) {
-  document.getElementById('socket-id').innerText = msg;
-});
+// CLIENT_SEND_MESSAGE
+const formSendData = document.querySelector(".chat .inner-form");
 
-// Send messages to server
-var form = document.getElementById('form');
-var input = document.getElementById('input');
+if (formSendData) {
+  formSendData.addEventListener("submit", (e) => {
+    e.preventDefault();
 
-form.addEventListener('submit', function(e) {
-  e.preventDefault();
-  if (input.value) {
-    socket.emit('CLIENT_SEND_MESSAGE', input.value);
-    input.value = '';
-  }
-});
+    const content = e.target.elements.content.value;
 
-// Receive return messages from server
-socket.on('SERVER_RETURN', function(msg) {
-  console.log("receive return messages");
-  var messages = document.getElementById('messages');
-  messages.innerText = msg;
-});
+    if (content) {
+      socket.emit("CLIENT_SEND_MESSAGE", content);
+      e.target.elements.content.value = "";
+    }
+  });
+}
+// End CLIENT_SEND_MESSAGE

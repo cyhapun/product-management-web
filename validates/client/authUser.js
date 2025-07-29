@@ -57,7 +57,7 @@ module.exports.validateLogin = async (req, res, next) => {
 
 module.exports.validateRegister = async (req, res, next) => {
   const { fullName, email, password, confirmPassword } = req.body;
-  console.log(req.body);  
+  
   // 1. Kiểm tra rỗng
   if (!fullName || !email || !password || !confirmPassword) {
     return res.status(400).json({

@@ -18,28 +18,20 @@ block main
                     //-  .inner-name Em Yêu
 
                     .inner-body
-                        .inner-incoming
-                            .inner-name Em Yêu
-                            .inner-content
-                                | A ơi sang nhà e nha, nhà e không có ai ở nhà cả
-
-                        .inner-outgoing
-                            .inner-content
-                                | Thế à? Ok e iu
-
-                        .inner-incoming
-                            .inner-name Em Yêu
-                            .inner-content
-                                | Nhanh nha nhanh nha
-                        .inner-outgoing
-                            .inner-content
-                            | Ck đến rồi mà thấy ai ở nhà đâu e? Khóa cửa mà :(
-
-                        .inner-incoming
-                            .inner-name Em Yêu
-                            .inner-content
-                            | Thì em bảo nhà e không ai ở nhà mà :))
-
+                        each chat in chats 
+                            if chat.userId == user._id
+                                .inner-outgoing
+                                    .inner-content 
+                                        | #{chat.content}
+                            else 
+                                .inner-incoming
+                                    if chat.infoUser
+                                        .inner-name #{chat.infoUser.fullName}
+                                    else 
+                                        .inner-name Unknow
+                                    .inner-content 
+                                        | #{chat.content}
+                                        
                     .inner-foot
                         form(class="inner-form", action="")
                             input(

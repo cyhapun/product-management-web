@@ -3,9 +3,9 @@ const mongoose = require('mongoose');
 // Create model mongoose
 const chatSchema = new mongoose.Schema({
   userId:String,
-  roomChatId: String,
+  // roomChatId: String,
   content: String,
-  images: Array,
+  // images: Array,
   deleted: { type: Boolean, default: false },
   deletedAt: Date,
 }, {
