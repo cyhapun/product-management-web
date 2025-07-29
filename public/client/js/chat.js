@@ -33,9 +33,7 @@ socket.on('SERVER_RETURN_MESSAGE', (data) => {
         div.classList.add('inner-outgoing', 'text-end', 'mb-2');
 
         div.innerHTML = `
-            <div class="inner-content d-inline-block px-3 py-2 text-white">
-                ${data.content}
-            </div>
+            <div class="inner-content d-inline-block px-3 py-2 text-white" style="word-wrap: break-word; white-space: pre-wrap;">${data.content}</div>
         `;
     } else {
         // --- Xử lý TIN NHẮN ĐẾN ---
@@ -49,9 +47,7 @@ socket.on('SERVER_RETURN_MESSAGE', (data) => {
             </div>
             <div class="d-flex flex-column">
                 <div class="inner-name small text-muted mb-1">${data.fullName}</div>
-                <div class="inner-content d-inline-block px-3 py-2">
-                    ${data.content}
-                </div>
+                <div class="inner-content d-inline-block px-3 py-2">${data.content}</div>
             </div>
         `;
     }
