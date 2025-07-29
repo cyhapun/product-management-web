@@ -28,6 +28,13 @@ const routeClient = require('./routes/client/index.route');
 const routeAdmin = require('./routes/admin/index.route');
 const app = express();
 
+// For socket.io
+const http = require('http');
+const server = http.createServer(app);
+const { Server } = require("socket.io");
+const io = new Server(server);
+global._io = io;
+
 // Use package cookie-parser
 const cookieParserMiddleware = cookieParser();
 app.use(cookieParserMiddleware);
@@ -86,6 +93,6 @@ app.get('*', (req, res) => {
     });
 });
 
-app.listen(port, () => {
+server.listen(port, () => {
     console.log(`App listening on port ${port}!`)
 })

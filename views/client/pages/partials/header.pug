@@ -54,11 +54,17 @@ header.header
                   | Register
             else  
               li 
-                a(href="/user/logout")
-                  | Logout
-              
+                a(href="/chat")
+                  | Chat
+
               li 
                 a(
                   href=`/user/profile`
                   class="btn btn-primary btn-sm mr-2"
                 ) #{user.fullName}
+                  
+              li 
+                a(href="/user/logout")
+                  | Logout
+              
+              
