@@ -3,7 +3,7 @@ extends ../../layouts/default.pug
 include ../../mixins/box-head.pug
 
 block main
-    //- Liên kết tới Font Awesome và file CSS mới của bạn
+    //- Liên kết tới Font Awesome 
     link(rel="stylesheet", href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css", crossorigin="anonymous", referrerpolicy="no-referrer")
     link(rel="stylesheet", href="/client/css/chat.css")
 
@@ -59,9 +59,17 @@ block main
                                 autocomplete="off",
                                 required=true
                             )
-                            button.btn.btn-link.p-0(type="submit")
-                                i.fa-solid.fa-paper-plane.fs-4
 
-    //- Các file script không thay đổi
+                            span.icon-container.mr-1.button-emoij.btn.btn-light.mx-2
+                                i.fas.fa-smile  
+                                .tooltip(role="tooltip")
+                                    emoji-picker.light
+
+                            button.btn.btn-link.p-0.icon-container(type="submit")
+                                i.fa-solid.fa-paper-plane.fs-4
+    
+    script(type="module" src="/client/js/chat.js")
+    //- Kết nối tới Socket.IO
     script(src="/socket.io/socket.io.js")
-    script(src="/client/js/chat.js")
+    //- Thêm emoji picker
+    script(type="module" src="https://cdn.jsdelivr.net/npm/emoji-picker-element@^1/index.js")

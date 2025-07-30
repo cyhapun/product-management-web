@@ -18,6 +18,8 @@ body {
 .inner-body {
     background-color: #ffffff; /* Nền trắng cho khu vực tin nhắn */
     padding: 20px 20px 10px 20px !important; /* Tăng khoảng cách lề */
+    height: calc(80vh - 60px); /* hoặc đặt chiều cao cố định nếu cần */
+    overflow-y: auto; /* cho phép cuộn */
 }
 
 /* Tùy chỉnh thanh cuộn cho đẹp hơn */
@@ -126,3 +128,41 @@ body {
     transform: scale(1.1);
     color: #005cbf !important; /* Đậm hơn khi hover */
 }
+
+/* Icon */
+.icon-container {
+    position: relative;
+    display: inline-block;
+    cursor: pointer;
+    padding: 6px;
+    border-radius: 50%;
+    transition: background-color 0.2s ease;
+}
+
+/* Icon style */
+.icon-container i {
+    font-size: 20px;
+    color: #555;
+}
+
+/* Tooltip */
+.tooltip {
+  position: absolute;
+  z-index: 9999;
+  background: white;
+  border: 1px solid #ddd;
+  padding: 0.5rem;
+  border-radius: 8px;
+  box-shadow: 0 0 10px rgba(0,0,0,0.1);
+  visibility: hidden;
+  opacity: 0;
+  transition: opacity 0.2s;
+  pointer-events: none;
+}
+
+.tooltip.shown {
+  visibility: visible;
+  opacity: 1;
+  pointer-events: auto;
+}
+/* End icon */

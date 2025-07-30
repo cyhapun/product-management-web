@@ -1,3 +1,5 @@
+import * as Popper from 'https://cdn.jsdelivr.net/npm/@popperjs/core@^2/dist/esm/index.js'
+
 // Initial
 var socket = io();
 
@@ -7,7 +9,6 @@ const formSendData = document.querySelector(".chat .inner-form");
 if (formSendData) {
   formSendData.addEventListener("submit", (e) => {
     e.preventDefault();
-
     const content = e.target.elements.content.value;
 
     if (content) {
@@ -60,9 +61,53 @@ socket.on('SERVER_RETURN_MESSAGE', (data) => {
 // End Client receive notification from server (SERVER_RETURN_MESSAGE)
 
 // Scroll Chat To Bottom
-const bodyChat = document.querySelector(".chat .inner-body");
-
-if (bodyChat) {
-  bodyChat.scrollTop = bodyChat.scrollHeight;
+function scrollChatToBottom() {
+  const bodyChat = document.querySelector(".chat .inner-body");
+  if (bodyChat) {
+    bodyChat.scrollTop = bodyChat.scrollHeight;
+  }
 }
+
+// Lắng nghe sự kiện DOMContentLoaded để đảm bảo HTML đã tải xong
+document.addEventListener("DOMContentLoaded", () => {
+  scrollChatToBottom();
+});
 // End Scroll Chat To Bottom
+
+// Icon emoij
+// Show popup
+const buttonEmoij = document.querySelector('.button-emoij');
+if (buttonEmoij) {
+  const tooltip = buttonEmoij.querySelector('.tooltip');
+
+  // Tạo Popper cho đúng vị trí
+  Popper.createPopper(buttonEmoij, tooltip, {
+    placement: 'top-end',
+  });
+
+  // Toggle tooltip khi click
+  buttonEmoij.addEventListener('click', (e) => {
+    tooltip.classList.toggle('shown');
+  });
+
+  // Tắt khi click bên ngoài
+  document.addEventListener('click', (e) => {
+    if (!buttonEmoij.contains(e.target)) {
+      tooltip.classList.remove('shown');
+    }
+  });
+}
+// End show popup
+
+// Insert icon to input
+const emoijPicker = document.querySelector('emoji-picker')
+if (emoijPicker) {
+  const chatInput = document.querySelector(".chat .inner-form input[name='content']");
+  emoijPicker.addEventListener('emoji-click', event => {
+    const icon = event.detail.unicode;
+    chatInput.value += icon; 
+  });
+}
+// End insert icon to input
+
+// End icon emoij
