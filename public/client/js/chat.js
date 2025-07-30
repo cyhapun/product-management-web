@@ -21,21 +21,9 @@ if (formSendData) {
 
     // ---- Gửi trạng thái đang gõ ----
     const inputContent = formSendData.querySelector("input[name='content']");
-    let typingTimeout;
 
     inputContent.addEventListener("input", () => {
-        // Mỗi khi gõ, hủy timeout trước đó
-        clearTimeout(typingTimeout);
-
-        // Gửi sự kiện đang gõ lên server
-        // Server sẽ tự biết user nào đang gõ dựa trên socket connection
-        socket.emit("CLIENT_TYPING", "on");
-
-        // Tạo một timeout mới. Nếu sau 3 giây không gõ gì thêm,
-        // gửi sự kiện đã dừng gõ.
-        typingTimeout = setTimeout(() => {
-            socket.emit("CLIENT_TYPING", "off");
-        }, 3000);
+        sendTypingIndicatorToServer();
     });
 }
 // ----------------- HẾT GỬI DỮ LIỆU -----------------
@@ -173,6 +161,31 @@ if (emoijPicker) {
     emoijPicker.addEventListener('emoji-click', event => {
         const icon = event.detail.unicode;
         chatInput.value += icon;
+        
+        chatInput.setSelectionRange(chatInput.value.length, chatInput.value.length);
+        chatInput.focus();
+
+        // ---- Gửi trạng thái đang gõ ----
+        sendTypingIndicatorToServer();
     });
 }
 // ----------------- HẾT CÁC CHỨC NĂNG KHÁC -----------------
+
+// Helper functions
+// Typing indicator
+let typingTimeout;
+function sendTypingIndicatorToServer() {
+    // Mỗi khi gõ, hủy timeout trước đó
+    clearTimeout(typingTimeout);
+
+    // Gửi sự kiện đang gõ lên server
+    // Server sẽ tự biết user nào đang gõ dựa trên socket connection
+    socket.emit("CLIENT_TYPING", "on");
+
+    // Tạo một timeout mới. Nếu sau 3 giây không gõ gì thêm,
+    // gửi sự kiện đã dừng gõ.
+    typingTimeout = setTimeout(() => {
+        socket.emit("CLIENT_TYPING", "off");
+    }, 3000);
+}
+// End typing indicator
