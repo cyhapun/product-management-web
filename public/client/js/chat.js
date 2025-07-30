@@ -145,6 +145,8 @@ if (buttonEmoij) {
     });
 
     buttonEmoij.addEventListener('click', () => {
+        chatInput.setSelectionRange(chatInput.value.length, chatInput.value.length);
+        chatInput.focus();
         tooltip.classList.toggle('shown');
     });
 
