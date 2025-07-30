@@ -145,6 +145,7 @@ if (buttonEmoij) {
     });
 
     buttonEmoij.addEventListener('click', () => {
+        const chatInput = document.querySelector(".chat .inner-form input[name='content']");
         chatInput.setSelectionRange(chatInput.value.length, chatInput.value.length);
         chatInput.focus();
         tooltip.classList.toggle('shown');
