@@ -42,7 +42,6 @@ body {
 .inner-outgoing .inner-content {
     max-width: 70%;
     word-wrap: break-word;
-    white-space: pre-wrap;
     overflow-wrap: break-word;
 }
 
@@ -50,7 +49,6 @@ body {
 .inner-incoming .inner-content {
     max-width: 100%;
     word-wrap: break-word;
-    white-space: pre-wrap;
     overflow-wrap: break-word;
 }
 
@@ -166,3 +164,57 @@ body {
   pointer-events: auto;
 }
 /* End icon */
+
+
+/* --- Giao diện Typing Indicator --- */
+/* Ẩn box-typing ban đầu, JS sẽ điều khiển hiển thị nó */
+.box-typing {
+    display: none;
+}
+
+/* Khi có class .is-typing, nó sẽ hiện ra */
+.box-typing.is-typing {
+    display: flex !important; /* Ghi đè display: none */
+}
+
+/* Các dấu chấm động */
+.inner-dots {
+    display: flex; /* Sắp xếp các dấu chấm nằm ngang */
+    align-items: center;
+    justify-content: center;
+    height: 100%; /* Chiều cao bằng với padding của .inner-content */
+}
+
+.inner-dots span {
+    animation: blink 1.5s infinite;
+    height: 8px; /* Tăng kích thước để dễ nhìn hơn */
+    width: 8px;
+    background: #8d949e; /* Màu xám đậm hơn nền một chút */
+    border-radius: 50%;
+    display: inline-block;
+    margin: 0 2px;
+}
+
+.inner-dots span:nth-child(2) {
+    animation-delay: 0.2s;
+}
+
+.inner-dots span:nth-child(3) {
+    animation-delay: 0.4s;
+}
+
+@keyframes blink {
+    0% {
+        opacity: 0.2;
+        transform: scale(0.8);
+    }
+    20% {
+        opacity: 1;
+        transform: scale(1);
+    }
+    100% {
+        opacity: 0.2;
+        transform: scale(0.8);
+    }
+}
+/* --- Hết Giao diện Typing Indicator --- */

@@ -24,7 +24,17 @@ module.exports.index = async (req, res) => {
         content: msg,
       });
     });
-  
+
+    // Server receive typing status from client
+    socket.on("CLIENT_TYPING", (type) => {
+      _io.emit("SERVER_RETURN_TYPING", {
+        userId: userId,
+        fullName: fullName,
+        type: type, // "on" hoặc "off"
+      });
+    });
+
+    
   });
   // End Socket.io
 

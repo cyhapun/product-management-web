@@ -18,36 +18,41 @@ block main
                 .chat.shadow-sm.rounded.bg-white.d-flex.flex-column(myId=user._id)
                     //- Phần thân chat
                     .inner-body.flex-grow-1.overflow-auto.p-3
-                        each chat in chats 
-                            //- Tin nhắn đi (của bạn)
-                            if chat.userId == user._id
-                                .inner-outgoing.text-end.mb-2
-                                    .inner-content.d-inline-block.px-3.py-2.text-white(
-                                        style="word-wrap: break-word; white-space: pre-wrap;"
-                                    )
-                                        | #{chat.content}
-                            //- Tin nhắn đến
-                            else 
-                                .inner-incoming.d-flex.align-items-start.mb-2
-                                    //- Avatar người gửi
+                        each chat in chats
+                            - var isMe = chat.userId == user._id
+                            div(class=isMe ? 'inner-outgoing text-end mb-2' : 'inner-incoming d-flex align-items-start mb-2')
+                                if !isMe
                                     .avatar.bg-secondary.text-white.rounded-circle.me-2(
                                         style="width: 36px; height: 36px; display: flex; align-items: center; justify-content: center; font-weight: bold;"
                                     )
-                                        if chat.infoUser && chat.infoUser.fullName
-                                            = chat.infoUser.fullName[0].toUpperCase()
-                                        else
-                                            | U
+                                        - var name = (chat.infoUser && chat.infoUser.fullName) ? chat.infoUser.fullName : 'Unknown'
+                                        = name[0].toUpperCase()
                                     .d-flex.flex-column
-                                        //- Tên người gửi
-                                        if chat.infoUser
-                                            .inner-name.small.text-muted.mb-1 #{chat.infoUser.fullName}
-                                        else 
-                                            .inner-name.small.text-muted.mb-1 Unknown
-                                        //- Nội dung tin nhắn
-                                        .inner-content.d-inline-block.px-3.py-2(
-                                            style="word-wrap: break-word; white-space: pre-wrap;"
-                                        )
-                                            | #{chat.content}
+                                        .inner-name.small.text-muted.mb-1.ml-2 #{name}
+                                        .inner-content.d-inline-block.px-3.py-2.ml-2(
+                                        style="word-wrap: break-word; white-space: pre-wrap;"
+                                        ) #{chat.content}
+                                else
+                                    .inner-content.d-inline-block.px-3.py-2.text-white(
+                                        style="word-wrap: break-word; white-space: pre-wrap;"
+                                    ) #{chat.content}
+
+                        div(class="inner-list-typing")
+                        //-     //- Ví dụ về một người đang gõ. Ẩn đi bằng CSS và chỉ hiện khi có sự kiện.
+                        //-     div(class="inner-incoming d-flex align-items-start mb-2 box-typing is-typing" style="display: none;")
+                        //-         .avatar.bg-secondary.text-white.rounded-circle.me-2(
+                        //-             style="width: 36px; height: 36px; display: flex; align-items: center; justify-content: center; font-weight: bold;"
+                        //-         )
+                        //-             //- Ký tự đầu của tên người gõ
+                        //-             span A 
+                        //-         .d-flex.flex-column
+                        //-             .inner-name.small.text-muted.mb-1.ml-2 Le Van A
+                        //-             //- Bong bóng chat chứa các dấu chấm
+                        //-             .inner-content.d-inline-block.px-3.py-2.ml-2
+                        //-                 .inner-dots
+                        //-                     span
+                        //-                     span
+                        //-                     span
 
                     //- Phần nhập liệu
                     .inner-foot.border-top.p-2
@@ -65,7 +70,7 @@ block main
                                 .tooltip(role="tooltip")
                                     emoji-picker.light
 
-                            button.btn.btn-link.p-0.icon-container(type="submit")
+                            button.icon-container(type="submit")
                                 i.fa-solid.fa-paper-plane.fs-4
     
     script(type="module" src="/client/js/chat.js")
