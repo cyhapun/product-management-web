@@ -3,10 +3,12 @@ extends ../../layouts/default.pug
 include ../../mixins/box-head.pug
 
 block main
+    //- File upload preview
+    link(rel="stylesheet" type="text/css" href="https://unpkg.com/file-upload-with-preview/dist/style.css")
     //- Liên kết tới Font Awesome 
     link(rel="stylesheet", href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css", crossorigin="anonymous", referrerpolicy="no-referrer")
     link(rel="stylesheet", href="/client/css/chat.css")
-
+    
     .container.my-3
         .row
             .col-12
@@ -29,40 +31,45 @@ block main
                                         = name[0].toUpperCase()
                                     .d-flex.flex-column
                                         .inner-name.small.text-muted.mb-1.ml-2 #{name}
-                                        .inner-content.d-inline-block.px-3.py-2.ml-2(
-                                        style="word-wrap: break-word; white-space: pre-wrap;"
-                                        ) #{chat.content}
+                                        if (chat.content)
+                                            .inner-content.d-inline-block.px-3.py-2.ml-2(
+                                            style="word-wrap: break-word; white-space: pre-wrap;"
+                                            ) #{chat.content}
+                                            
+                                        if (chat.images.length > 0)
+                                            .inner-images   
+                                                each image in chat.images 
+                                                    a(href=image target="_blank")
+                                                        img(src = image)
                                 else
-                                    .inner-content.d-inline-block.px-3.py-2.text-white(
-                                        style="word-wrap: break-word; white-space: pre-wrap;"
-                                    ) #{chat.content}
+                                    if (chat.content)
+                                        .inner-content.d-inline-block.px-3.py-2.text-white(
+                                            style="word-wrap: break-word; white-space: pre-wrap;"
+                                        ) #{chat.content}
+
+                                    if (chat.images.length > 0)
+                                            .inner-images   
+                                                each image in chat.images 
+                                                    a(href=image target="_blank")
+                                                        img(src = image)
 
                         div(class="inner-list-typing")
-                        //-     //- Ví dụ về một người đang gõ. Ẩn đi bằng CSS và chỉ hiện khi có sự kiện.
-                        //-     div(class="inner-incoming d-flex align-items-start mb-2 box-typing is-typing" style="display: none;")
-                        //-         .avatar.bg-secondary.text-white.rounded-circle.me-2(
-                        //-             style="width: 36px; height: 36px; display: flex; align-items: center; justify-content: center; font-weight: bold;"
-                        //-         )
-                        //-             //- Ký tự đầu của tên người gõ
-                        //-             span A 
-                        //-         .d-flex.flex-column
-                        //-             .inner-name.small.text-muted.mb-1.ml-2 Le Van A
-                        //-             //- Bong bóng chat chứa các dấu chấm
-                        //-             .inner-content.d-inline-block.px-3.py-2.ml-2
-                        //-                 .inner-dots
-                        //-                     span
-                        //-                     span
-                        //-                     span
+
+                    .inner-preview-images
+                        .custom-file-container(data-upload-id="upload-image")
 
                     //- Phần nhập liệu
                     .inner-foot.border-top.p-2
                         form.inner-form.d-flex.align-items-center.gap-2(action="", method="POST")
+                            //- Icon để trigger input file
+                            label(for="file-upload-with-preview-upload-image" class="icon-container button-image-upload mb-0 mr-1")
+                                i.fas.fa-image
+
                             input.form-control.rounded-pill(
                                 type="text",
                                 placeholder="Nhập nội dung...",
                                 name="content",
                                 autocomplete="off",
-                                required=true
                             )
 
                             span.icon-container.mr-1.button-emoij.btn.btn-light.mx-2
@@ -73,8 +80,8 @@ block main
                             button.icon-container(type="submit")
                                 i.fa-solid.fa-paper-plane.fs-4
     
-    script(type="module" src="/client/js/chat.js")
+    //- Thêm emoji picker
+    script(type="module" src="https://cdn.jsdelivr.net/npm/emoji-picker-element@^1/index.js")   
     //- Kết nối tới Socket.IO
     script(src="/socket.io/socket.io.js")
-    //- Thêm emoji picker
-    script(type="module" src="https://cdn.jsdelivr.net/npm/emoji-picker-element@^1/index.js")
+    script(type="module" src="/client/js/chat.js")

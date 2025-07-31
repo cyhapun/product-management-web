@@ -1,6 +1,14 @@
-import * as Popper from 'https://cdn.jsdelivr.net/npm/@popperjs/core@^2/dist/esm/index.js'
+import * as Popper from 'https://cdn.jsdelivr.net/npm/@popperjs/core@^2/dist/esm/index.js';
+import { FileUploadWithPreview } from 'https://unpkg.com/file-upload-with-preview/dist/index.js';
 
-// Initial
+// Upload image preview
+const upload = new FileUploadWithPreview('upload-image', {
+  multiple:true,
+  maxFileCount:6,
+});
+// End upload image preview
+
+// Initial socket connection
 const socket = io();
 
 // ----------------- GỬI DỮ LIỆU LÊN SERVER -----------------
@@ -10,10 +18,15 @@ if (formSendData) {
     formSendData.addEventListener("submit", (e) => {
         e.preventDefault();
         const content = e.target.elements.content.value;
+        const images = upload.cachedFileArray;
 
-        if (content) {
-            socket.emit("CLIENT_SEND_MESSAGE", content);
+        if (content || images.length > 0) {
+            socket.emit("CLIENT_SEND_MESSAGE", {
+                content: content,
+                images: images
+            });
             e.target.elements.content.value = "";
+            upload.clearPreviewPanel();
             // Sau khi gửi, ngay lập tức tắt trạng thái typing
             socket.emit("CLIENT_TYPING", "off");
         }
@@ -38,26 +51,68 @@ socket.on('SERVER_RETURN_MESSAGE', (data) => {
 
     const div = document.createElement('div');
 
+    // --- BẮT ĐẦU PHẦN CẬP NHẬT ---
+
+    // Chuẩn bị nội dung văn bản (nếu có)
+    let htmlContent = "";
+    if (data.content) {
+        htmlContent = `<div class="inner-content" style="word-wrap: break-word; white-space: pre-wrap;">${data.content}</div>`;
+    }
+
+    // Chuẩn bị nội dung hình ảnh (nếu có)
+    let htmlImages = "";
+    if (data.images && data.images.length > 0) {
+        htmlImages += `<div class="inner-images mt-2 d-flex flex-wrap">`;
+        data.images.forEach(imageUrl => {
+            htmlImages += `
+                <a href="${imageUrl}" target="_blank">
+                    <img src="${imageUrl}" alt="Image" class="img-thumbnail m-1" style="width: 100px; height: 100px; object-fit: cover;">
+                </a>
+            `;
+        });
+        htmlImages += `</div>`;
+    }
+
     if (myId === data.userId) {
         // Tin nhắn của mình
         div.classList.add('inner-outgoing', 'text-end', 'mb-2');
+        
+        // Gán class cho nội dung văn bản của mình
+        if(data.content) {
+            htmlContent = `<div class="inner-content d-inline-block px-3 py-2 text-white" style="word-wrap: break-word; white-space: pre-wrap;">${data.content}</div>`;
+        }
+
         div.innerHTML = `
-            <div class="inner-content d-inline-block px-3 py-2 text-white" style="word-wrap: break-word; white-space: pre-wrap;">${data.content}</div>
+            <div class="d-inline-block">
+                ${htmlContent}
+                ${htmlImages}
+            </div>
         `;
     } else {
         // Tin nhắn của người khác
         div.classList.add('inner-incoming', 'd-flex', 'align-items-start', 'mb-2');
         const initial = data.fullName ? data.fullName[0].toUpperCase() : 'U';
+        
+        // Gán class cho nội dung văn bản của người khác
+        if(data.content) {
+            htmlContent = `<div class="inner-content d-inline-block px-3 py-2">${data.content}</div>`;
+        }
+        
         div.innerHTML = `
             <div class="avatar bg-secondary text-white rounded-circle me-2" style="width: 36px; height: 36px; display: flex; align-items: center; justify-content: center; font-weight: bold;">
                 ${initial}
             </div>
             <div class="d-flex flex-column">
                 <div class="inner-name small text-muted mb-1">${data.fullName}</div>
-                <div class="inner-content d-inline-block px-3 py-2">${data.content}</div>
+                <div class="message-body">
+                   ${htmlContent}
+                   ${htmlImages}
+                </div>
             </div>
         `;
     }
+
+    // --- KẾT THÚC PHẦN CẬP NHẬT ---
 
     // Xóa chỉ báo "đang gõ" của người vừa gửi tin
     const typingBoxToRemove = innerListTyping.querySelector(`.box-typing[user-id="${data.userId}"]`);

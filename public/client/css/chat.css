@@ -91,6 +91,65 @@ body {
     border-radius: 18px !important;
 }
 
+/* Image */
+.chat .inner-body .inner-images img {
+    width: 80px;
+    height: 80px;
+    object-fit: contain;
+    background: #efefef;
+    padding: 0px;
+    margin: 0;
+    border-radius: 5px;
+}
+
+.chat .inner-body .inner-outgoing .inner-images {
+    margin-left: auto;
+    text-align: right;
+}
+
+.chat .inner-body .inner-outgoing .inner-images img {
+    margin: 0 0 5px 5px;
+}
+
+/* Icon tải ảnh lên */
+.button-image-upload {
+    cursor: pointer;
+    padding: 6px;
+    transition: background-color 0.2s ease;
+}
+.button-image-upload:hover {
+    background-color: #e4e6eb;
+}
+.button-image-upload i {
+    font-size: 20px;
+    color: #0084ff;
+}
+
+.chat .inner-preview-images {
+    position: relative;
+}
+
+.chat .inner-preview-images .label-container {
+    display: none;
+}
+
+.chat .inner-preview-images .input-container {
+    display: none;
+}
+
+.chat .inner-preview-images .image-preview {
+    height: auto;
+    padding: 0;
+    border-radius: 0;
+}
+
+.chat .inner-preview-images .image-preview-item {
+    width: 90px;
+    background-size: contain;
+}
+
+/* End images */
+
 /* --- PHẦN NHẬP LIỆU --- */
 .inner-foot {
     background-color: #ffffff;
@@ -133,14 +192,12 @@ body {
     display: inline-block;
     cursor: pointer;
     padding: 6px;
-    border-radius: 50%;
     transition: background-color 0.2s ease;
 }
 
 /* Icon style */
 .icon-container i {
     font-size: 20px;
-    color: #555;
 }
 
 /* Tooltip */
@@ -189,8 +246,8 @@ body {
     animation: blink 1.5s infinite;
     height: 8px; /* Tăng kích thước để dễ nhìn hơn */
     width: 8px;
-    background: #8d949e; /* Màu xám đậm hơn nền một chút */
     border-radius: 50%;
+    background: #8d949e; /* Màu xám đậm hơn nền một chút */
     display: inline-block;
     margin: 0 2px;
 }

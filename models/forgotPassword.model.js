@@ -20,7 +20,6 @@ const ForgotPasswordSchema = new mongoose.Schema({
 }, {
   timestamps: true
 });
-ForgotPasswordSchema.index({ "expireAt": 1 }, { expireAfterSeconds: 0 });
 const ForgotPassword = mongoose.model('ForgotPassword', ForgotPasswordSchema, 'forgot-password');
 
 module.exports = ForgotPassword;
