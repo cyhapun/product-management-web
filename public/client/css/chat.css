@@ -1,28 +1,30 @@
 /* --- CÀI ĐẶT CHUNG --- */
 body {
     font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
-    background-color: #f0f2f5; /* Màu nền chung nhẹ nhàng */
+    background-color: #f0f2f5;
 }
 
 /* --- KHUNG CHAT CHÍNH --- */
 .chat {
-    height: 80vh; /* Chiều cao cố định để phần thân có thể cuộn */
+    height: 85vh; /* Tăng chiều cao một chút */
     border: 1px solid #ddd;
-    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08) !important;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
     overflow: hidden;
-    border-radius: 5px;
+    border-radius: 8px; /* Bo góc mềm mại hơn */
     margin-bottom: 15px;
+    display: flex;
+    flex-direction: column;
 }
 
 /* --- PHẦN THÂN CHAT (CHỨA TIN NHẮN) --- */
 .inner-body {
-    background-color: #ffffff; /* Nền trắng cho khu vực tin nhắn */
-    padding: 20px 20px 10px 20px !important; /* Tăng khoảng cách lề */
-    height: calc(80vh - 60px); /* hoặc đặt chiều cao cố định nếu cần */
-    overflow-y: auto; /* cho phép cuộn */
+    background-color: #ffffff;
+    padding: 20px;
+    flex-grow: 1; /* Cho phép co giãn lấp đầy không gian */
+    overflow-y: auto;
 }
 
-/* Tùy chỉnh thanh cuộn cho đẹp hơn */
+/* Tùy chỉnh thanh cuộn */
 .inner-body::-webkit-scrollbar {
     width: 6px;
 }
@@ -38,240 +40,236 @@ body {
 }
 
 /* --- CÁC TIN NHẮN --- */
-/* Tin nhắn đi (bên phải) */
-.inner-outgoing .inner-content {
-    max-width: 70%;
-    word-wrap: break-word;
-    overflow-wrap: break-word;
+.message-container {
+    margin-bottom: 18px;
+    max-width: 75%; /* Giới hạn chiều rộng tối đa của một khối tin nhắn */
 }
 
-/* Tin nhắn đến (bên trái) */
-.inner-incoming .inner-content {
-    max-width: 100%;
-    word-wrap: break-word;
-    overflow-wrap: break-word;
+.message-container.outgoing {
+    margin-left: auto; /* Đẩy tin nhắn đi sang phải */
+    display: flex;
+    justify-content: flex-end;
 }
 
-/* Khối chứa nội dung tin nhắn đến (trừ avatar) */
-.inner-incoming .d-flex.flex-column {
-    max-width: 70%;
+.message-container.incoming {
+    margin-right: auto;
+    display: flex;
+    align-items: flex-start;
 }
 
-
-/* Tin nhắn đến */
-.inner-incoming {
-    margin-bottom: 18px !important;
-}
-.inner-incoming .avatar {
-    width: 36px !important;
-    height: 36px !important;
-    flex-shrink: 0; /* Không co nhỏ avatar */
-    font-size: 1rem;
-}
-.inner-incoming .inner-name {
-    margin-left: 12px; /* Thêm lề cho tên người gửi */
-    font-size: 0.8rem !important;
-    color: #65676b !important;
-}
-.inner-incoming .inner-content {
-    background-color: #e4e6eb !important; /* Màu xám cho tin nhắn đến */
-    color: #050505;
-    border-radius: 18px !important;
-    margin-left: 12px; /* Căn lề với tên */
-}
-
-/* Tin nhắn đi */
-.inner-outgoing {
-    margin-bottom: 18px !important;
-    display: flex; /* Sử dụng flex để căn phải */
-    justify-content: flex-end; /* Căn tin nhắn sang bên phải */
-}
-.inner-outgoing .inner-content {
-    background-color: #0084ff !important; /* Màu xanh dương hiện đại */
-    border-radius: 18px !important;
-}
-
-/* Image */
-.chat .inner-body .inner-images img {
-    width: 80px;
-    height: 80px;
-    object-fit: contain;
-    background: #efefef;
-    padding: 0px;
-    margin: 0;
-    border-radius: 5px;
-}
-
-.chat .inner-body .inner-outgoing .inner-images {
-    margin-left: auto;
-    text-align: right;
-}
-
-.chat .inner-body .inner-outgoing .inner-images img {
-    margin: 0 0 5px 5px;
-}
-
-/* Icon tải ảnh lên */
-.button-image-upload {
-    cursor: pointer;
-    padding: 6px;
-    transition: background-color 0.2s ease;
-}
-.button-image-upload:hover {
+.message-avatar {
+    width: 36px;
+    height: 36px;
+    border-radius: 50%;
     background-color: #e4e6eb;
-}
-.button-image-upload i {
-    font-size: 20px;
-    color: #0084ff;
-}
-
-.chat .inner-preview-images {
-    position: relative;
-}
-
-.chat .inner-preview-images .label-container {
-    display: none;
+    color: #050505;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-weight: bold;
+    font-size: 1rem;
+    flex-shrink: 0;
+    margin-right: 12px;
 }
 
-.chat .inner-preview-images .input-container {
-    display: none;
+.message-content-wrapper {
+    display: flex;
+    flex-direction: column;
 }
 
-.chat .inner-preview-images .image-preview {
-    height: auto;
-    padding: 0;
-    border-radius: 0;
+.message-sender-name {
+    font-size: 0.8rem;
+    color: #65676b;
+    margin-bottom: 4px;
+    margin-left: 12px; /* Dành cho tin nhắn đến */
 }
 
-.chat .inner-preview-images .image-preview-item {
-    width: 90px;
-    background-size: contain;
+.message-bubble {
+    padding: 8px 12px;
+    border-radius: 18px;
+    word-wrap: break-word;
+    max-width: 100%;
 }
 
-/* End images */
+.message-container.incoming .message-bubble {
+    background-color: #e4e6eb;
+    color: #050505;
+}
+
+.message-container.outgoing .message-bubble {
+    background-color: #0084ff;
+    color: white;
+}
+
+/* --- HÌNH ẢNH TRONG TIN NHẮN --- */
+.message-images {
+    margin-top: 8px;
+    display: grid;
+    gap: 4px;
+    /* Hiển thị tối đa 3 ảnh trên một hàng */
+    grid-template-columns: repeat(auto-fill, minmax(80px, 1fr));
+}
+
+.message-images a {
+    display: block;
+}
+
+.message-images img {
+    width: 100%;
+    height: 80px;
+    object-fit: cover;
+    border-radius: 8px;
+    border: 1px solid #ddd;
+    background-color: #f0f2f5;
+}
 
 /* --- PHẦN NHẬP LIỆU --- */
 .inner-foot {
     background-color: #ffffff;
-    border-top: 1px solid #e0e0e0 !important;
-    padding: 12px !important;
+    border-top: 1px solid #e0e0e0;
+    padding: 12px;
 }
 
-.inner-form input.form-control {
+.inner-form {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+}
+
+.inner-form .form-control {
     background-color: #f0f2f5;
     border: none;
     padding: 10px 18px;
     font-size: 0.95rem;
+    border-radius: 20px; /* Bo tròn hơn */
     transition: background-color 0.2s ease;
 }
 
-.inner-form input.form-control:focus {
-    background-color: #e8eaf6; /* Đổi màu khi focus */
+.inner-form .form-control:focus {
+    background-color: #e8eaf6;
     box-shadow: none;
 }
 
-.inner-form button {
-    border: none;
+.icon-button {
     background: none;
-    outline: none;
-}
-
-.inner-form .fa-paper-plane {
-    transition: transform 0.2s ease, color 0.2s ease;
-    color: #0084ff !important;
-}
-
-.inner-form button:hover .fa-paper-plane {
-    transform: scale(1.1);
-    color: #005cbf !important; /* Đậm hơn khi hover */
-}
-
-/* Icon */
-.icon-container {
-    position: relative;
-    display: inline-block;
+    border: none;
+    padding: 8px;
+    border-radius: 50%;
     cursor: pointer;
-    padding: 6px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
     transition: background-color 0.2s ease;
 }
 
-/* Icon style */
-.icon-container i {
+.icon-button:hover {
+    background-color: #e4e6eb;
+}
+
+.icon-button i {
     font-size: 20px;
+    color: #0084ff;
 }
 
-/* Tooltip */
-.tooltip {
-  position: absolute;
-  z-index: 9999;
-  background: white;
-  border: 1px solid #ddd;
-  padding: 0.5rem;
-  border-radius: 8px;
-  box-shadow: 0 0 10px rgba(0,0,0,0.1);
-  visibility: hidden;
-  opacity: 0;
-  transition: opacity 0.2s;
-  pointer-events: none;
-}
-
-.tooltip.shown {
-  visibility: visible;
-  opacity: 1;
-  pointer-events: auto;
-}
-/* End icon */
-
-
-/* --- Giao diện Typing Indicator --- */
-/* Ẩn box-typing ban đầu, JS sẽ điều khiển hiển thị nó */
+/* --- TYPING INDICATOR --- */
 .box-typing {
-    display: none;
+    align-items: center;
 }
 
-/* Khi có class .is-typing, nó sẽ hiện ra */
-.box-typing.is-typing {
-    display: flex !important; /* Ghi đè display: none */
-}
-
-/* Các dấu chấm động */
 .inner-dots {
-    display: flex; /* Sắp xếp các dấu chấm nằm ngang */
+    display: flex;
     align-items: center;
     justify-content: center;
-    height: 100%; /* Chiều cao bằng với padding của .inner-content */
+    background-color: #e4e6eb;
+    border-radius: 18px;
 }
 
 .inner-dots span {
     animation: blink 1.5s infinite;
-    height: 8px; /* Tăng kích thước để dễ nhìn hơn */
+    height: 8px;
     width: 8px;
     border-radius: 50%;
-    background: #8d949e; /* Màu xám đậm hơn nền một chút */
+    background: #8d949e;
     display: inline-block;
     margin: 0 2px;
 }
 
-.inner-dots span:nth-child(2) {
-    animation-delay: 0.2s;
-}
-
-.inner-dots span:nth-child(3) {
-    animation-delay: 0.4s;
-}
+.inner-dots span:nth-child(2) { animation-delay: 0.2s; }
+.inner-dots span:nth-child(3) { animation-delay: 0.4s; }
 
 @keyframes blink {
-    0% {
-        opacity: 0.2;
-        transform: scale(0.8);
-    }
-    20% {
-        opacity: 1;
-        transform: scale(1);
-    }
-    100% {
-        opacity: 0.2;
-        transform: scale(0.8);
-    }
+    0%, 100% { opacity: 0.2; transform: scale(0.8); }
+    20% { opacity: 1; transform: scale(1); }
 }
-/* --- Hết Giao diện Typing Indicator --- */
+
+/* --- Emoji Picker & Preview --- */
+.tooltip {
+    position: absolute;
+    z-index: 1050; /* Cao hơn các element khác */
+    background: white;
+    border: 1px solid #ddd;
+    padding: 0.5rem;
+    border-radius: 8px;
+    box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+    visibility: hidden;
+    opacity: 0;
+    transition: opacity 0.2s, visibility 0.2s;
+    pointer-events: none;
+}
+.tooltip.shown {
+    visibility: visible;
+    opacity: 1;
+    pointer-events: auto;
+}
+
+.chat .inner-preview-images .image-preview {
+    padding: 10px 0 0 0;
+}
+.chat .inner-preview-images .image-preview-item {
+    width: 80px;
+    height: 80px;
+    padding: 0;
+    background-size: cover;
+}
+
+.custom-file-container .input-container {
+    display: none;
+}
+
+.chat .inner-preview-images {
+  display: none !important; /* Dùng !important để ép buộc ẩn đi */
+  padding: 10px 12px;
+  border-top: 1px solid #f0f0f0;
+  height: auto; /* Khẳng định lại chiều cao là tự động */
+  max-height: 200px; /* Thêm chiều cao tối đa để không bị quá dài */
+  overflow-y: auto; /* Thêm thanh cuộn nếu có quá nhiều ảnh */
+}
+
+/* 2. Khi có class 'visible', nó sẽ hiện ra */
+.chat .inner-preview-images.visible {
+  display: block !important; /* Dùng !important để ép buộc hiển thị */
+}
+
+.chat {
+    position: relative;
+}
+
+.chat.drag-over::before {
+  content: "Thả ảnh của bạn vào đây";
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background-color: rgba(0, 132, 255, 0.75);
+  color: white;
+  font-size: 1.5rem;
+  font-weight: bold;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 10;
+  pointer-events: none;
+  border-radius: 8px;
+  backdrop-filter: blur(4px);
+}

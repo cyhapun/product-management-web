@@ -1,14 +1,12 @@
 extends ../../layouts/default.pug
-
 include ../../mixins/box-head.pug
 
 block main
-    //- File upload preview
+    //- Dependencies
     link(rel="stylesheet" type="text/css" href="https://unpkg.com/file-upload-with-preview/dist/style.css")
-    //- Liên kết tới Font Awesome 
-    link(rel="stylesheet", href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css", crossorigin="anonymous", referrerpolicy="no-referrer")
+    link(rel="stylesheet", href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css")
     link(rel="stylesheet", href="/client/css/chat.css")
-    
+
     .container.my-3
         .row
             .col-12
@@ -16,72 +14,72 @@ block main
 
         .row
             .col-12
-                //- Khung chat chính, toàn bộ style được quản lý bởi chat.css
-                .chat.shadow-sm.rounded.bg-white.d-flex.flex-column(myId=user._id)
+                .chat(myId=user._id)
                     //- Phần thân chat
-                    .inner-body.flex-grow-1.overflow-auto.p-3
+                    .inner-body
                         each chat in chats
-                            - var isMe = chat.userId == user._id
-                            div(class=isMe ? 'inner-outgoing text-end mb-2' : 'inner-incoming d-flex align-items-start mb-2')
+                            - const isMe = chat.userId == user._id
+                            //- Sử dụng class chung và modifier `incoming`/`outgoing`
+                            .message-container(class=isMe ? 'outgoing' : 'incoming')
                                 if !isMe
-                                    .avatar.bg-secondary.text-white.rounded-circle.me-2(
-                                        style="width: 36px; height: 36px; display: flex; align-items: center; justify-content: center; font-weight: bold;"
-                                    )
-                                        - var name = (chat.infoUser && chat.infoUser.fullName) ? chat.infoUser.fullName : 'Unknown'
-                                        = name[0].toUpperCase()
-                                    .d-flex.flex-column
-                                        .inner-name.small.text-muted.mb-1.ml-2 #{name}
-                                        if (chat.content)
-                                            .inner-content.d-inline-block.px-3.py-2.ml-2(
-                                            style="word-wrap: break-word; white-space: pre-wrap;"
-                                            ) #{chat.content}
-                                            
-                                        if (chat.images.length > 0)
-                                            .inner-images   
-                                                each image in chat.images 
-                                                    a(href=image target="_blank")
-                                                        img(src = image)
+                                    - const name = (chat.infoUser && chat.infoUser.fullName) ? chat.infoUser.fullName : 'Unknown'
+                                    .message-avatar= name[0].toUpperCase()
+                                    .message-content-wrapper
+                                        .message-sender-name.ml-0= name
+                                        if chat.content
+                                            .message-bubble= chat.content
+                                        if chat.images && chat.images.length > 0
+                                            .message-images
+                                                each image in chat.images
+                                                    a(href=image, target="_blank")
+                                                        img(src=image, alt="Image")
                                 else
-                                    if (chat.content)
-                                        .inner-content.d-inline-block.px-3.py-2.text-white(
-                                            style="word-wrap: break-word; white-space: pre-wrap;"
-                                        ) #{chat.content}
+                                    //- Tin nhắn của tôi cũng có wrapper để đồng nhất
+                                    .message-content-wrapper
+                                        if chat.content
+                                            .message-bubble= chat.content
+                                        if chat.images && chat.images.length > 0
+                                            .message-images
+                                                each image in chat.images
+                                                    a(href=image, target="_blank")
+                                                        img(src=image, alt="Image")
 
-                                    if (chat.images.length > 0)
-                                            .inner-images   
-                                                each image in chat.images 
-                                                    a(href=image target="_blank")
-                                                        img(src = image)
+                        //- Khu vực dành cho chỉ báo "đang gõ"
+                        .inner-list-typing
 
-                        div(class="inner-list-typing")
-
+                    //- Khu vực preview ảnh
                     .inner-preview-images
                         .custom-file-container(data-upload-id="upload-image")
 
                     //- Phần nhập liệu
-                    .inner-foot.border-top.p-2
-                        form.inner-form.d-flex.align-items-center.gap-2(action="", method="POST")
-                            //- Icon để trigger input file
-                            label(for="file-upload-with-preview-upload-image" class="icon-container button-image-upload mb-0 mr-1")
+                    .inner-foot
+                        form.inner-form(action="", method="POST")
+                            label.icon-button.mb-0(for="file-upload-with-preview-upload-image")
                                 i.fas.fa-image
-
-                            input.form-control.rounded-pill(
-                                type="text",
-                                placeholder="Nhập nội dung...",
-                                name="content",
-                                autocomplete="off",
-                            )
-
-                            span.icon-container.mr-1.button-emoij.btn.btn-light.mx-2
-                                i.fas.fa-smile  
+                            input.form-control(type="text", placeholder="Nhập nội dung...", name="content", autocomplete="off")
+                            .icon-button.button-emoij
+                                i.fas.fa-smile
                                 .tooltip(role="tooltip")
                                     emoji-picker.light
+                            button.icon-button(type="submit")
+                                i.fa-solid.fa-paper-plane
 
-                            button.icon-container(type="submit")
-                                i.fa-solid.fa-paper-plane.fs-4
+    //- TEMPLATE CHO TIN NHẮN MỚI (JavaScript sẽ sử dụng)
+    template#message-template-incoming
+        .message-container.incoming
+            .message-avatar
+            .message-content-wrapper
+                .message-sender-name
+                //- Thêm một div để chứa cả bubble và ảnh
+                .message-body
     
-    //- Thêm emoji picker
-    script(type="module" src="https://cdn.jsdelivr.net/npm/emoji-picker-element@^1/index.js")   
-    //- Kết nối tới Socket.IO
+    template#message-template-outgoing
+        .message-container.outgoing
+            .message-content-wrapper
+                //- Thêm một div để chứa cả bubble và ảnh
+                .message-body
+
+    //- Scripts
+    script(type="module" src="https://cdn.jsdelivr.net/npm/emoji-picker-element@^1/index.js")
     script(src="/socket.io/socket.io.js")
     script(type="module" src="/client/js/chat.js")
